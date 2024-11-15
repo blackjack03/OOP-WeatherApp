@@ -4,6 +4,7 @@ import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -30,6 +31,9 @@ public class TravelModeViewImpl implements TravelModeView {
         final VBox city1VBox = new VBox();
         final VBox city2VBox = new VBox();
         this.suggestionsMenu = new ContextMenu();
+
+        final HBox departureHBox = new HBox();
+        final HBox arrivalHBox = new HBox();
         // Spinner per le ore (0-23)
         Spinner<Integer> hourSpinner = new Spinner<>();
         hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12));
@@ -37,6 +41,7 @@ public class TravelModeViewImpl implements TravelModeView {
         // Spinner per i minuti (0-59) con incremento di 5 minuti
         Spinner<Integer> minuteSpinner = new Spinner<>();
         minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 5));
+
         // Aggiunta di elementi di menu (suggestioni fittizie)
         MenuItem suggestion1 = new MenuItem("Suggestion 1");
         MenuItem suggestion2 = new MenuItem("Suggestion 2");
@@ -70,7 +75,8 @@ public class TravelModeViewImpl implements TravelModeView {
         suggestion2.setOnAction(e -> city1TextField.setText("Suggestion 2"));
         suggestion3.setOnAction(e -> city1TextField.setText("Suggestion 3"));
 
-        city1VBox.getChildren().addAll(this.departureLabel, this.city1TextField);
+        departureHBox.getChildren().addAll(hourSpinner, minuteSpinner);
+        city1VBox.getChildren().addAll(this.departureLabel, this.city1TextField, departureHBox);
         city2VBox.getChildren().addAll(this.arrivalLabel, this.city2TextField);
         root.setLeft(city1VBox);
         root.setRight(city2VBox);
