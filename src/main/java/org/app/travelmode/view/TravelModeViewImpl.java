@@ -99,12 +99,14 @@ public class TravelModeViewImpl implements TravelModeView {
         departureHBox.getChildren().addAll(hourSpinner, minuteSpinner);
         city1VBox.getChildren().addAll(this.departureLabel, this.city1TextField, departureHBox, datePicker);
         city1VBox.setStyle(
-                "-fx-border-color: black;" +      // Colore del bordo
-                        "-fx-border-width: 2px;" +       // Larghezza del bordo
-                        "-fx-padding: 5px;" +           // Spazio interno
-                        "-fx-background-color: white;" // Colore di sfondo
+                "-fx-border-color: black;" +                // Colore del bordo
+                        "-fx-border-width: 2px;" +          // Larghezza del bordo
+                        "-fx-padding: 10px;" +               // Spazio interno
+                        "-fx-background-color: white;" +    // Colore di sfondo
+                        "-fx-border-radius: 15px; " +        // Arrotondamento del bordo
+                        "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
         );
-        city1VBox.setMaxSize(200, departureLabel.getHeight() + this.city1TextField.getHeight() + departureHBox.getHeight() + datePicker.getHeight());
+        city1VBox.setMaxSize(220, departureLabel.getHeight() + this.city1TextField.getHeight() + departureHBox.getHeight() + datePicker.getHeight());
         city2VBox.getChildren().addAll(this.arrivalLabel, this.city2TextField);
         root.setLeft(city1VBox);
         root.setRight(city2VBox);
