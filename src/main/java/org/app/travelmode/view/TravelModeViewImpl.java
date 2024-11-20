@@ -8,6 +8,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
+
 public class TravelModeViewImpl implements TravelModeView {
 
     private static final String STAGE_NAME = "Navigation Mode Test";
@@ -61,6 +63,27 @@ public class TravelModeViewImpl implements TravelModeView {
         Spinner<Integer> minuteSpinner = new Spinner<>();
         minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 5));
 
+        final DatePicker datePicker = new DatePicker();
+        final LocalDate oggi = LocalDate.now();
+        final LocalDate start = oggi;
+        final LocalDate end = oggi.plusDays(6);
+        datePicker.setDayCellFactory((dP) -> new DateCell() {
+            @Override
+            public void updateItem(final LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                if (date.isBefore(start) || date.isAfter(end)) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #f4f4f4; -fx-text-fill: #b0b0b0; -fx-opacity: 0.6;");
+                } else {
+                    setStyle("-fx-background-color: #ffffff; -fx-text-fill: #2c3e50;");
+                    setOnMouseEntered(e -> setStyle("-fx-background-color: #d1e8ff; -fx-text-fill: #2c3e50;"));
+                    setOnMouseExited(e -> setStyle("-fx-background-color: #ffffff; -fx-text-fill: #2c3e50;"));
+                }
+            }
+        });
+        datePicker.setShowWeekNumbers(false);
+        datePicker.setEditable(false);
+
 
         final VBox city2VBox = new VBox();
         this.city2TextField = new TextField();
@@ -74,7 +97,14 @@ public class TravelModeViewImpl implements TravelModeView {
         });
 
         departureHBox.getChildren().addAll(hourSpinner, minuteSpinner);
-        city1VBox.getChildren().addAll(this.departureLabel, this.city1TextField, departureHBox);
+        city1VBox.getChildren().addAll(this.departureLabel, this.city1TextField, departureHBox, datePicker);
+        city1VBox.setStyle(
+                "-fx-border-color: black;" +      // Colore del bordo
+                        "-fx-border-width: 2px;" +       // Larghezza del bordo
+                        "-fx-padding: 5px;" +           // Spazio interno
+                        "-fx-background-color: white;" // Colore di sfondo
+        );
+        city1VBox.setMaxSize(200, departureLabel.getHeight() + this.city1TextField.getHeight() + departureHBox.getHeight() + datePicker.getHeight());
         city2VBox.getChildren().addAll(this.arrivalLabel, this.city2TextField);
         root.setLeft(city1VBox);
         root.setRight(city2VBox);
