@@ -2,6 +2,9 @@ package org.app.travelmode.model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.app.model.AdvancedJsonReader;
+import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
+import org.app.travelmode.placeautocomplete.PlaceAutocompleteResponse;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -26,8 +29,8 @@ public class PlaceAutocompleteImpl implements PlaceAutocomplete {
         }
     }
 
-    public List<String> getSuggestion(final String input) {
-        final List<String> suggestions = new ArrayList<>();
+    public List<PlaceAutocompletePrediction> getSuggestion(final String input) {
+        final List<PlaceAutocompletePrediction> suggestions = new ArrayList<>();
 
         final String urlString = "https://maps.googleapis.com/maps/api/place/autocomplete/json" + "?input=" + "Forl" +
                 "&language=it" +
@@ -48,10 +51,14 @@ public class PlaceAutocompleteImpl implements PlaceAutocomplete {
             }
             br.close();
             System.out.println(results.toString());
+            final Gson gson = new Gson();
+            final PlaceAutocompleteResponse placeAutocompleteResponse = gson.fromJson(results.toString(), PlaceAutocompleteResponse.class);
+            System.out.println(placeAutocompleteResponse);
+            suggestions.addAll(placeAutocompleteResponse.getPredictions());
+            return suggestions;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
