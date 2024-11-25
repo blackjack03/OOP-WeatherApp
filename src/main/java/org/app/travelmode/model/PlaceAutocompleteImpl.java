@@ -29,10 +29,11 @@ public class PlaceAutocompleteImpl implements PlaceAutocomplete {
         }
     }
 
-    public List<PlaceAutocompletePrediction> getSuggestion(final String input) {
+    @Override
+    public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
         final List<PlaceAutocompletePrediction> suggestions = new ArrayList<>();
 
-        final String urlString = "https://maps.googleapis.com/maps/api/place/autocomplete/json" + "?input=" + "Forl" +
+        final String urlString = "https://maps.googleapis.com/maps/api/place/autocomplete/json" + "?input=" + input +
                 "&language=it" +
                 "&types=geocode" +
                 "&key=" + googleApiKey;
