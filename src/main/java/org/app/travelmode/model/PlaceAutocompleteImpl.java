@@ -2,16 +2,15 @@ package org.app.travelmode.model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.app.model.AdvancedJsonReader;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 import org.app.travelmode.placeautocomplete.PlaceAutocompleteResponse;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,14 +32,15 @@ public class PlaceAutocompleteImpl implements PlaceAutocomplete {
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
         final List<PlaceAutocompletePrediction> suggestions = new ArrayList<>();
 
-        final String urlString = "https://maps.googleapis.com/maps/api/place/autocomplete/json" + "?input=" + input +
-                "&language=it" +
-                "&types=geocode" +
-                "&key=" + googleApiKey;
-
-        System.out.println(urlString);
-
         try {
+            final String encodedInput = URLEncoder.encode(input, "UTF-8");
+            final String urlString = "https://maps.googleapis.com/maps/api/place/autocomplete/json" + "?input=" + encodedInput +
+                    "&language=it" +
+                    "&types=geocode" +
+                    "&location=41.9028,12.4964" +
+                    "&radius=500000" +
+                    "&key=" + googleApiKey;
+            System.out.println(urlString);
             final URL url = new URL(urlString);
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
