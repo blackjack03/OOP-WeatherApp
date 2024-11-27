@@ -44,6 +44,7 @@ public class TravelModeViewImpl implements TravelModeView {
         this.arrivalSuggestionsMenu = new ContextMenu();
 
         this.city1TextField = new TextField();
+        this.city1TextField.setMinWidth(200);
         this.city1TextField.setPromptText("Inserire la città o l'indirizzo");
         city1TextField.setOnKeyTyped(event -> {
             if (!event.getCharacter().equals("\r") && !event.getCharacter().equals("\t")) {
@@ -93,6 +94,7 @@ public class TravelModeViewImpl implements TravelModeView {
 
         final VBox city2VBox = new VBox();
         this.city2TextField = new TextField();
+        this.city2TextField.setMinWidth(200);
         this.city2TextField.setPromptText("Inserire la città o l'indirizzo");
         city2TextField.setOnKeyTyped(event -> {
             if (!event.getCharacter().equals("\r") && !event.getCharacter().equals("\t")) {
@@ -120,10 +122,19 @@ public class TravelModeViewImpl implements TravelModeView {
                         "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
         );
         city1VBox.setMaxSize(220, departureLabel.getHeight() + this.city1TextField.getHeight() + departureHBox.getHeight() + datePicker.getHeight());
+        city2VBox.setStyle(
+                "-fx-border-color: black;" +                // Colore del bordo
+                        "-fx-border-width: 2px;" +          // Larghezza del bordo
+                        "-fx-padding: 10px;" +               // Spazio interno
+                        "-fx-background-color: white;" +    // Colore di sfondo
+                        "-fx-border-radius: 15px; " +        // Arrotondamento del bordo
+                        "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
+        );
+        city2VBox.setMaxSize(220, this.arrivalLabel.getHeight() + this.city2TextField.getHeight());
         city2VBox.getChildren().addAll(this.arrivalLabel, this.city2TextField);
         root.setLeft(city1VBox);
         root.setRight(city2VBox);
-        final Scene scene = new Scene(root, 600, 400);
+        final Scene scene = new Scene(root, 850, 600);
         this.stage.setScene(scene);
         this.stage.show();
     }
