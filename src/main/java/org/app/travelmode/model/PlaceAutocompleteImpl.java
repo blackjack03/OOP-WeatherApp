@@ -18,6 +18,9 @@ public class PlaceAutocompleteImpl implements PlaceAutocomplete {
 
     private String googleApiKey = null;
 
+    /*
+    * TODO: migliorare il meccanismo di ottenimento della api key
+    * */
     public PlaceAutocompleteImpl() {
         try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
             final Gson gson = new Gson();
@@ -28,6 +31,9 @@ public class PlaceAutocompleteImpl implements PlaceAutocomplete {
         }
     }
 
+    /*TODO: migliorare la gestione di possibili errori ed exception. Controllare lo status della risposta dell'api...
+     *TODO: Evitare ripetizioni del codice necessario per la chiamata dell'api, sfruttare AdvancedJsonReader...
+     */
     @Override
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
         final List<PlaceAutocompletePrediction> suggestions = new ArrayList<>();
