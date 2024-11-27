@@ -3,26 +3,34 @@ package org.app.travelmode.view;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.app.travelmode.controller.TravelModeController;
+import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class TravelModeViewImpl implements TravelModeView {
 
     private static final String STAGE_NAME = "Navigation Mode Test";
+
+    private final TravelModeController controller;
+
     private Stage stage;
     private TextField city1TextField;
     private TextField city2TextField;
-    private ContextMenu suggestionsMenu;
+    private ContextMenu departureSuggestionsMenu;
+    private ContextMenu arrivalSuggestionsMenu;
     private final Label departureLabel = new Label("Partenza");
     private final Label arrivalLabel = new Label("Arrivo");
 
 
-    public TravelModeViewImpl() {
-
+    public TravelModeViewImpl(final TravelModeController controller) {
+        this.controller = controller;
     }
 
     @Override
@@ -32,25 +40,23 @@ public class TravelModeViewImpl implements TravelModeView {
         final BorderPane root = new BorderPane();
         final VBox city1VBox = new VBox();
 
-        this.suggestionsMenu = new ContextMenu();
-        // Aggiunta di elementi di menu (suggestioni fittizie)
-        MenuItem suggestion1 = new MenuItem("Suggestion 1");
-        MenuItem suggestion2 = new MenuItem("Suggestion 2");
-        MenuItem suggestion3 = new MenuItem("Suggestion 3");
-        // Assegna un'azione a ciascun MenuItem
-        suggestion1.setOnAction(e -> city1TextField.setText("Suggestion 1"));
-        suggestion2.setOnAction(e -> city1TextField.setText("Suggestion 2"));
-        suggestion3.setOnAction(e -> city1TextField.setText("Suggestion 3"));
-        // Aggiungi i MenuItem al ContextMenu
-        this.suggestionsMenu.getItems().addAll(suggestion1, suggestion2, suggestion3);
+        this.departureSuggestionsMenu = new ContextMenu();
+        this.arrivalSuggestionsMenu = new ContextMenu();
 
         this.city1TextField = new TextField();
-        this.city1TextField.setPromptText("Inserire la città...");
-        this.city1TextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() >= 3) {
-                suggestionsMenu.show(this.city1TextField, Side.BOTTOM, 0, 0);
-            } else {
-                suggestionsMenu.hide();
+        this.city1TextField.setPromptText("Inserire la città o l'indirizzo");
+        city1TextField.setOnKeyTyped(event -> {
+            if (!event.getCharacter().equals("\r") && !event.getCharacter().equals("\t")) {
+                final String actualText = this.city1TextField.getText();
+                if (actualText.length() >= 3) {
+                    final List<PlaceAutocompletePrediction> placePredictions = controller.getPlacePredictions(actualText);
+                    this.updateSuggestionsMenu(departureSuggestionsMenu, city1TextField, placePredictions);
+                    if (!departureSuggestionsMenu.isShowing()) {
+                        departureSuggestionsMenu.show(this.city1TextField, Side.BOTTOM, 0, 0);
+                    }
+                } else {
+                    departureSuggestionsMenu.hide();
+                }
             }
         });
 
@@ -87,12 +93,19 @@ public class TravelModeViewImpl implements TravelModeView {
 
         final VBox city2VBox = new VBox();
         this.city2TextField = new TextField();
-        this.city2TextField.setPromptText("Inserire la città...");
-        this.city2TextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() >= 3) {
-                suggestionsMenu.show(this.city2TextField, Side.BOTTOM, 0, 0);
-            } else {
-                suggestionsMenu.hide();
+        this.city2TextField.setPromptText("Inserire la città o l'indirizzo");
+        city2TextField.setOnKeyTyped(event -> {
+            if (!event.getCharacter().equals("\r") && !event.getCharacter().equals("\t")) {
+                final String actualText = this.city2TextField.getText();
+                if (actualText.length() >= 3) {
+                    final List<PlaceAutocompletePrediction> placePredictions = controller.getPlacePredictions(actualText);
+                    this.updateSuggestionsMenu(arrivalSuggestionsMenu, city2TextField, placePredictions);
+                    if (!arrivalSuggestionsMenu.isShowing()) {
+                        arrivalSuggestionsMenu.show(this.city2TextField, Side.BOTTOM, 0, 0);
+                    }
+                } else {
+                    arrivalSuggestionsMenu.hide();
+                }
             }
         });
 
@@ -121,4 +134,23 @@ public class TravelModeViewImpl implements TravelModeView {
 
     }
 
+    /**
+     * Update a {@link ContextMenu} with the new {@link PlaceAutocompletePrediction}
+     *
+     * @param menu        The menu to update
+     * @param anchor      The {@link TextField} to which the {@code menu} is anchored
+     * @param predictions The list of new predictions
+     */
+    private void updateSuggestionsMenu(final ContextMenu menu, final TextField anchor, final List<PlaceAutocompletePrediction> predictions) {
+        menu.getItems().clear();
+        for (final PlaceAutocompletePrediction prediction : predictions) {
+            final MenuItem menuItem = new MenuItem();
+            menuItem.setText(prediction.getDescription());
+            menuItem.setOnAction(event -> {
+                anchor.setText(prediction.getDescription());
+                menu.hide();
+            });
+            menu.getItems().add(menuItem);
+        }
+    }
 }
