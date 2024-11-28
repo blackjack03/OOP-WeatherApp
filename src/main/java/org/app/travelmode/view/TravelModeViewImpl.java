@@ -114,6 +114,11 @@ public class TravelModeViewImpl implements TravelModeView {
             }
         });
 
+        final Button searchButton = new Button("CERCA PERCORSO");
+        searchButton.setOnAction(event -> {
+            this.controller.startRouteAnalysis();
+        });
+
         departureHBox.getChildren().addAll(hourSpinner, minuteSpinner);
         city1VBox.getChildren().addAll(this.departureLabel, this.city1TextField, departureHBox, datePicker);
         city1VBox.setStyle(
@@ -125,6 +130,7 @@ public class TravelModeViewImpl implements TravelModeView {
                         "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
         );
         city1VBox.setMaxSize(220, departureLabel.getHeight() + this.city1TextField.getHeight() + departureHBox.getHeight() + datePicker.getHeight());
+        city2VBox.getChildren().addAll(this.arrivalLabel, this.city2TextField);
         city2VBox.setStyle(
                 "-fx-border-color: black;" +                // Colore del bordo
                         "-fx-border-width: 2px;" +          // Larghezza del bordo
@@ -134,9 +140,9 @@ public class TravelModeViewImpl implements TravelModeView {
                         "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
         );
         city2VBox.setMaxSize(220, this.arrivalLabel.getHeight() + this.city2TextField.getHeight());
-        city2VBox.getChildren().addAll(this.arrivalLabel, this.city2TextField);
         root.setLeft(city1VBox);
         root.setRight(city2VBox);
+        root.setCenter(searchButton);
         final Scene scene = new Scene(root, 850, 600);
         this.stage.setScene(scene);
         this.stage.show();
@@ -164,11 +170,9 @@ public class TravelModeViewImpl implements TravelModeView {
                 anchor.setText(prediction.getDescription());
                 menu.hide();
                 if (anchor.equals(this.city1TextField)) {
-                    this.controller.setDepartureLocation(prediction.getDescription());
-                    this.controller.setDeparturePlaceId(prediction.getPlaceId());
+                    this.controller.setDepartureLocation(prediction.getDescription()).setDeparturePlaceId(prediction.getPlaceId());
                 } else if (anchor.equals(this.city2TextField)) {
-                    this.controller.setArrivalLocation(prediction.getDescription());
-                    this.controller.setArrivalPlaceId(prediction.getPlaceId());
+                    this.controller.setArrivalLocation(prediction.getDescription()).setArrivalPlaceId(prediction.getPlaceId());
                 }
             });
             menu.getItems().add(menuItem);
