@@ -33,43 +33,37 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
     @Override
     public TravelRequestImpl.Builder setDepartureLocation(final String departureLocation) {
         this.checkRequestBuilder();
-        this.requestBuilder.setDepartureLocation(departureLocation);
-        return this.requestBuilder;
+        return this.requestBuilder.setDepartureLocation(departureLocation);
     }
 
     @Override
     public TravelRequestImpl.Builder setDeparturePlaceId(final String departurePlaceId) {
         this.checkRequestBuilder();
-        this.requestBuilder.setDeparturePlaceId(departurePlaceId);
-        return this.requestBuilder;
+        return this.requestBuilder.setDeparturePlaceId(departurePlaceId);
     }
 
     @Override
     public TravelRequestImpl.Builder setArrivalLocation(final String arrivalLocation) {
         this.checkRequestBuilder();
-        this.requestBuilder.setArrivalLocation(arrivalLocation);
-        return this.requestBuilder;
+        return this.requestBuilder.setArrivalLocation(arrivalLocation);
     }
 
     @Override
     public TravelRequestImpl.Builder setArrivalPlaceId(final String arrivalPlaceId) {
         this.checkRequestBuilder();
-        this.requestBuilder.setArrivalPlaceId(arrivalPlaceId);
-        return this.requestBuilder;
+        return this.requestBuilder.setArrivalPlaceId(arrivalPlaceId);
     }
 
     @Override
     public TravelRequestImpl.Builder setDepartureTime(final LocalTime departureTime) {
         this.checkRequestBuilder();
-        this.requestBuilder.setDepartureTime(departureTime);
-        return this.requestBuilder;
+        return this.requestBuilder.setDepartureTime(departureTime);
     }
 
     @Override
     public TravelRequestImpl.Builder setDepartureDate(final LocalDate departureDate) {
         this.checkRequestBuilder();
-        this.requestBuilder.setDepartureDate(departureDate);
-        return this.requestBuilder;
+        return this.requestBuilder.setDepartureDate(departureDate);
     }
 
     /**
