@@ -23,7 +23,7 @@ public interface TravelModeController {
      * @param departureLocation the name of the departure location
      * @return this builder, for method chaining
      */
-    TravelRequestImpl.TravelRequestBuilder setDepartureLocation(final String departureLocation);
+    TravelRequestImpl.Builder setDepartureLocation(final String departureLocation);
 
     /**
      * Set the PlaceId associated with the starting location
@@ -31,7 +31,7 @@ public interface TravelModeController {
      * @param departurePlaceId the PlaceId associated with the starting location
      * @return this builder, for method chaining
      */
-    TravelRequestImpl.TravelRequestBuilder setDeparturePlaceId(final String departurePlaceId);
+    TravelRequestImpl.Builder setDeparturePlaceId(final String departurePlaceId);
 
     /**
      * Set the arrival location
@@ -39,7 +39,7 @@ public interface TravelModeController {
      * @param arrivalLocation the name of the arrival location
      * @return this builder, for method chaining
      */
-    TravelRequestImpl.TravelRequestBuilder setArrivalLocation(final String arrivalLocation);
+    TravelRequestImpl.Builder setArrivalLocation(final String arrivalLocation);
 
     /**
      * Set the PlaceId associated with the arrival location
@@ -47,7 +47,7 @@ public interface TravelModeController {
      * @param arrivalPlaceId the PlaceId associated with the arrival location
      * @return this builder, for method chaining
      */
-    TravelRequestImpl.TravelRequestBuilder setArrivalPlaceId(final String arrivalPlaceId);
+    TravelRequestImpl.Builder setArrivalPlaceId(final String arrivalPlaceId);
 
     /**
      * Set the departure time
@@ -55,7 +55,7 @@ public interface TravelModeController {
      * @param departureTime the departure time
      * @return this builder, for method chaining
      */
-    TravelRequestImpl.TravelRequestBuilder setDepartureTime(final LocalTime departureTime);
+    TravelRequestImpl.Builder setDepartureTime(final LocalTime departureTime);
 
     /**
      * Set the departure date
@@ -63,10 +63,6 @@ public interface TravelModeController {
      * @param departureDate the departure date
      * @return this builder, for method chaining
      */
-    TravelRequestImpl.TravelRequestBuilder setDepartureDate(final LocalDate departureDate);
+    TravelRequestImpl.Builder setDepartureDate(final LocalDate departureDate);
 
-    /**
-     * @return a TravelRequestImpl
-     */
-    TravelRequestImpl build();
 }

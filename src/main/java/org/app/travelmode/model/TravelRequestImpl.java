@@ -61,9 +61,9 @@ public class TravelRequestImpl implements TravelRequest {
 
 
     /**
-     * Constructor class of a TravelReqestImpl object
+     * Builder class of a TravelReqestImpl object
      */
-    public static class TravelRequestBuilder {
+    public static class Builder {
 
         private static final LocalTime DEPARTURE_TIME = LocalTime.now();
         private static final LocalDate DEPARTURE_DATE = LocalDate.now();
@@ -74,7 +74,7 @@ public class TravelRequestImpl implements TravelRequest {
         private String arrivalPlaceId;
         private LocalTime departureTime = DEPARTURE_TIME;
         private LocalDate departureDate = DEPARTURE_DATE;
-        private boolean consumed;
+        private boolean consumed = false;
 
         /**
          * Set the departure location
@@ -82,7 +82,7 @@ public class TravelRequestImpl implements TravelRequest {
          * @param departureLocation the name of the departure location
          * @return this builder, for method chaining
          */
-        public TravelRequestBuilder setDepartureLocation(final String departureLocation) {
+        public Builder setDepartureLocation(final String departureLocation) {
             this.departureLocation = departureLocation;
             return this;
         }
@@ -93,7 +93,7 @@ public class TravelRequestImpl implements TravelRequest {
          * @param departurePlaceId the PlaceId associated with the starting location
          * @return this builder, for method chaining
          */
-        public TravelRequestBuilder setDeparturePlaceId(final String departurePlaceId) {
+        public Builder setDeparturePlaceId(final String departurePlaceId) {
             this.departurePlaceId = departurePlaceId;
             return this;
         }
@@ -104,7 +104,7 @@ public class TravelRequestImpl implements TravelRequest {
          * @param arrivalLocation the name of the arrival location
          * @return this builder, for method chaining
          */
-        public TravelRequestBuilder setArrivalLocation(final String arrivalLocation) {
+        public Builder setArrivalLocation(final String arrivalLocation) {
             this.arrivalLocation = arrivalLocation;
             return this;
         }
@@ -115,7 +115,7 @@ public class TravelRequestImpl implements TravelRequest {
          * @param arrivalPlaceId the PlaceId associated with the arrival location
          * @return this builder, for method chaining
          */
-        public TravelRequestBuilder setArrivalPlaceId(final String arrivalPlaceId) {
+        public Builder setArrivalPlaceId(final String arrivalPlaceId) {
             this.arrivalPlaceId = arrivalPlaceId;
             return this;
         }
@@ -126,7 +126,7 @@ public class TravelRequestImpl implements TravelRequest {
          * @param departureTime the departure time
          * @return this builder, for method chaining
          */
-        public TravelRequestBuilder setDepartureTime(final LocalTime departureTime) {
+        public Builder setDepartureTime(final LocalTime departureTime) {
             this.departureTime = departureTime;
             return this;
         }
@@ -137,7 +137,7 @@ public class TravelRequestImpl implements TravelRequest {
          * @param departureDate the departure date
          * @return this builder, for method chaining
          */
-        public TravelRequestBuilder setDepartureDate(final LocalDate departureDate) {
+        public Builder setDepartureDate(final LocalDate departureDate) {
             this.departureDate = departureDate;
             return this;
         }
@@ -151,6 +151,15 @@ public class TravelRequestImpl implements TravelRequest {
             }
             consumed = true;
             return new TravelRequestImpl(departureLocation, departurePlaceId, arrivalLocation, arrivalPlaceId, departureTime, departureDate);
+        }
+
+        /**
+         * Lets you know if this TravelRequestBuilder has already been used
+         *
+         * @return true if this constructor has already been used
+         */
+        public boolean isConsumed() {
+            return this.consumed;
         }
     }
 }
