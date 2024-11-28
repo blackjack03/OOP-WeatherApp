@@ -61,7 +61,7 @@ public class TravelRequestImpl implements TravelRequest {
 
 
     /**
-     * Builder class of a TravelReqestImpl object
+     * Builder class of a TravelRequestImpl object
      */
     public static class Builder {
 
