@@ -3,7 +3,7 @@ package org.app.travelmode.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class TravelRequestImpl implements TravelRequest {
+public final class TravelRequestImpl implements TravelRequest {
 
     private final String departureLocation;
     private final String departurePlaceId;
@@ -59,6 +59,13 @@ public class TravelRequestImpl implements TravelRequest {
                 && departureTime != null && departureDate != null;
     }
 
+    @Override
+    public String toString() {
+        return "{\n[Partenza: " + this.departureLocation + ", PlaceId:" + this.departurePlaceId +
+                "\tOra: " + this.departureTime + ", Date: " + this.departureDate + "]\n" +
+                "[Arrivo: " + this.arrivalLocation + ", PalceId: " + this.arrivalPlaceId + "]\n" +
+                "}";
+    }
 
     /**
      * Builder class of a TravelRequestImpl object
