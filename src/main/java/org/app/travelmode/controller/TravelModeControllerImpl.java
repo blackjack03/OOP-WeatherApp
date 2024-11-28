@@ -66,6 +66,11 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
         return this.requestBuilder.setDepartureDate(departureDate);
     }
 
+    @Override
+    public void startRouteAnalysis(){
+        System.out.println(this.requestBuilder.build().toString());
+    }
+
     /**
      * Check if the requestBuilder has already been used. If so, create a new one.
      */

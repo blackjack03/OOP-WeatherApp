@@ -65,4 +65,9 @@ public interface TravelModeController {
      */
     TravelRequestImpl.Builder setDepartureDate(final LocalDate departureDate);
 
+    /**
+     * Start the analysis of possible routes between the inserted places
+     */
+    void startRouteAnalysis();
+
 }
