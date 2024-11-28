@@ -88,6 +88,9 @@ public class TravelModeViewImpl implements TravelModeView {
                 }
             }
         });
+        datePicker.setOnAction(event -> {
+            this.controller.setDepartureDate(datePicker.getValue());
+        });
         datePicker.setShowWeekNumbers(false);
         datePicker.setEditable(false);
 
@@ -160,6 +163,13 @@ public class TravelModeViewImpl implements TravelModeView {
             menuItem.setOnAction(event -> {
                 anchor.setText(prediction.getDescription());
                 menu.hide();
+                if (anchor.equals(this.city1TextField)) {
+                    this.controller.setDepartureLocation(prediction.getDescription());
+                    this.controller.setDeparturePlaceId(prediction.getPlaceId());
+                } else if (anchor.equals(this.city2TextField)) {
+                    this.controller.setArrivalLocation(prediction.getDescription());
+                    this.controller.setArrivalPlaceId(prediction.getPlaceId());
+                }
             });
             menu.getItems().add(menuItem);
         }
