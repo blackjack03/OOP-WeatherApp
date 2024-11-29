@@ -3,6 +3,9 @@ package org.app.travelmode.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * It represents a request with all the elements necessary to calculate a trip between two places
+ */
 public interface TravelRequest {
 
     /**
