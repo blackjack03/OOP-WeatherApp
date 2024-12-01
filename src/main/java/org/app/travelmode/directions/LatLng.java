@@ -1,11 +1,19 @@
 package org.app.travelmode.directions;
 
-public class LatLngLiteral {
+/**
+ * A place on Earth, represented by a Latitude/Longitude pair.
+ */
+public class LatLng {
 
     private final double lat;
     private final double lng;
 
-    public LatLngLiteral(double lat, double lng) {
+    /**
+     * Construct a location with a latitude longitude pair.
+     * @param lat latitude
+     * @param lng longitude
+     */
+    public LatLng(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
     }
