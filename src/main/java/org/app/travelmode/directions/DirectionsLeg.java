@@ -5,9 +5,9 @@ import java.util.List;
 public class DirectionsLeg {
 
     private String end_address;
-    private LatLngLiteral end_location;
+    private LatLng end_location;
     private String start_address;
-    private LatLngLiteral start_location;
+    private LatLng start_location;
     private List<DirectionsStep> steps;
     private TextValueObject distance;
     private TextValueObject duration;
@@ -20,7 +20,7 @@ public class DirectionsLeg {
         return this.end_address;
     }
 
-    public LatLngLiteral getEnd_location() {
+    public LatLng getEnd_location() {
         return this.end_location;
     }
 
@@ -28,7 +28,7 @@ public class DirectionsLeg {
         return this.start_address;
     }
 
-    public LatLngLiteral getStart_location() {
+    public LatLng getStart_location() {
         return this.start_location;
     }
 
