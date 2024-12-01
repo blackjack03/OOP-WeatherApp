@@ -33,14 +33,14 @@ public class DirectionsRoute {
 
 
     public static class Bounds {
-        private LatLngLiteral northeast;
-        private LatLngLiteral southwest;
+        private LatLng northeast;
+        private LatLng southwest;
 
-        public LatLngLiteral getNortheast() {
+        public LatLng getNortheast() {
             return this.northeast;
         }
 
-        public LatLngLiteral getSouthwest() {
+        public LatLng getSouthwest() {
             return this.southwest;
         }
 
