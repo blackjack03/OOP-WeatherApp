@@ -3,9 +3,9 @@ package org.app.travelmode.directions;
 public class DirectionsStep {
 
     private TextValueObject duration;
-    private LatLngLiteral end_location;
+    private LatLng end_location;
     private DirectionsPolyline polyline;
-    private LatLngLiteral start_location;
+    private LatLng start_location;
     private String travel_mode;
     private TextValueObject distance;
 
@@ -14,7 +14,7 @@ public class DirectionsStep {
         return this.duration;
     }
 
-    public LatLngLiteral getEnd_location() {
+    public LatLng getEnd_location() {
         return this.end_location;
     }
 
@@ -22,7 +22,7 @@ public class DirectionsStep {
         return this.polyline;
     }
 
-    public LatLngLiteral getStart_location() {
+    public LatLng getStart_location() {
         return this.start_location;
     }
 
