@@ -9,6 +9,9 @@ public class DirectionsRoute {
     private DirectionsPolyline overview_polyline;
     private String summary;
 
+    public DirectionsRoute() {
+    }
+
     public Bounds getBounds() {
         return this.bounds;
     }
@@ -32,9 +35,15 @@ public class DirectionsRoute {
     }
 
 
+    /**
+     * The north east and south west points that delineate the outer bounds of a map.
+     */
     public static class Bounds {
         private LatLng northeast;
         private LatLng southwest;
+
+        public Bounds() {
+        }
 
         public LatLng getNortheast() {
             return this.northeast;
