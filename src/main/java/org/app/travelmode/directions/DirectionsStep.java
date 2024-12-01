@@ -13,7 +13,18 @@ public class DirectionsStep {
     private String travel_mode;
     private TextValueObject distance;
 
-    public DirectionsStep() {
+    public DirectionsStep(final TextValueObject duration, final LatLng end_location, final LatLng start_location, final TextValueObject distance) {
+        this.duration = duration;
+        this.end_location = end_location;
+        this.start_location = start_location;
+        this.distance = distance;
+    }
+
+    public DirectionsStep(final TextValueObject duration, final LatLng end_location, final LatLng start_location,
+                          final TextValueObject distance, final String travel_mode, final DirectionsPolyline polyline) {
+        this(duration, end_location, start_location, distance);
+        this.travel_mode = travel_mode;
+        this.polyline = polyline;
     }
 
     public TextValueObject getDuration() {
