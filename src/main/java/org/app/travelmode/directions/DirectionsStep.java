@@ -1,5 +1,9 @@
 package org.app.travelmode.directions;
 
+/**
+ * Each element in the steps of a {@link DirectionsLeg} defines a single step of the calculated directions.
+ * A step is the most atomic unit of a direction's route, containing a single step describing a specific, single instruction on the journey.
+ */
 public class DirectionsStep {
 
     private TextValueObject duration;
@@ -9,6 +13,8 @@ public class DirectionsStep {
     private String travel_mode;
     private TextValueObject distance;
 
+    public DirectionsStep() {
+    }
 
     public TextValueObject getDuration() {
         return this.duration;
