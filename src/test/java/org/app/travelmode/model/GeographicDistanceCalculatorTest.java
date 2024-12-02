@@ -23,7 +23,7 @@ class GeographicDistanceCalculatorTest {
         double distance = GeographicDistanceCalculator.computeDistance(rome, milan);
 
         // Valore atteso calcolato con altri strumenti: ~477 km
-        assertEquals(477, distance, 5, "La distanza tra Roma e Milano dovrebbe essere circa 477 km.");
+        assertEquals(477019, distance, 2000, "La distanza tra Roma e Milano dovrebbe essere circa 477 km.");
     }
 
     @Test
@@ -34,7 +34,7 @@ class GeographicDistanceCalculatorTest {
         double distance = GeographicDistanceCalculator.computeDistance(pointNorth, pointSouth);
 
         // Valore atteso calcolato con altri strumenti: ~1569 km
-        assertEquals(1569, distance, 10, "La distanza tra i due punti dovrebbe essere circa 1569 km.");
+        assertEquals(1569000, distance, 1000, "La distanza tra i due punti dovrebbe essere circa 1569 km.");
     }
 
     @Test
@@ -45,6 +45,6 @@ class GeographicDistanceCalculatorTest {
 
         double distance = GeographicDistanceCalculator.computeDistance(point1, point2);
 
-        assertEquals(0.026, distance, 0.005, "La distanza tra i due punti dovrebbe essere circa 26 m.");
+        assertEquals(26.0, distance, 3, "La distanza tra i due punti dovrebbe essere circa 26 m.");
     }
 }
