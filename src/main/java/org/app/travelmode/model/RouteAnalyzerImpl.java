@@ -7,6 +7,7 @@ import org.app.travelmode.directions.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -95,22 +96,27 @@ public class RouteAnalyzerImpl implements RouteAnalyzer {
     private List<DirectionsStep> generateSubSteps(final DirectionsStep directionsStep) {
         final List<DirectionsStep> subSteps = new ArrayList<>();
         final List<LatLng> decodedPoints = PolylineDecoder.decode(directionsStep.getPolyline().getPoints());
-        int stepLenKm = (int) directionsStep.getDistance().getValue() / 1000;
-        int samplingIndex = decodedPoints.size() / stepLenKm;
+
         LatLng startPoint = decodedPoints.get(0);
-        LatLng endPoint = decodedPoints.get(samplingIndex);
+        double actualDistance = 0;
         int i;
-        subSteps.add(new DirectionsStep(null, endPoint, startPoint, new TextValueObject("TODO", GeographicDistanceCalculator.computeDistance(startPoint, endPoint))));
-        for (i = samplingIndex * 2; i <= decodedPoints.size() - 1; i += samplingIndex) {
-            startPoint = decodedPoints.get(i - samplingIndex);
-            endPoint = decodedPoints.get(i);
-            subSteps.add(new DirectionsStep(null, endPoint, startPoint, new TextValueObject("TODO", GeographicDistanceCalculator.computeDistance(startPoint, endPoint))));
+        for (i = 1; i < decodedPoints.size(); i++) {
+            LatLng actualPoint = decodedPoints.get(i);
+            actualDistance = GeographicDistanceCalculator.computeDistance(startPoint, actualPoint);
+            if (Double.compare(actualDistance, 1000.0) >= 0) {
+                subSteps.add(new DirectionsStep(calculateSubStepDuration(directionsStep, actualDistance), actualPoint, startPoint, new TextValueObject(Double.toString(actualDistance), actualDistance)));
+                actualDistance = 0;
+                startPoint = actualPoint;
+            }
         }
-        if (i - samplingIndex < decodedPoints.size() - 1) {
-            startPoint = decodedPoints.get(i - samplingIndex);
-            endPoint = decodedPoints.get(decodedPoints.size() - 1);
-            subSteps.add(new DirectionsStep(null, endPoint, startPoint, new TextValueObject("TODO", GeographicDistanceCalculator.computeDistance(startPoint, endPoint))));
+        if (actualDistance != 0) {
+            subSteps.add(new DirectionsStep(calculateSubStepDuration(directionsStep, actualDistance), decodedPoints.get(decodedPoints.size() - 1), startPoint, new TextValueObject(Double.toString(actualDistance), actualDistance)));
         }
         return subSteps;
+    }
+
+    private TextValueObject calculateSubStepDuration(final DirectionsStep directionsStep, double subStepLength) {
+        double subStepDuration = (directionsStep.getDuration().getValue() * subStepLength) / directionsStep.getDistance().getValue();
+        return new TextValueObject(Double.toString(subStepDuration), subStepDuration);
     }
 }
