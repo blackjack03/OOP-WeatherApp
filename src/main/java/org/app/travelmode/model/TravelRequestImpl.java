@@ -51,14 +51,6 @@ public final class TravelRequestImpl implements TravelRequest {
         return this.departureDate;
     }
 
-    public boolean isConsistent() {
-        return departureLocation != null && !departureLocation.isBlank()
-                && departurePlaceId != null && !departurePlaceId.isBlank()
-                && arrivalLocation != null && !arrivalLocation.isBlank()
-                && arrivalPlaceId != null && !arrivalPlaceId.isBlank()
-                && departureTime != null && departureDate != null;
-    }
-
     @Override
     public String toString() {
         return "{\n[Partenza: " + this.departureLocation + ", PlaceId:" + this.departurePlaceId +
@@ -81,7 +73,6 @@ public final class TravelRequestImpl implements TravelRequest {
         private String arrivalPlaceId;
         private LocalTime departureTime = DEPARTURE_TIME;
         private LocalDate departureDate = DEPARTURE_DATE;
-        private boolean consumed = false;
 
         /**
          * Set the departure location
@@ -150,23 +141,29 @@ public final class TravelRequestImpl implements TravelRequest {
         }
 
         /**
-         * @return a TravelRequestImpl
+         * If all the necessary parameters have been configured correctly a new TravelRequestImpl is returned.
+         *
+         * @return a new TravelRequestImpl.
+         * @throws IllegalStateException If not all the necessary parameters have been entered
          */
-        public final TravelRequestImpl build() {
-            if (consumed) {
-                throw new IllegalStateException("The builder can only be used once");
+        public final TravelRequestImpl build() throws IllegalStateException {
+            if (!this.isReady()) {
+                throw new IllegalStateException("Non sono stati inseriti tutti i parametri necessari per il calcolo del percorso");
             }
-            consumed = true;
             return new TravelRequestImpl(departureLocation, departurePlaceId, arrivalLocation, arrivalPlaceId, departureTime, departureDate);
         }
 
         /**
-         * Lets you know if this TravelRequestBuilder has already been used
+         * Lets you know if the builder is ready to be used
          *
-         * @return true if this constructor has already been used
+         * @return true if all necessary parameters have been configured correctly
          */
-        public boolean isConsumed() {
-            return this.consumed;
+        public boolean isReady() {
+            return departureLocation != null && !departureLocation.isBlank()
+                    && departurePlaceId != null && !departurePlaceId.isBlank()
+                    && arrivalLocation != null && !arrivalLocation.isBlank()
+                    && arrivalPlaceId != null && !arrivalPlaceId.isBlank()
+                    && departureTime != null && departureDate != null;
         }
     }
 }
