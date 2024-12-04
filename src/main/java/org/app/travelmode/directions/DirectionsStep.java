@@ -32,6 +32,6 @@ public class DirectionsStep extends SimpleDirectionsStep {
     public String toString() {
         return "DirectionsStep{" + "[duration= " + super.getDuration() + "], [distance= " + super.getDistance()
                 + "], start_location= " + super.getStart_location() + "], [end_location= " + super.getEnd_location()
-                + "], [polyline= " + polyline + "], [travel_mode= " + travel_mode + "]}";
+                + "], [polyline= " + polyline + "], [travel_mode= " + travel_mode + "]}\n";
     }
 }
