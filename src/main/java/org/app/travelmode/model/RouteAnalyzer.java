@@ -1,12 +1,18 @@
 package org.app.travelmode.model;
 
+import org.app.travelmode.directions.DirectionsRoute;
+import org.app.travelmode.directions.SimpleDirectionsStep;
+
+import java.util.List;
+
 public interface RouteAnalyzer {
 
     /**
-     * Allows you to obtain a route from the departure and arrival locations specified in the travelRequest
+     * Group all the steps of an entire {@link DirectionsRoute} into {@link SimpleDirectionsStep}. Each of these will be approximately equal in length.
      *
-     * @param travelRequest contains all the elements necessary for calculating a trip between two places
+     * @param directionsRoute represents the path
+     * @return A list of SimpleDirectionsStep each of which will be approximately equal in length.
      */
-    void requestRoute(TravelRequest travelRequest);
+    List<SimpleDirectionsStep> calculateIntermediatePoints(DirectionsRoute directionsRoute);
 
 }
