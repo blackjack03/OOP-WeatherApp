@@ -17,6 +17,13 @@ public class SimpleDirectionsStep {
         this.distance = distance;
     }
 
+    public SimpleDirectionsStep(double duration, final LatLng end_location, final LatLng start_location, double distance) {
+        this.duration = new TextValueObject((int) Math.ceil(duration) / 60 + " min", duration);
+        this.end_location = end_location;
+        this.start_location = start_location;
+        this.distance = new TextValueObject((int) Math.ceil(distance) + " m", distance);
+    }
+
     public TextValueObject getDuration() {
         return this.duration;
     }
