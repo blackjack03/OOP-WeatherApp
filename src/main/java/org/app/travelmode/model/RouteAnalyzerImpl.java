@@ -1,122 +1,103 @@
 package org.app.travelmode.model;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.app.travelmode.directions.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RouteAnalyzerImpl implements RouteAnalyzer {
 
-    private static final double DELTA = 2000.0;
-    private String googleApiKey;
-    private DirectionsResponse directionsResponse;
+    private static final BigDecimal DELTA = BigDecimal.valueOf(2000.0);
+    private static final BigDecimal TARGET_DISTANCE = BigDecimal.valueOf(30000.0);
+    private static final BigDecimal SUBSTEP_DISTANCE = BigDecimal.valueOf(1000.0);
 
     public RouteAnalyzerImpl() {
-        try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
-            final Gson gson = new Gson();
-            final JsonObject jsonObject = gson.fromJson(jsonReader, JsonObject.class);
-            this.googleApiKey = jsonObject.get("google-api-key").getAsString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
-    public void requestRoute(TravelRequest travelRequest) {
-        final String urlString = "https://maps.googleapis.com/maps/api/directions/json" +
-                "?destination=place_id%3A" + travelRequest.getArrivalLocationPlaceId() +
-                "&origin=place_id%3A" + travelRequest.getDepartureLocationPlaceId() +
-                "&key=" + googleApiKey;
-
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            int responseCode = connection.getResponseCode();
-            final StringBuilder response = new StringBuilder();
-            if (responseCode == 200) { // 200 OK
-                final BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    response.append(line);
-                }
-                br.close();
-            } else {
-                throw new Exception("Errore nella richiesta: " + responseCode);
-            }
-
-            System.out.println(response.toString());
-            final Gson gson = new Gson();
-            directionsResponse = gson.fromJson(response.toString(), DirectionsResponse.class);
-            System.out.println(directionsResponse);
-            calculateIntermediatePoints(directionsResponse.getRoutes().get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public List<LatLng> calculateIntermediatePoints(final DirectionsRoute directionsRoute) {
+    public List<SimpleDirectionsStep> calculateIntermediatePoints(final DirectionsRoute directionsRoute) {
         final List<DirectionsLeg> legs = directionsRoute.getLegs();
-        final List<LatLng> intermediatePoints = new ArrayList<>();
-        double distanceCounter = 0;
+        final List<SimpleDirectionsStep> intermediatePoints = new ArrayList<>();
+
+        BigDecimal distanceCounter = BigDecimal.ZERO;
+        BigDecimal durationCounter = BigDecimal.ZERO;
+        LatLng startPosition = legs.get(0).getStart_location();
+
         for (final DirectionsLeg leg : legs) {
-            List<DirectionsStep> steps = leg.getSteps();
-            for (final DirectionsStep step : steps) {
-                distanceCounter += step.getDistance().getValue();
-                if (distanceCounter > 30000 - DELTA && distanceCounter < 30000 + DELTA) {
-                    intermediatePoints.add(step.getEnd_location());
-                    distanceCounter = 0;
-                } else if (distanceCounter >= 30000 + DELTA) {
-                    distanceCounter -= step.getDistance().getValue();
-                    for (final DirectionsStep subStep : generateSubSteps(step)) {
-                        distanceCounter += subStep.getDistance().getValue();
-                        if (distanceCounter > 30000 - DELTA && distanceCounter < 30000 + DELTA) {
-                            intermediatePoints.add(step.getEnd_location());
-                            distanceCounter = 0;
+            for (final DirectionsStep step : leg.getSteps()) {
+                BigDecimal stepDistance = BigDecimal.valueOf(step.getDistance().getValue());
+                BigDecimal stepDuration = BigDecimal.valueOf(step.getDuration().getValue());
+
+                distanceCounter = distanceCounter.add(stepDistance);
+                durationCounter = durationCounter.add(stepDuration);
+
+                if (isWithinTargetDistance(distanceCounter)) {
+                    intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), step.getEnd_location(), startPosition, distanceCounter.doubleValue()));
+                    distanceCounter = BigDecimal.ZERO;
+                    durationCounter = BigDecimal.ZERO;
+                    startPosition = step.getEnd_location();
+                } else if (distanceCounter.compareTo(TARGET_DISTANCE.add(DELTA)) >= 0) {
+                    distanceCounter = distanceCounter.subtract(stepDistance);
+                    durationCounter = durationCounter.subtract(stepDuration);
+                    for (final SimpleDirectionsStep subStep : generateSubSteps(step)) {
+                        BigDecimal subStepDistance = BigDecimal.valueOf(subStep.getDistance().getValue());
+                        BigDecimal subStepDuration = BigDecimal.valueOf(subStep.getDuration().getValue());
+
+                        distanceCounter = distanceCounter.add(subStepDistance);
+                        durationCounter = durationCounter.add(subStepDuration);
+
+                        if (isWithinTargetDistance(distanceCounter)) {
+                            intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), subStep.getEnd_location(), startPosition, distanceCounter.doubleValue()));
+                            distanceCounter = BigDecimal.ZERO;
+                            durationCounter = BigDecimal.ZERO;
+                            startPosition = subStep.getEnd_location();
                         }
                     }
-                    System.out.println(generateSubSteps(step));
                 }
-                System.out.println("[Durata stimata: " + step.getDuration() + ", Distanza: " + step.getDistance() + ", Punto iniziale: " + step.getStart_location() + ", Punto finale: " + step.getEnd_location() + "]");
+                System.out.println(step);
             }
         }
         System.out.println(intermediatePoints);
         return intermediatePoints;
     }
 
-    private List<DirectionsStep> generateSubSteps(final DirectionsStep directionsStep) {
-        final List<DirectionsStep> subSteps = new ArrayList<>();
+    private boolean isWithinTargetDistance(final BigDecimal distance) {
+        return distance.compareTo(TARGET_DISTANCE.subtract(DELTA)) > 0 && distance.compareTo(TARGET_DISTANCE.add(DELTA)) < 0;
+    }
+
+    private List<SimpleDirectionsStep> generateSubSteps(final DirectionsStep directionsStep) {
+        final List<SimpleDirectionsStep> subSteps = new ArrayList<>();
         final List<LatLng> decodedPoints = PolylineDecoder.decode(directionsStep.getPolyline().getPoints());
 
         LatLng startPoint = decodedPoints.get(0);
-        double actualDistance = 0;
         int i;
         for (i = 1; i < decodedPoints.size(); i++) {
             LatLng actualPoint = decodedPoints.get(i);
-            actualDistance = GeographicDistanceCalculator.computeDistance(startPoint, actualPoint);
-            if (Double.compare(actualDistance, 1000.0) >= 0) {
-                subSteps.add(new DirectionsStep(calculateSubStepDuration(directionsStep, actualDistance), actualPoint, startPoint, new TextValueObject(Double.toString(actualDistance), actualDistance)));
-                actualDistance = 0;
+            BigDecimal segmentDistance = GeographicDistanceCalculator.computeDistance(startPoint, actualPoint);
+
+            if (segmentDistance.compareTo(SUBSTEP_DISTANCE) >= 0) {
+                subSteps.add(new SimpleDirectionsStep(calculateSubStepDuration(directionsStep, segmentDistance), actualPoint, startPoint, segmentDistance.doubleValue()));
                 startPoint = actualPoint;
             }
         }
-        if (actualDistance != 0) {
-            subSteps.add(new DirectionsStep(calculateSubStepDuration(directionsStep, actualDistance), decodedPoints.get(decodedPoints.size() - 1), startPoint, new TextValueObject(Double.toString(actualDistance), actualDistance)));
+
+        final LatLng finalPoint = decodedPoints.get(decodedPoints.size() - 1);
+        if (!startPoint.equals(finalPoint)) {
+            BigDecimal finalSegmentDistance = GeographicDistanceCalculator.computeDistance(startPoint, finalPoint);
+            subSteps.add(new SimpleDirectionsStep(calculateSubStepDuration(directionsStep, finalSegmentDistance), finalPoint, startPoint, finalSegmentDistance.doubleValue()));
         }
+
         return subSteps;
     }
 
-    private TextValueObject calculateSubStepDuration(final DirectionsStep directionsStep, double subStepLength) {
-        double subStepDuration = (directionsStep.getDuration().getValue() * subStepLength) / directionsStep.getDistance().getValue();
-        return new TextValueObject(Double.toString(subStepDuration), subStepDuration);
+    private double calculateSubStepDuration(final DirectionsStep directionsStep, BigDecimal subStepLength) {
+        BigDecimal stepDuration = BigDecimal.valueOf(directionsStep.getDuration().getValue());
+        BigDecimal stepDistance = BigDecimal.valueOf(directionsStep.getDistance().getValue());
+        final BigDecimal subStepDuration = subStepLength.multiply(stepDuration).divide(stepDistance, 1, RoundingMode.HALF_UP);
+
+        return subStepDuration.doubleValue();
     }
 }
