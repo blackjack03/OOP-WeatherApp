@@ -7,9 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.app.travelmode.model.PlaceAutocomplete;
-import org.app.travelmode.model.PlaceAutocompleteImpl;
-import org.app.travelmode.model.TravelRequestImpl;
+import org.app.travelmode.model.*;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 import org.app.travelmode.view.TravelModeView;
 import org.app.travelmode.view.TravelModeViewImpl;
@@ -17,7 +15,7 @@ import org.app.travelmode.view.TravelModeViewImpl;
 public class TravelModeControllerImpl extends Application implements TravelModeController {
 
     private final TravelModeView view = new TravelModeViewImpl(this);
-    private TravelRequestImpl.Builder requestBuilder = new TravelRequestImpl.Builder();
+    private final TravelModeModel model = new TravelModeModelImpl();
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
@@ -26,57 +24,41 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
 
     @Override
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
-        PlaceAutocomplete placeAutocomplete = new PlaceAutocompleteImpl();
-        return placeAutocomplete.getPlacePredictions(input);
+        return this.model.getPlacePredictions(input);
     }
 
     @Override
     public TravelRequestImpl.Builder setDepartureLocation(final String departureLocation) {
-        this.checkRequestBuilder();
-        return this.requestBuilder.setDepartureLocation(departureLocation);
+        return this.model.setDepartureLocation(departureLocation);
     }
 
     @Override
     public TravelRequestImpl.Builder setDeparturePlaceId(final String departurePlaceId) {
-        this.checkRequestBuilder();
-        return this.requestBuilder.setDeparturePlaceId(departurePlaceId);
+        return this.model.setDeparturePlaceId(departurePlaceId);
     }
 
     @Override
     public TravelRequestImpl.Builder setArrivalLocation(final String arrivalLocation) {
-        this.checkRequestBuilder();
-        return this.requestBuilder.setArrivalLocation(arrivalLocation);
+        return this.model.setArrivalLocation(arrivalLocation);
     }
 
     @Override
     public TravelRequestImpl.Builder setArrivalPlaceId(final String arrivalPlaceId) {
-        this.checkRequestBuilder();
-        return this.requestBuilder.setArrivalPlaceId(arrivalPlaceId);
+        return this.model.setArrivalPlaceId(arrivalPlaceId);
     }
 
     @Override
     public TravelRequestImpl.Builder setDepartureTime(final LocalTime departureTime) {
-        this.checkRequestBuilder();
-        return this.requestBuilder.setDepartureTime(departureTime);
+        return this.model.setDepartureTime(departureTime);
     }
 
     @Override
     public TravelRequestImpl.Builder setDepartureDate(final LocalDate departureDate) {
-        this.checkRequestBuilder();
-        return this.requestBuilder.setDepartureDate(departureDate);
+        return this.model.setDepartureDate(departureDate);
     }
 
     @Override
-    public void startRouteAnalysis(){
-        System.out.println(this.requestBuilder.build().toString());
-    }
-
-    /**
-     * Check if the requestBuilder has already been used. If so, create a new one.
-     */
-    private void checkRequestBuilder() {
-        if (this.requestBuilder.isConsumed()) {
-            this.requestBuilder = new TravelRequestImpl.Builder();
-        }
+    public void startRouteAnalysis() {
+        this.model.startRouteAnalysis();
     }
 }
