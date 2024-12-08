@@ -11,18 +11,18 @@ bin/
 *.class
 
 # Ignore Gradle files and build folder
-.gradle
-build
+.gradle/
+build/
 
 # Ignore macOS specific file
 .DS_Store
 
-# Ignore IntelliJ IDEA project files
-**/.idea/
+# Ignore IDE project files
+.idea/
+.vscode/
 
 # Ignore log files
 *.log
 
 # Ignore specific JSON file
 API-Keys.json
-
