@@ -26,7 +26,7 @@ public class TravelModeModelImpl implements TravelModeModel {
     public TravelModeModelImpl() {
         this.placeAutocomplete = new PlaceAutocompleteImpl();
         this.requestBuilder = new TravelRequestImpl.Builder();
-        this.routeAnalyzer = new RouteAnalyzerImpl();
+        this.routeAnalyzer = new RouteAnalyzerImpl(new IntermediatePointFinderImpl(), new SubStepGeneratorImpl());
         //TODO: integrare in json reader
         try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
             final Gson gson = new Gson();
@@ -76,7 +76,7 @@ public class TravelModeModelImpl implements TravelModeModel {
     public void startRouteAnalysis() {
         this.requestRoute(this.requestBuilder.build());
         for (final DirectionsRoute route : this.directionsResponse.getRoutes()) {
-            this.routeAnalyzer.calculateIntermediatePoints(route);
+            System.out.println(this.routeAnalyzer.calculateIntermediatePoints(route));
         }
     }
 
