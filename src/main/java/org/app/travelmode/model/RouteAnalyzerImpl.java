@@ -5,6 +5,10 @@ import org.app.travelmode.directions.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of the {@link RouteAnalyzer} interface that analyzes routes and calculates intermediate points.
+ * Delegates specific tasks to {@link SubStepGenerator} and {@link IntermediatePointFinder} classes.
+ */
 public class RouteAnalyzerImpl implements RouteAnalyzer {
 
     private final IntermediatePointFinder intermediatePointFinder;
