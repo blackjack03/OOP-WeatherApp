@@ -13,6 +13,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class TravelModeModelImpl implements TravelModeModel {
@@ -81,10 +83,12 @@ public class TravelModeModelImpl implements TravelModeModel {
     }
 
     //TODO: delegare ad advanced json reader
-    private void requestRoute(TravelRequest travelRequest) {
+    private void requestRoute(final TravelRequest travelRequest) {
+        long departureTime = calculateDepartureTime(travelRequest.getDepartureTime(), travelRequest.getDepartureDate());
         final String urlString = "https://maps.googleapis.com/maps/api/directions/json" +
                 "?destination=place_id%3A" + travelRequest.getArrivalLocationPlaceId() +
                 "&origin=place_id%3A" + travelRequest.getDepartureLocationPlaceId() +
+                "&departure_time=" + departureTime +
                 "&key=" + googleApiKey;
 
         try {
@@ -112,5 +116,11 @@ public class TravelModeModelImpl implements TravelModeModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    //TODO: da delegare
+    private long calculateDepartureTime(final LocalTime departureTime, final LocalDate departureDate) {
+        final ZonedDateTime departureDateTime = ZonedDateTime.of(departureDate, departureTime, ZoneId.systemDefault());
+        return departureDateTime.toEpochSecond();
     }
 }
