@@ -45,7 +45,11 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
                 analyzeSubSteps(subStepGenerator.generateSubSteps(step), intermediatePoints);
             }
         }
-        intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), directionsLeg.getEnd_location(), startPoint, distanceCounter.doubleValue()));
+
+        final LatLng endPoint = directionsLeg.getEnd_location();
+        if (!startPoint.equals(endPoint)) {
+            intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), endPoint, startPoint, distanceCounter.doubleValue()));
+        }
 
         return intermediatePoints;
     }
