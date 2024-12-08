@@ -54,10 +54,22 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
         return intermediatePoints;
     }
 
+    /**
+     * Checks whether the current distance is within the target range.
+     *
+     * @param distance the distance to check
+     * @return true if the distance is within the target range; false otherwise
+     */
     private boolean isWithinTargetDistance(final BigDecimal distance) {
         return distance.compareTo(TARGET_DISTANCE.subtract(DELTA)) > 0 && distance.compareTo(TARGET_DISTANCE.add(DELTA)) < 0;
     }
 
+    /**
+     * Analyzes the provided list of sub-steps and updates the list of intermediate points.
+     *
+     * @param subSteps           The list of sub-steps to analyze
+     * @param intermediatePoints the list of intermediate points to update
+     */
     private void analyzeSubSteps(final List<SimpleDirectionsStep> subSteps, final List<SimpleDirectionsStep> intermediatePoints) {
 
         for (final SimpleDirectionsStep subStep : subSteps) {
@@ -74,6 +86,11 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
         }
     }
 
+    /**
+     * Resets the distance and duration counters and updates the starting position.
+     *
+     * @param newStartPoint the new starting position
+     */
     private void resetCounters(final LatLng newStartPoint) {
         this.distanceCounter = BigDecimal.ZERO;
         this.durationCounter = BigDecimal.ZERO;
