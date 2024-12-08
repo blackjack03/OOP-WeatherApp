@@ -1,14 +1,28 @@
-# ignore the bin folder and all its contents
+# Ignore the bin folder and all its contents
 bin/
-# ignore every pdf file
+
+# Ignore every pdf file
 *.pdf
-# rule exception (beginning with a !): pdf files named 'myImportantFile.pdf' should be tracked
+
+# Rule exception (beginning with a !): pdf files named 'myImportantFile.pdf' should be tracked
 !myImportantFile.pdf
 
+# Ignore Java class files
 *.class
+
+# Ignore Gradle files and build folder
 .gradle
 build
+
+# Ignore macOS specific file
 .DS_Store
+
+# Ignore IntelliJ IDEA project files
 **/.idea/
+
+# Ignore log files
 *.log
+
+# Ignore specific JSON file
 API-Keys.json
+
