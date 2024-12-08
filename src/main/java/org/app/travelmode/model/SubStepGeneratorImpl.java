@@ -39,7 +39,14 @@ public class SubStepGeneratorImpl implements SubStepGenerator {
         return subSteps;
     }
 
-    private double calculateSubStepDuration(final DirectionsStep directionsStep, BigDecimal subStepLength) {
+    /**
+     * Calculates the duration of a sub-step based on its length and the original step's duration and distance.
+     *
+     * @param directionsStep the original step
+     * @param subStepLength  the length of the sub-step
+     * @return the calculated duration of the sub-step
+     */
+    private double calculateSubStepDuration(final DirectionsStep directionsStep, final BigDecimal subStepLength) {
         BigDecimal stepDuration = BigDecimal.valueOf(directionsStep.getDuration().getValue());
         BigDecimal stepDistance = BigDecimal.valueOf(directionsStep.getDistance().getValue());
         final BigDecimal subStepDuration = subStepLength.multiply(stepDuration).divide(stepDistance, 1, RoundingMode.HALF_UP);
