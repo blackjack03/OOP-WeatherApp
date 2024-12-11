@@ -8,10 +8,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.converter.LocalTimeStringConverter;
 import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class TravelModeViewImpl implements TravelModeView {
@@ -116,6 +118,8 @@ public class TravelModeViewImpl implements TravelModeView {
 
         final Button searchButton = new Button("CERCA PERCORSO");
         searchButton.setOnAction(event -> {
+            final LocalTime departureTime = LocalTime.of(hourSpinner.getValue(), minuteSpinner.getValue());
+            this.controller.setDepartureTime(departureTime);
             this.controller.startRouteAnalysis();
         });
 
