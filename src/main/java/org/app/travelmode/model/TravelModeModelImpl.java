@@ -89,6 +89,8 @@ public class TravelModeModelImpl implements TravelModeModel {
                 "?destination=place_id%3A" + travelRequest.getArrivalLocationPlaceId() +
                 "&origin=place_id%3A" + travelRequest.getDepartureLocationPlaceId() +
                 "&departure_time=" + departureTime +
+                "&language=it" +
+                "&units=metric" +
                 "&key=" + googleApiKey;
 
         try {
@@ -120,7 +122,7 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     //TODO: da delegare
     private long calculateDepartureTime(final LocalTime departureTime, final LocalDate departureDate) {
-        final ZonedDateTime departureDateTime = ZonedDateTime.of(departureDate, departureTime, ZoneId.systemDefault());
+        final ZonedDateTime departureDateTime = ZonedDateTime.of(departureDate, departureTime, ZoneId.systemDefault()); //TODO: migliorabile sfruttango geolocalizzazione per impostare il fuso orario
         return departureDateTime.toEpochSecond();
     }
 }
