@@ -1,5 +1,6 @@
 package org.app.travelmode.model;
 
+import javafx.scene.image.Image;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
@@ -68,4 +69,6 @@ public interface TravelModeModel {
      * Start the analysis of possible routes between the inserted places
      */
     void startRouteAnalysis();
+
+    Image getStaticMap();
 }
