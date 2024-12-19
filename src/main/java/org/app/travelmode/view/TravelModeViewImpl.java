@@ -3,6 +3,8 @@ package org.app.travelmode.view;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -143,10 +145,26 @@ public class TravelModeViewImpl implements TravelModeView {
                         "-fx-border-radius: 15px; " +        // Arrotondamento del bordo
                         "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
         );
+
+
+        // Ottieni l'immagine della mappa (ad esempio, Parigi)
+        Image mapImage = this.controller.getStaticMap();
+
+        // Crea un ImageView per mostrare l'immagine
+        ImageView imageView = new ImageView(mapImage);
+        imageView.setFitWidth(400);
+        imageView.setFitHeight(400);
+        imageView.setPreserveRatio(true);
+
+
         city2VBox.setMaxSize(220, this.arrivalLabel.getHeight() + this.city2TextField.getHeight());
         root.setLeft(city1VBox);
         root.setRight(city2VBox);
-        root.setCenter(searchButton);
+
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll(searchButton, imageView);
+
+        root.setCenter(vBox);
         final Scene scene = new Scene(root, 850, 600);
         this.stage.setScene(scene);
         this.stage.show();
