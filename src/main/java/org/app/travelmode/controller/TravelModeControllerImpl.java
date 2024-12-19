@@ -1,6 +1,7 @@
 package org.app.travelmode.controller;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -60,5 +61,9 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
     @Override
     public void startRouteAnalysis() {
         this.model.startRouteAnalysis();
+    }
+
+    public Image getStaticMap(){
+        return this.model.getStaticMap();
     }
 }
