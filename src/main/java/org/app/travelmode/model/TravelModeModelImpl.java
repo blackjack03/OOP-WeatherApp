@@ -2,12 +2,14 @@ package org.app.travelmode.model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import javafx.scene.image.Image;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.directions.DirectionsRoute;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -124,5 +126,28 @@ public class TravelModeModelImpl implements TravelModeModel {
     private long calculateDepartureTime(final LocalTime departureTime, final LocalDate departureDate) {
         final ZonedDateTime departureDateTime = ZonedDateTime.of(departureDate, departureTime, ZoneId.systemDefault()); //TODO: migliorabile sfruttango geolocalizzazione per impostare il fuso orario
         return departureDateTime.toEpochSecond();
+    }
+
+    public Image getStaticMap() {
+        String url = "https://maps.googleapis.com/maps/api/staticmap?center=40.714728,-73.998672&zoom=12&size=400x400" + "&key=" + googleApiKey;
+        try {
+            // Connessione HTTP per ottenere l'immagine
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestMethod("GET");
+
+            // Controlla se la richiesta è stata eseguita con successo
+            if (connection.getResponseCode() != 200) {
+                throw new RuntimeException("Errore durante la richiesta della mappa: " + connection.getResponseMessage());
+            }
+
+            // Ottieni l'immagine come InputStream
+            InputStream inputStream = connection.getInputStream();
+
+            // Crea un oggetto Image di JavaFX dall'InputStream
+            return new Image(inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
