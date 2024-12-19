@@ -1,5 +1,6 @@
 package org.app.travelmode.controller;
 
+import javafx.scene.image.Image;
 import org.app.travelmode.model.TravelRequestImpl;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
@@ -70,4 +71,5 @@ public interface TravelModeController {
      */
     void startRouteAnalysis();
 
+    Image getStaticMap();
 }
