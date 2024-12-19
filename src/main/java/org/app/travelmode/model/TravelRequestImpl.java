@@ -2,6 +2,8 @@ package org.app.travelmode.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 public final class TravelRequestImpl implements TravelRequest {
 
@@ -11,14 +13,18 @@ public final class TravelRequestImpl implements TravelRequest {
     private final String arrivalPlaceId;
     private final LocalTime departureTime;
     private final LocalDate departureDate;
+    private final ZoneId departureTimeZone;
+    private final ZonedDateTime departureDateTime;
 
-    private TravelRequestImpl(final String departureLocation, final String departurePlaceId, final String arrivalLocation, final String arrivalPlaceId, final LocalTime departureTime, final LocalDate departureDate) {
+    private TravelRequestImpl(final String departureLocation, final String departurePlaceId, final String arrivalLocation, final String arrivalPlaceId, final LocalTime departureTime, final LocalDate departureDate, final ZoneId departureTimeZone) {
         this.departureLocation = departureLocation;
         this.departurePlaceId = departurePlaceId;
         this.arrivalLocation = arrivalLocation;
         this.arrivalPlaceId = arrivalPlaceId;
         this.departureTime = departureTime;
         this.departureDate = departureDate;
+        this.departureTimeZone = departureTimeZone;
+        this.departureDateTime = ZonedDateTime.of(departureDate, departureTime, departureTimeZone);
     }
 
     @Override
@@ -52,6 +58,16 @@ public final class TravelRequestImpl implements TravelRequest {
     }
 
     @Override
+    public ZoneId getDepartureTimeZone() {
+        return this.departureTimeZone;
+    }
+
+    @Override
+    public ZonedDateTime getDepartureDateTime() {
+        return this.departureDateTime;
+    }
+
+    @Override
     public String toString() {
         return "{\n[Partenza: " + this.departureLocation + ", PlaceId:" + this.departurePlaceId +
                 "\tOra: " + this.departureTime + ", Date: " + this.departureDate + "]\n" +
@@ -66,6 +82,7 @@ public final class TravelRequestImpl implements TravelRequest {
 
         private static final LocalTime DEPARTURE_TIME = LocalTime.now();
         private static final LocalDate DEPARTURE_DATE = LocalDate.now();
+        private static final ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
 
         private String departureLocation;
         private String departurePlaceId;
@@ -73,6 +90,7 @@ public final class TravelRequestImpl implements TravelRequest {
         private String arrivalPlaceId;
         private LocalTime departureTime = DEPARTURE_TIME;
         private LocalDate departureDate = DEPARTURE_DATE;
+        private ZoneId departureZoneId = DEFAULT_ZONE_ID;
 
         /**
          * Set the departure location
@@ -141,6 +159,17 @@ public final class TravelRequestImpl implements TravelRequest {
         }
 
         /**
+         * Set the {@link ZoneId} of the departure location
+         *
+         * @param departureZoneId the {@link ZoneId} of the departure location
+         * @return this builder, for method chaining
+         */
+        public Builder setDepartureZoneId(final ZoneId departureZoneId) {
+            this.departureZoneId = departureZoneId;
+            return this;
+        }
+
+        /**
          * If all the necessary parameters have been configured correctly a new TravelRequestImpl is returned.
          *
          * @return a new TravelRequestImpl.
@@ -150,7 +179,7 @@ public final class TravelRequestImpl implements TravelRequest {
             if (!this.isReady()) {
                 throw new IllegalStateException("Non sono stati inseriti tutti i parametri necessari per il calcolo del percorso");
             }
-            return new TravelRequestImpl(departureLocation, departurePlaceId, arrivalLocation, arrivalPlaceId, departureTime, departureDate);
+            return new TravelRequestImpl(departureLocation, departurePlaceId, arrivalLocation, arrivalPlaceId, departureTime, departureDate, departureZoneId);
         }
 
         /**
@@ -163,7 +192,7 @@ public final class TravelRequestImpl implements TravelRequest {
                     && departurePlaceId != null && !departurePlaceId.isBlank()
                     && arrivalLocation != null && !arrivalLocation.isBlank()
                     && arrivalPlaceId != null && !arrivalPlaceId.isBlank()
-                    && departureTime != null && departureDate != null;
+                    && departureTime != null && departureDate != null && departureZoneId != null;
         }
     }
 }
