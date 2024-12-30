@@ -57,9 +57,9 @@ public class TravelModeModelImpl implements TravelModeModel {
                 "&place_id=" + departurePlaceId +
                 "&key=" + googleApiKey;
         final ZoneId departureZoneId;
-        try {
+        try { //TODO: da migliorare
             final AdvancedJsonReaderImpl jsonReader = new AdvancedJsonReader(placeDetailsUrl);
-            int utcOffset = jsonReader.getInt("Place/utc_offset");
+            int utcOffset = jsonReader.getInt("result\\utc_offset");
             departureZoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -98,11 +98,10 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     //TODO: delegare ad advanced json reader
     private void requestRoute(final TravelRequest travelRequest) {
-        long departureTime = calculateDepartureTime(travelRequest.getDepartureTime(), travelRequest.getDepartureDate());
         final String urlString = "https://maps.googleapis.com/maps/api/directions/json" +
                 "?destination=place_id%3A" + travelRequest.getArrivalLocationPlaceId() +
                 "&origin=place_id%3A" + travelRequest.getDepartureLocationPlaceId() +
-                "&departure_time=" + departureTime +
+                "&departure_time=" + travelRequest.getDepartureDateTime().toEpochSecond() +
                 "&language=it" +
                 "&units=metric" +
                 "&key=" + googleApiKey;
@@ -132,12 +131,6 @@ public class TravelModeModelImpl implements TravelModeModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    //TODO: da delegare
-    private long calculateDepartureTime(final LocalTime departureTime, final LocalDate departureDate) {
-        final ZonedDateTime departureDateTime = ZonedDateTime.of(departureDate, departureTime, ZoneId.systemDefault()); //TODO: migliorabile sfruttango geolocalizzazione per impostare il fuso orario
-        return departureDateTime.toEpochSecond();
     }
 
     public Image getStaticMap() {
