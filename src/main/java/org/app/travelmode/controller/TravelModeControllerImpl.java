@@ -29,33 +29,33 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
     }
 
     @Override
-    public TravelRequestImpl.Builder setDepartureLocation(final String departureLocation) {
-        return this.model.setDepartureLocation(departureLocation);
+    public void setDepartureLocation(final String departureLocation) {
+        this.model.setDepartureLocation(departureLocation);
     }
 
     @Override
-    public TravelRequestImpl.Builder setDeparturePlaceId(final String departurePlaceId) {
-        return this.model.setDeparturePlaceId(departurePlaceId);
+    public void setDeparturePlaceId(final String departurePlaceId) {
+        this.model.setDeparturePlaceId(departurePlaceId);
     }
 
     @Override
-    public TravelRequestImpl.Builder setArrivalLocation(final String arrivalLocation) {
-        return this.model.setArrivalLocation(arrivalLocation);
+    public void setArrivalLocation(final String arrivalLocation) {
+        this.model.setArrivalLocation(arrivalLocation);
     }
 
     @Override
-    public TravelRequestImpl.Builder setArrivalPlaceId(final String arrivalPlaceId) {
-        return this.model.setArrivalPlaceId(arrivalPlaceId);
+    public void setArrivalPlaceId(final String arrivalPlaceId) {
+        this.model.setArrivalPlaceId(arrivalPlaceId);
     }
 
     @Override
-    public TravelRequestImpl.Builder setDepartureTime(final LocalTime departureTime) {
-        return this.model.setDepartureTime(departureTime);
+    public void setDepartureTime(final LocalTime departureTime) {
+        this.model.setDepartureTime(departureTime);
     }
 
     @Override
-    public TravelRequestImpl.Builder setDepartureDate(final LocalDate departureDate) {
-        return this.model.setDepartureDate(departureDate);
+    public void setDepartureDate(final LocalDate departureDate) {
+        this.model.setDepartureDate(departureDate);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
         this.model.startRouteAnalysis();
     }
 
-    public Image getStaticMap(){
+    public Image getStaticMap() {
         return this.model.getStaticMap();
     }
 }
