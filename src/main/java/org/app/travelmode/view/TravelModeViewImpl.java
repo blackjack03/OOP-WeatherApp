@@ -192,9 +192,11 @@ public class TravelModeViewImpl implements TravelModeView {
                 anchor.setText(prediction.getDescription());
                 menu.hide();
                 if (anchor.equals(this.city1TextField)) {
-                    this.controller.setDepartureLocation(prediction.getDescription()).setDeparturePlaceId(prediction.getPlaceId());
+                    this.controller.setDepartureLocation(prediction.getDescription());
+                    this.controller.setDeparturePlaceId(prediction.getPlaceId());
                 } else if (anchor.equals(this.city2TextField)) {
-                    this.controller.setArrivalLocation(prediction.getDescription()).setArrivalPlaceId(prediction.getPlaceId());
+                    this.controller.setArrivalLocation(prediction.getDescription());
+                    this.controller.setArrivalPlaceId(prediction.getPlaceId());
                 }
             });
             menu.getItems().add(menuItem);
