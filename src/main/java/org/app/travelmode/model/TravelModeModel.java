@@ -21,49 +21,43 @@ public interface TravelModeModel {
      * Set the departure location
      *
      * @param departureLocation the name of the departure location
-     * @return this builder, for method chaining
      */
-    TravelRequestImpl.Builder setDepartureLocation(final String departureLocation);
+    void setDepartureLocation(final String departureLocation);
 
     /**
      * Set the PlaceId associated with the starting location
      *
      * @param departurePlaceId the PlaceId associated with the starting location
-     * @return this builder, for method chaining
      */
-    TravelRequestImpl.Builder setDeparturePlaceId(final String departurePlaceId);
+    void setDeparturePlaceId(final String departurePlaceId);
 
     /**
      * Set the arrival location
      *
      * @param arrivalLocation the name of the arrival location
-     * @return this builder, for method chaining
      */
-    TravelRequestImpl.Builder setArrivalLocation(final String arrivalLocation);
+    void setArrivalLocation(final String arrivalLocation);
 
     /**
      * Set the PlaceId associated with the arrival location
      *
      * @param arrivalPlaceId the PlaceId associated with the arrival location
-     * @return this builder, for method chaining
      */
-    TravelRequestImpl.Builder setArrivalPlaceId(final String arrivalPlaceId);
+    void setArrivalPlaceId(final String arrivalPlaceId);
 
     /**
      * Set the departure time
      *
      * @param departureTime the departure time
-     * @return this builder, for method chaining
      */
-    TravelRequestImpl.Builder setDepartureTime(final LocalTime departureTime);
+    void setDepartureTime(final LocalTime departureTime);
 
     /**
      * Set the departure date
      *
      * @param departureDate the departure date
-     * @return this builder, for method chaining
      */
-    TravelRequestImpl.Builder setDepartureDate(final LocalDate departureDate);
+    void setDepartureDate(final LocalDate departureDate);
 
     /**
      * Start the analysis of possible routes between the inserted places

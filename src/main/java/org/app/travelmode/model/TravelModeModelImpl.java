@@ -3,6 +3,8 @@ package org.app.travelmode.model;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.scene.image.Image;
+import org.app.model.AdvancedJsonReader;
+import org.app.model.AdvancedJsonReaderImpl;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.directions.DirectionsRoute;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
@@ -13,10 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.List;
 
 public class TravelModeModelImpl implements TravelModeModel {
@@ -47,33 +46,46 @@ public class TravelModeModelImpl implements TravelModeModel {
     }
 
     @Override
-    public TravelRequestImpl.Builder setDepartureLocation(final String departureLocation) {
-        return this.requestBuilder.setDepartureLocation(departureLocation);
+    public void setDepartureLocation(final String departureLocation) {
+        this.requestBuilder.setDepartureLocation(departureLocation);
     }
 
     @Override
-    public TravelRequestImpl.Builder setDeparturePlaceId(final String departurePlaceId) {
-        return this.requestBuilder.setDeparturePlaceId(departurePlaceId);
+    public void setDeparturePlaceId(final String departurePlaceId) {
+        final String placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json" +
+                "?fields=utc_offset" +
+                "&place_id=" + departurePlaceId +
+                "&key=" + googleApiKey;
+        final ZoneId departureZoneId;
+        try {
+            final AdvancedJsonReaderImpl jsonReader = new AdvancedJsonReader(placeDetailsUrl);
+            int utcOffset = jsonReader.getInt("Place/utc_offset");
+            departureZoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(departureZoneId);
+        this.requestBuilder.setDeparturePlaceId(departurePlaceId).setDepartureZoneId(departureZoneId);
     }
 
     @Override
-    public TravelRequestImpl.Builder setArrivalLocation(final String arrivalLocation) {
-        return this.requestBuilder.setArrivalLocation(arrivalLocation);
+    public void setArrivalLocation(final String arrivalLocation) {
+        this.requestBuilder.setArrivalLocation(arrivalLocation);
     }
 
     @Override
-    public TravelRequestImpl.Builder setArrivalPlaceId(final String arrivalPlaceId) {
-        return this.requestBuilder.setArrivalPlaceId(arrivalPlaceId);
+    public void setArrivalPlaceId(final String arrivalPlaceId) {
+        this.requestBuilder.setArrivalPlaceId(arrivalPlaceId);
     }
 
     @Override
-    public TravelRequestImpl.Builder setDepartureTime(final LocalTime departureTime) {
-        return this.requestBuilder.setDepartureTime(departureTime);
+    public void setDepartureTime(final LocalTime departureTime) {
+        this.requestBuilder.setDepartureTime(departureTime);
     }
 
     @Override
-    public TravelRequestImpl.Builder setDepartureDate(final LocalDate departureDate) {
-        return this.requestBuilder.setDepartureDate(departureDate);
+    public void setDepartureDate(final LocalDate departureDate) {
+        this.requestBuilder.setDepartureDate(departureDate);
     }
 
     @Override
