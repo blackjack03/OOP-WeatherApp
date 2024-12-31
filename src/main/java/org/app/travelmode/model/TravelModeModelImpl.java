@@ -7,6 +7,8 @@ import org.app.model.AdvancedJsonReader;
 import org.app.model.AdvancedJsonReaderImpl;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.directions.DirectionsRoute;
+import org.app.travelmode.directions.LatLng;
+import org.app.travelmode.directions.SimpleDirectionsStep;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.io.BufferedReader;
@@ -16,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TravelModeModelImpl implements TravelModeModel {
@@ -90,10 +93,24 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     @Override
     public void startRouteAnalysis() {
-        this.requestRoute(this.requestBuilder.build());
+        final TravelRequest travelRequest = this.requestBuilder.build();
+        this.requestRoute(travelRequest);
         for (final DirectionsRoute route : this.directionsResponse.getRoutes()) {
-            System.out.println(this.routeAnalyzer.calculateIntermediatePoints(route));
+            final List<SimpleDirectionsStep> intermediatePoints = this.routeAnalyzer.calculateIntermediatePoints(route);
+            System.out.println(intermediatePoints);
+            System.out.println(generateCheckpoints(intermediatePoints, travelRequest));
         }
+    }
+
+    private List<Checkpoint> generateCheckpoints(final List<SimpleDirectionsStep> steps, final TravelRequest travelRequest) {
+        final List<Checkpoint> checkpoints = new ArrayList<>();
+        checkpoints.add(new CheckpointImpl(steps.get(0).getStart_location(), travelRequest.getDepartureDateTime()));
+        for (int i = 0; i < steps.size(); i++) {
+            final LatLng location = steps.get(i).getEnd_location();
+            long duration = (long)steps.get(i).getDuration().getValue();
+            checkpoints.add(new CheckpointImpl(location, checkpoints.get(i).getArrivalDateTime().plusSeconds(duration)));
+        }
+        return checkpoints;
     }
 
     //TODO: delegare ad advanced json reader
