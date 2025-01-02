@@ -6,8 +6,8 @@ import java.time.ZonedDateTime;
 
 public class CheckpointWithMeteoImpl extends CheckpointImpl implements CheckpointWithMeteo {
 
-    public CheckpointWithMeteoImpl(final LatLng coordinates, final ZonedDateTime arrivalDateTime) {
-        super(coordinates, arrivalDateTime);
+    public CheckpointWithMeteoImpl(double latitude, double longitude, final ZonedDateTime arrivalDateTime) {
+        super(latitude, longitude, arrivalDateTime);
     }
 
 }
