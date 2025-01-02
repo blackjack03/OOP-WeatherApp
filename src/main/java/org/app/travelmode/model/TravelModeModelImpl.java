@@ -7,13 +7,11 @@ import org.app.model.AdvancedJsonReader;
 import org.app.model.AdvancedJsonReaderImpl;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.directions.DirectionsRoute;
-import org.app.travelmode.directions.LatLng;
 import org.app.travelmode.directions.SimpleDirectionsStep;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -28,6 +26,7 @@ public class TravelModeModelImpl implements TravelModeModel {
     private final RouteAnalyzer routeAnalyzer;
     private String googleApiKey;
     private DirectionsResponse directionsResponse;
+    private final List<TravelModeResult> results;
 
     public TravelModeModelImpl() {
         this.placeAutocomplete = new PlaceAutocompleteImpl();
@@ -41,6 +40,7 @@ public class TravelModeModelImpl implements TravelModeModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        this.results = new ArrayList<>();
     }
 
     @Override
@@ -98,17 +98,28 @@ public class TravelModeModelImpl implements TravelModeModel {
         for (final DirectionsRoute route : this.directionsResponse.getRoutes()) {
             final List<SimpleDirectionsStep> intermediatePoints = this.routeAnalyzer.calculateIntermediatePoints(route);
             System.out.println(intermediatePoints);
-            System.out.println(generateCheckpoints(intermediatePoints, travelRequest));
+            final List<Checkpoint> checkpoints = generateCheckpoints(intermediatePoints, travelRequest);
+            System.out.println(checkpoints);
+            final List<CheckpointWithMeteo> checkpointWithMeteos = new ArrayList<>();
+            for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
+                checkpointWithMeteos.add(new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime()));
+            }
+            this.results.add(new TravelModeResultImpl(checkpointWithMeteos, route.getSummary()));
         }
     }
 
     private List<Checkpoint> generateCheckpoints(final List<SimpleDirectionsStep> steps, final TravelRequest travelRequest) {
         final List<Checkpoint> checkpoints = new ArrayList<>();
-        checkpoints.add(new CheckpointImpl(steps.get(0).getStart_location(), travelRequest.getDepartureDateTime()));
+        final SimpleDirectionsStep firstStep = steps.get(0);
+        double latitude = firstStep.getStart_location().getLat();
+        double longitude = firstStep.getStart_location().getLng();
+        checkpoints.add(new CheckpointImpl(latitude, longitude, travelRequest.getDepartureDateTime()));
         for (int i = 0; i < steps.size(); i++) {
-            final LatLng location = steps.get(i).getEnd_location();
-            long duration = (long)steps.get(i).getDuration().getValue();
-            checkpoints.add(new CheckpointImpl(location, checkpoints.get(i).getArrivalDateTime().plusSeconds(duration)));
+            final SimpleDirectionsStep step = steps.get(i);
+            latitude = step.getEnd_location().getLat();
+            longitude = step.getEnd_location().getLng();
+            long duration = (long)step.getDuration().getValue();
+            checkpoints.add(new CheckpointImpl(latitude, longitude, checkpoints.get(i).getArrivalDateTime().plusSeconds(duration)));
         }
         return checkpoints;
     }
@@ -151,25 +162,6 @@ public class TravelModeModelImpl implements TravelModeModel {
     }
 
     public Image getStaticMap() {
-        String url = "https://maps.googleapis.com/maps/api/staticmap?center=40.714728,-73.998672&zoom=12&size=400x400" + "&key=" + googleApiKey;
-        try {
-            // Connessione HTTP per ottenere l'immagine
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setRequestMethod("GET");
-
-            // Controlla se la richiesta è stata eseguita con successo
-            if (connection.getResponseCode() != 200) {
-                throw new RuntimeException("Errore durante la richiesta della mappa: " + connection.getResponseMessage());
-            }
-
-            // Ottieni l'immagine come InputStream
-            InputStream inputStream = connection.getInputStream();
-
-            // Crea un oggetto Image di JavaFX dall'InputStream
-            return new Image(inputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return  this.results.get(0).getMapImage();
     }
 }
