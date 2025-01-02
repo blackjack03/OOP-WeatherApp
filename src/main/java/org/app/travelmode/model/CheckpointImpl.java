@@ -1,27 +1,27 @@
 package org.app.travelmode.model;
 
-import org.app.travelmode.directions.LatLng;
-
 import java.time.ZonedDateTime;
 
 public class CheckpointImpl implements Checkpoint {
 
-    private final LatLng coordinates;
+    private final double latitude;
+    private final double longitude;
     private final ZonedDateTime arrivalDateTime;
 
-    public CheckpointImpl(final LatLng coordinates, final ZonedDateTime arrivalDateTime) {
-        this.coordinates = coordinates;
+    public CheckpointImpl(double latitude, double longitude, final ZonedDateTime arrivalDateTime) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.arrivalDateTime = arrivalDateTime;
     }
 
     @Override
     public double getLatitude() {
-        return this.coordinates.getLat();
+        return this.latitude;
     }
 
     @Override
     public double getLongitude() {
-        return this.coordinates.getLng();
+        return this.longitude;
     }
 
     @Override
@@ -32,8 +32,8 @@ public class CheckpointImpl implements Checkpoint {
     @Override
     public String toString() {
         return "GeoPoint{" +
-                "latitude=" + coordinates.getLat() +
-                ", longitude=" + coordinates.getLng() +
+                "latitude=" + this.latitude +
+                ", longitude=" + this.longitude +
                 ", timestamp=" + arrivalDateTime +
                 '}';
     }
