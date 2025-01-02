@@ -31,6 +31,7 @@ public class TravelModeViewImpl implements TravelModeView {
     private ContextMenu arrivalSuggestionsMenu;
     private final Label departureLabel = new Label("Partenza");
     private final Label arrivalLabel = new Label("Arrivo");
+    private VBox vBox; //TODO: sistemare
 
 
     public TravelModeViewImpl(final TravelModeController controller) {
@@ -123,6 +124,18 @@ public class TravelModeViewImpl implements TravelModeView {
             final LocalTime departureTime = LocalTime.of(hourSpinner.getValue(), minuteSpinner.getValue());
             this.controller.setDepartureTime(departureTime);
             this.controller.startRouteAnalysis();
+
+            //TODO: da sistemare
+
+            // Ottieni l'immagine della mappa (ad esempio, Parigi)
+            Image mapImage = this.controller.getStaticMap();
+
+            // Crea un ImageView per mostrare l'immagine
+            ImageView imageView = new ImageView(mapImage);
+            imageView.setFitWidth(400);
+            imageView.setFitHeight(400);
+            imageView.setPreserveRatio(true);
+            vBox.getChildren().add(imageView);
         });
 
         departureHBox.getChildren().addAll(hourSpinner, minuteSpinner);
@@ -146,23 +159,13 @@ public class TravelModeViewImpl implements TravelModeView {
                         "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
         );
 
-
-        // Ottieni l'immagine della mappa (ad esempio, Parigi)
-        Image mapImage = this.controller.getStaticMap();
-
-        // Crea un ImageView per mostrare l'immagine
-        ImageView imageView = new ImageView(mapImage);
-        imageView.setFitWidth(400);
-        imageView.setFitHeight(400);
-        imageView.setPreserveRatio(true);
-
-
         city2VBox.setMaxSize(220, this.arrivalLabel.getHeight() + this.city2TextField.getHeight());
         root.setLeft(city1VBox);
         root.setRight(city2VBox);
 
-        VBox vBox = new VBox();
-        vBox.getChildren().addAll(searchButton, imageView);
+        //TODO: sistemare
+        vBox = new VBox();
+        vBox.getChildren().addAll(searchButton);
 
         root.setCenter(vBox);
         final Scene scene = new Scene(root, 850, 600);
