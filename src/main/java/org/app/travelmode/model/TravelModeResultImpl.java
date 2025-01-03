@@ -14,12 +14,14 @@ public class TravelModeResultImpl implements TravelModeResult{
 
     private final List<CheckpointWithMeteo> checkpoints;
     private final String summary;
+    private final String polyline;
     private Image mapImage;
     private String googleApiKey;
 
-    public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary) {
+    public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary, final String polyline) {
         this.checkpoints = checkpoints;
         this.summary = summary;
+        this.polyline = polyline;
         //TODO: delegare
         try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
             final Gson gson = new Gson();
@@ -38,8 +40,12 @@ public class TravelModeResultImpl implements TravelModeResult{
     @Override
     public Image getMapImage() {
         //TODO: delegare
-        String url = "https://maps.googleapis.com/maps/api/staticmap?size=400x400&" +
-                "markers=color:blue%7Clabel:S%7C11211%7C11206%7C11222" + "&key=" + googleApiKey;
+        double startLatitude = this.checkpoints.get(0).getLatitude();
+        double startLongitude = this.checkpoints.get(0).getLongitude();
+        String url = "https://maps.googleapis.com/maps/api/staticmap?size=400x400&scale=2&" +
+                "markers=color:blue%7Clabel:P%7C" + startLatitude + "," + startLongitude +
+                "&path=enc:" + this.polyline +
+                "&key=" + googleApiKey;
         try {
             // Connessione HTTP per ottenere l'immagine
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
