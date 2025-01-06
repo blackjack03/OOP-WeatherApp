@@ -1,16 +1,15 @@
 package org.app.travelmode.view;
 
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.converter.LocalTimeStringConverter;
 import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
@@ -43,7 +42,12 @@ public class TravelModeViewImpl implements TravelModeView {
         this.stage = new Stage();
         this.stage.setTitle(STAGE_NAME);
         final BorderPane root = new BorderPane();
+
         final VBox city1VBox = new VBox();
+        city1VBox.setAlignment(Pos.CENTER_LEFT);
+        final HBox timeHBox = new HBox();
+        final VBox dateTimeVBox = new VBox();
+        dateTimeVBox.setAlignment(Pos.CENTER_LEFT);
 
         this.departureSuggestionsMenu = new ContextMenu();
         this.arrivalSuggestionsMenu = new ContextMenu();
@@ -66,7 +70,6 @@ public class TravelModeViewImpl implements TravelModeView {
             }
         });
 
-        final HBox departureHBox = new HBox();
         // Spinner per le ore (0-23)
         Spinner<Integer> hourSpinner = new Spinner<>();
         hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12));
@@ -98,6 +101,25 @@ public class TravelModeViewImpl implements TravelModeView {
         });
         datePicker.setShowWeekNumbers(false);
         datePicker.setEditable(false);
+
+        timeHBox.getChildren().addAll(hourSpinner, minuteSpinner);
+
+        dateTimeVBox.getChildren().addAll(timeHBox, datePicker);
+
+        TitledPane dateTimeTitledPane = new TitledPane("Personalizza data e ora", dateTimeVBox);
+        dateTimeTitledPane.setExpanded(false); // Chiuso di default
+
+        city1VBox.getChildren().addAll(this.departureLabel, this.city1TextField, dateTimeTitledPane);
+        city1VBox.setStyle(
+                "-fx-border-color: black;" +                // Colore del bordo
+                        "-fx-border-width: 2px;" +          // Larghezza del bordo
+                        "-fx-padding: 10px;" +               // Spazio interno
+                        "-fx-background-color: white;" +    // Colore di sfondo
+                        "-fx-border-radius: 15px; " +        // Arrotondamento del bordo
+                        "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
+        );
+        city1VBox.setMaxSize(220, departureLabel.getHeight() + this.city1TextField.getHeight() + dateTimeTitledPane.getHeight());
+
 
 
         final VBox city2VBox = new VBox();
@@ -138,17 +160,6 @@ public class TravelModeViewImpl implements TravelModeView {
             vBox.getChildren().add(imageView);
         });
 
-        departureHBox.getChildren().addAll(hourSpinner, minuteSpinner);
-        city1VBox.getChildren().addAll(this.departureLabel, this.city1TextField, departureHBox, datePicker);
-        city1VBox.setStyle(
-                "-fx-border-color: black;" +                // Colore del bordo
-                        "-fx-border-width: 2px;" +          // Larghezza del bordo
-                        "-fx-padding: 10px;" +               // Spazio interno
-                        "-fx-background-color: white;" +    // Colore di sfondo
-                        "-fx-border-radius: 15px; " +        // Arrotondamento del bordo
-                        "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
-        );
-        city1VBox.setMaxSize(220, departureLabel.getHeight() + this.city1TextField.getHeight() + departureHBox.getHeight() + datePicker.getHeight());
         city2VBox.getChildren().addAll(this.arrivalLabel, this.city2TextField);
         city2VBox.setStyle(
                 "-fx-border-color: black;" +                // Colore del bordo
@@ -164,10 +175,21 @@ public class TravelModeViewImpl implements TravelModeView {
         root.setRight(city2VBox);
 
         //TODO: sistemare
-        vBox = new VBox();
-        vBox.getChildren().addAll(searchButton);
+        vBox = new VBox(20);
+        vBox.setAlignment(Pos.CENTER);
+        final ScrollPane scrollPane = new ScrollPane(vBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPane.setPannable(true);
+        root.setBottom(scrollPane);
+        BorderPane.setAlignment(scrollPane, Pos.CENTER);
 
-        root.setCenter(vBox);
+
+
+
+
+        root.setCenter(searchButton);
         final Scene scene = new Scene(root, 850, 600);
         this.stage.setScene(scene);
         this.stage.show();
