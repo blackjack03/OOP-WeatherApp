@@ -1,7 +1,6 @@
 package org.app.travelmode.view;
 
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -16,6 +15,9 @@ import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class TravelModeViewImpl implements TravelModeView {
 
@@ -24,12 +26,6 @@ public class TravelModeViewImpl implements TravelModeView {
     private final TravelModeController controller;
 
     private Stage stage;
-    private TextField city1TextField;
-    private TextField city2TextField;
-    private ContextMenu departureSuggestionsMenu;
-    private ContextMenu arrivalSuggestionsMenu;
-    private final Label departureLabel = new Label("Partenza");
-    private final Label arrivalLabel = new Label("Arrivo");
     private VBox vBox; //TODO: sistemare
 
 
@@ -43,107 +39,24 @@ public class TravelModeViewImpl implements TravelModeView {
         this.stage.setTitle(STAGE_NAME);
         final BorderPane root = new BorderPane();
 
-        final VBox city1VBox = new VBox();
-        city1VBox.setAlignment(Pos.CENTER_LEFT);
-        final HBox timeHBox = new HBox();
-        final VBox dateTimeVBox = new VBox();
-        dateTimeVBox.setAlignment(Pos.CENTER_LEFT);
+        final BiConsumer<String, String> onDepartureCitySelected = (desc, pID) -> {
+            this.controller.setDepartureLocation(desc);
+            this.controller.setDeparturePlaceId(pID);
+        };
+        final BiConsumer<String, String> onArrivalCitySelected = (desc, pID) -> {
+            this.controller.setArrivalLocation(desc);
+            this.controller.setArrivalPlaceId(pID);
+        };
+        final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions = this.controller::getPlacePredictions;
+        final Consumer<LocalDate> onDateSelected = this.controller::setDepartureDate;
 
-        this.departureSuggestionsMenu = new ContextMenu();
-        this.arrivalSuggestionsMenu = new ContextMenu();
+        final CityDateTimeInputBox departureInputBox = new CityDateTimeInputBox("Partenza", onDepartureCitySelected, fetcPredictions, onDateSelected, true);
+        final CityInputBox arrivalInputBox = new CityInputBox("Arrivo", onArrivalCitySelected, fetcPredictions, true);
 
-        this.city1TextField = new TextField();
-        this.city1TextField.setMinWidth(200);
-        this.city1TextField.setPromptText("Inserire la città o l'indirizzo");
-        city1TextField.setOnKeyTyped(event -> {
-            if (!event.getCharacter().equals("\r") && !event.getCharacter().equals("\t")) {
-                final String actualText = this.city1TextField.getText();
-                if (actualText.length() >= 3) {
-                    final List<PlaceAutocompletePrediction> placePredictions = controller.getPlacePredictions(actualText);
-                    this.updateSuggestionsMenu(departureSuggestionsMenu, city1TextField, placePredictions);
-                    if (!departureSuggestionsMenu.isShowing()) {
-                        departureSuggestionsMenu.show(this.city1TextField, Side.BOTTOM, 0, 0);
-                    }
-                } else {
-                    departureSuggestionsMenu.hide();
-                }
-            }
-        });
-
-        // Spinner per le ore (0-23)
-        Spinner<Integer> hourSpinner = new Spinner<>();
-        hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12));
-
-        // Spinner per i minuti (0-59) con incremento di 5 minuti
-        Spinner<Integer> minuteSpinner = new Spinner<>();
-        minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 5));
-
-        final DatePicker datePicker = new DatePicker();
-        final LocalDate oggi = LocalDate.now();
-        final LocalDate start = oggi;
-        final LocalDate end = oggi.plusDays(6);
-        datePicker.setDayCellFactory((dP) -> new DateCell() {
-            @Override
-            public void updateItem(final LocalDate date, boolean empty) {
-                super.updateItem(date, empty);
-                if (date.isBefore(start) || date.isAfter(end)) {
-                    setDisable(true);
-                    setStyle("-fx-background-color: #f4f4f4; -fx-text-fill: #b0b0b0; -fx-opacity: 0.6;");
-                } else {
-                    setStyle("-fx-background-color: #ffffff; -fx-text-fill: #2c3e50;");
-                    setOnMouseEntered(e -> setStyle("-fx-background-color: #d1e8ff; -fx-text-fill: #2c3e50;"));
-                    setOnMouseExited(e -> setStyle("-fx-background-color: #ffffff; -fx-text-fill: #2c3e50;"));
-                }
-            }
-        });
-        datePicker.setOnAction(event -> {
-            this.controller.setDepartureDate(datePicker.getValue());
-        });
-        datePicker.setShowWeekNumbers(false);
-        datePicker.setEditable(false);
-
-        timeHBox.getChildren().addAll(hourSpinner, minuteSpinner);
-
-        dateTimeVBox.getChildren().addAll(timeHBox, datePicker);
-
-        TitledPane dateTimeTitledPane = new TitledPane("Personalizza data e ora", dateTimeVBox);
-        dateTimeTitledPane.setExpanded(false); // Chiuso di default
-
-        city1VBox.getChildren().addAll(this.departureLabel, this.city1TextField, dateTimeTitledPane);
-        city1VBox.setStyle(
-                "-fx-border-color: black;" +                // Colore del bordo
-                        "-fx-border-width: 2px;" +          // Larghezza del bordo
-                        "-fx-padding: 10px;" +               // Spazio interno
-                        "-fx-background-color: white;" +    // Colore di sfondo
-                        "-fx-border-radius: 15px; " +        // Arrotondamento del bordo
-                        "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
-        );
-        city1VBox.setMaxSize(220, departureLabel.getHeight() + this.city1TextField.getHeight() + dateTimeTitledPane.getHeight());
-
-
-
-        final VBox city2VBox = new VBox();
-        this.city2TextField = new TextField();
-        this.city2TextField.setMinWidth(200);
-        this.city2TextField.setPromptText("Inserire la città o l'indirizzo");
-        city2TextField.setOnKeyTyped(event -> {
-            if (!event.getCharacter().equals("\r") && !event.getCharacter().equals("\t")) {
-                final String actualText = this.city2TextField.getText();
-                if (actualText.length() >= 3) {
-                    final List<PlaceAutocompletePrediction> placePredictions = controller.getPlacePredictions(actualText);
-                    this.updateSuggestionsMenu(arrivalSuggestionsMenu, city2TextField, placePredictions);
-                    if (!arrivalSuggestionsMenu.isShowing()) {
-                        arrivalSuggestionsMenu.show(this.city2TextField, Side.BOTTOM, 0, 0);
-                    }
-                } else {
-                    arrivalSuggestionsMenu.hide();
-                }
-            }
-        });
 
         final Button searchButton = new Button("CERCA PERCORSO");
         searchButton.setOnAction(event -> {
-            final LocalTime departureTime = LocalTime.of(hourSpinner.getValue(), minuteSpinner.getValue());
+            final LocalTime departureTime = LocalTime.of(departureInputBox.getSelectedHour(), departureInputBox.getSelectedMinute());
             this.controller.setDepartureTime(departureTime);
             this.controller.startRouteAnalysis();
 
@@ -160,19 +73,8 @@ public class TravelModeViewImpl implements TravelModeView {
             vBox.getChildren().add(imageView);
         });
 
-        city2VBox.getChildren().addAll(this.arrivalLabel, this.city2TextField);
-        city2VBox.setStyle(
-                "-fx-border-color: black;" +                // Colore del bordo
-                        "-fx-border-width: 2px;" +          // Larghezza del bordo
-                        "-fx-padding: 10px;" +               // Spazio interno
-                        "-fx-background-color: white;" +    // Colore di sfondo
-                        "-fx-border-radius: 15px; " +        // Arrotondamento del bordo
-                        "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
-        );
-
-        city2VBox.setMaxSize(220, this.arrivalLabel.getHeight() + this.city2TextField.getHeight());
-        root.setLeft(city1VBox);
-        root.setRight(city2VBox);
+        root.setLeft(departureInputBox);
+        root.setRight(arrivalInputBox);
 
         //TODO: sistemare
         vBox = new VBox(20);
@@ -186,9 +88,6 @@ public class TravelModeViewImpl implements TravelModeView {
         BorderPane.setAlignment(scrollPane, Pos.CENTER);
 
 
-
-
-
         root.setCenter(searchButton);
         final Scene scene = new Scene(root, 850, 600);
         this.stage.setScene(scene);
@@ -199,32 +98,5 @@ public class TravelModeViewImpl implements TravelModeView {
     public void displayError(String message) {
 
 
-    }
-
-    /**
-     * Update a {@link ContextMenu} with the new {@link PlaceAutocompletePrediction}
-     *
-     * @param menu        The menu to update
-     * @param anchor      The {@link TextField} to which the {@code menu} is anchored
-     * @param predictions The list of new predictions
-     */
-    private void updateSuggestionsMenu(final ContextMenu menu, final TextField anchor, final List<PlaceAutocompletePrediction> predictions) {
-        menu.getItems().clear();
-        for (final PlaceAutocompletePrediction prediction : predictions) {
-            final MenuItem menuItem = new MenuItem();
-            menuItem.setText(prediction.getDescription());
-            menuItem.setOnAction(event -> {
-                anchor.setText(prediction.getDescription());
-                menu.hide();
-                if (anchor.equals(this.city1TextField)) {
-                    this.controller.setDepartureLocation(prediction.getDescription());
-                    this.controller.setDeparturePlaceId(prediction.getPlaceId());
-                } else if (anchor.equals(this.city2TextField)) {
-                    this.controller.setArrivalLocation(prediction.getDescription());
-                    this.controller.setArrivalPlaceId(prediction.getPlaceId());
-                }
-            });
-            menu.getItems().add(menuItem);
-        }
     }
 }
