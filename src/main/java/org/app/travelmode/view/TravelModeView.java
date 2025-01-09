@@ -1,5 +1,7 @@
 package org.app.travelmode.view;
 
+import javafx.scene.image.Image;
+
 public interface TravelModeView {
 
     /**
@@ -14,4 +16,5 @@ public interface TravelModeView {
      */
     void displayError(String message);
 
+    void displayResult(String meteoScore, String description, String duration, String arrivalTime, Image mapImage);
 }
