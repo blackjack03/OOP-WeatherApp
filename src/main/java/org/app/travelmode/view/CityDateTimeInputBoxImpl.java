@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class CityDateTimeInputBox extends CityInputBox {
+public class CityDateTimeInputBox extends CityInputBoxImpl {
 
     private static final double SPACING = 5;
 
