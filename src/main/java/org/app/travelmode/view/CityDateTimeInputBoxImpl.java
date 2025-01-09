@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class CityDateTimeInputBox extends CityInputBoxImpl {
+public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDateTimeInputBox {
 
     private static final double SPACING = 5;
 
@@ -20,7 +20,7 @@ public class CityDateTimeInputBox extends CityInputBoxImpl {
     private final DatePicker datePicker;
     private final TitledPane dateTimeTitledPane;
 
-    public CityDateTimeInputBox(final String title, final BiConsumer<String, String> onCitySelected, final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, final Consumer<LocalDate> onDateSelected, boolean resize) {
+    public CityDateTimeInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected, final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, final Consumer<LocalDate> onDateSelected, boolean resize) {
         super(title, onCitySelected, fetcPredictions, false);
 
         // Spinner per le ore (0-23)
@@ -49,9 +49,7 @@ public class CityDateTimeInputBox extends CityInputBoxImpl {
                 }
             }
         });
-        datePicker.setOnAction(event -> {
-            onDateSelected.accept(datePicker.getValue());
-        });
+        datePicker.setOnAction(event -> onDateSelected.accept(datePicker.getValue()));
         datePicker.setShowWeekNumbers(false);
         datePicker.setEditable(false);
 
@@ -76,10 +74,27 @@ public class CityDateTimeInputBox extends CityInputBoxImpl {
         return super.computeRequiredHeight() + this.dateTimeTitledPane.getHeight();
     }
 
+    @Override
+    public Spinner<Integer> getHourSpinner() {
+        return this.hourSpinner;
+    }
+
+    @Override
+    public Spinner<Integer> getMinuteSpinner() {
+        return this.minuteSpinner;
+    }
+
+    @Override
+    public DatePicker getDatePicker() {
+        return this.datePicker;
+    }
+
+    @Override
     public int getSelectedHour() {
         return this.hourSpinner.getValue();
     }
 
+    @Override
     public int getSelectedMinute() {
         return this.minuteSpinner.getValue();
     }
