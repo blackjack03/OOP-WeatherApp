@@ -6,7 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.app.travelmode.controller.TravelModeController;
@@ -38,6 +38,7 @@ public class TravelModeViewImpl implements TravelModeView {
         this.stage = new Stage();
         this.stage.setTitle(STAGE_NAME);
         final BorderPane root = new BorderPane();
+        final Scene scene = new Scene(root, 850, 600);
 
         final BiConsumer<String, String> onDepartureCitySelected = (desc, pID) -> {
             this.controller.setDepartureLocation(desc);
@@ -50,8 +51,8 @@ public class TravelModeViewImpl implements TravelModeView {
         final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions = this.controller::getPlacePredictions;
         final Consumer<LocalDate> onDateSelected = this.controller::setDepartureDate;
 
-        final CityDateTimeInputBox departureInputBox = new CityDateTimeInputBox("Partenza", onDepartureCitySelected, fetcPredictions, onDateSelected, true);
-        final CityInputBox arrivalInputBox = new CityInputBox("Arrivo", onArrivalCitySelected, fetcPredictions, true);
+        final CityDateTimeInputBoxImpl departureInputBox = new CityDateTimeInputBoxImpl("Partenza", onDepartureCitySelected, fetcPredictions, onDateSelected, true);
+        final CityInputBoxImpl arrivalInputBox = new CityInputBoxImpl("Arrivo", onArrivalCitySelected, fetcPredictions, true);
 
 
         final Button searchButton = new Button("CERCA PERCORSO");
@@ -73,23 +74,39 @@ public class TravelModeViewImpl implements TravelModeView {
             vBox.getChildren().add(imageView);
         });
 
+        final StackPane centerPane = new StackPane();
+        centerPane.getChildren().add(searchButton);
+        centerPane.setStyle(
+                "-fx-border-color: black;" +                // Colore del bordo
+                        "-fx-border-width: 2px;" +          // Larghezza del bordo
+                        "-fx-padding: 10px;" +               // Spazio interno
+                        "-fx-background-color: white;" +    // Colore di sfondo
+                        "-fx-border-radius: 15px; " +        // Arrotondamento del bordo
+                        "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
+        );
+        centerPane.setMaxHeight(departureInputBox.getHeight());
+        root.setCenter(centerPane);
+
         root.setLeft(departureInputBox);
         root.setRight(arrivalInputBox);
 
         //TODO: sistemare
         vBox = new VBox(20);
         vBox.setAlignment(Pos.CENTER);
+        vBox.setPrefHeight(scene.getHeight() * 0.7);
         final ScrollPane scrollPane = new ScrollPane(vBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        scrollPane.setPannable(true);
         root.setBottom(scrollPane);
         BorderPane.setAlignment(scrollPane, Pos.CENTER);
 
 
-        root.setCenter(searchButton);
-        final Scene scene = new Scene(root, 850, 600);
+        scene.heightProperty().addListener((obs, oldWidth, newWidth) -> {
+            double availableHeight = scene.getHeight();
+            vBox.setPrefHeight(availableHeight * 0.7);
+        });
+
         this.stage.setScene(scene);
         this.stage.show();
     }
