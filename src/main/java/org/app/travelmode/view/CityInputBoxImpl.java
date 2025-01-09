@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class CityInputBox extends VBox {
+public class CityInputBoxImpl extends VBox implements CityInputBox {
 
     private static final double TEXT_FIELD_MIN_WIDTH = 200;
     private static final double MAX_WIDTH = 220;
@@ -22,7 +22,7 @@ public class CityInputBox extends VBox {
     private final TextField cityTextField;
     private final ContextMenu suggestionsMenu;
 
-    public CityInputBox(final String title, final BiConsumer<String, String> onCitySelected, final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, boolean resize) {
+    public CityInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected, final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, boolean resize) {
         super();
         this.label = new Label(title);
         this.cityTextField = new TextField();
@@ -86,4 +86,13 @@ public class CityInputBox extends VBox {
         return this.label.getHeight() + this.cityTextField.getHeight() + getSpacing();
     }
 
+    @Override
+    public Label getTitleLabel() {
+        return this.label;
+    }
+
+    @Override
+    public TextField getCityTextField() {
+        return this.cityTextField;
+    }
 }
