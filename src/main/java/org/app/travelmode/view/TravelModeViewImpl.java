@@ -1,5 +1,6 @@
 package org.app.travelmode.view;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,19 +26,21 @@ public class TravelModeViewImpl implements TravelModeView {
 
     private final TravelModeController controller;
 
-    private Stage stage;
-    private VBox vBox; //TODO: sistemare
+    private final Stage stage;
+    private final BorderPane root;
+    private VBox resultsVBox; //TODO: sistemare
 
 
     public TravelModeViewImpl(final TravelModeController controller) {
         this.controller = controller;
+        this.stage = new Stage();
+        this.stage.setTitle(STAGE_NAME);
+        this.root = new BorderPane();
     }
 
     @Override
     public void start() {
-        this.stage = new Stage();
-        this.stage.setTitle(STAGE_NAME);
-        final BorderPane root = new BorderPane();
+
         final Scene scene = new Scene(root, 850, 600);
 
         final BiConsumer<String, String> onDepartureCitySelected = (desc, pID) -> {
@@ -60,18 +63,6 @@ public class TravelModeViewImpl implements TravelModeView {
             final LocalTime departureTime = LocalTime.of(departureInputBox.getSelectedHour(), departureInputBox.getSelectedMinute());
             this.controller.setDepartureTime(departureTime);
             this.controller.startRouteAnalysis();
-
-            //TODO: da sistemare
-
-            // Ottieni l'immagine della mappa (ad esempio, Parigi)
-            Image mapImage = this.controller.getStaticMap();
-
-            // Crea un ImageView per mostrare l'immagine
-            ImageView imageView = new ImageView(mapImage);
-            imageView.setFitWidth(400);
-            imageView.setFitHeight(400);
-            imageView.setPreserveRatio(true);
-            vBox.getChildren().add(imageView);
         });
 
         final StackPane centerPane = new StackPane();
@@ -91,10 +82,10 @@ public class TravelModeViewImpl implements TravelModeView {
         root.setRight(arrivalInputBox);
 
         //TODO: sistemare
-        vBox = new VBox(20);
-        vBox.setAlignment(Pos.CENTER);
-        vBox.setPrefHeight(scene.getHeight() * 0.7);
-        final ScrollPane scrollPane = new ScrollPane(vBox);
+        resultsVBox = new VBox(20);
+        resultsVBox.setAlignment(Pos.CENTER);
+        resultsVBox.setPrefHeight(scene.getHeight() * 0.7);
+        final ScrollPane scrollPane = new ScrollPane(resultsVBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
@@ -104,7 +95,7 @@ public class TravelModeViewImpl implements TravelModeView {
 
         scene.heightProperty().addListener((obs, oldWidth, newWidth) -> {
             double availableHeight = scene.getHeight();
-            vBox.setPrefHeight(availableHeight * 0.7);
+            resultsVBox.setPrefHeight(availableHeight * 0.7);
         });
 
         this.stage.setScene(scene);
@@ -115,5 +106,13 @@ public class TravelModeViewImpl implements TravelModeView {
     public void displayError(String message) {
 
 
+    }
+
+    @Override
+    public void displayResult(final String meteoScore, final String description, final String duration, final String arrivalTime, final Image mapImage) {
+        Platform.runLater(() -> {
+            final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalTime, mapImage);
+            this.resultsVBox.getChildren().add(resultBox);
+        });
     }
 }
