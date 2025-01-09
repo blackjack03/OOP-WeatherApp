@@ -4,8 +4,10 @@ import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 import org.app.travelmode.model.*;
@@ -61,9 +63,19 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
     @Override
     public void startRouteAnalysis() {
         this.model.startRouteAnalysis();
+        final TravelModeResult mainResult = this.model.getTravelModeMainResult();
+        final String meteoScore = String.valueOf(mainResult.getMeteoScore());
+        final Duration duration = mainResult.getDuration();
+        final String durationString = "Durata: " + duration.toString();
+        final String arrivalTime = mainResult.getArrivalTime().toString();
+        displayResult(meteoScore, mainResult.getSummary(), durationString, arrivalTime, mainResult.getMapImage());
     }
 
     public Image getStaticMap() {
         return this.model.getStaticMap();
+    }
+
+    private void displayResult(final String meteoScore, final String description, final String duration, final String arrivalTime, final Image mapImage) {
+        this.view.displayResult(meteoScore, description, duration, arrivalTime, mapImage);
     }
 }
