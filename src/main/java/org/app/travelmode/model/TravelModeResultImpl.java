@@ -8,19 +8,25 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
-public class TravelModeResultImpl implements TravelModeResult{
+public class TravelModeResultImpl implements TravelModeResult {
 
     private final List<CheckpointWithMeteo> checkpoints;
     private final String summary;
+    private final Duration duration;
+    private final LocalDateTime arrivalTime;
     private final String polyline;
     private Image mapImage;
     private String googleApiKey;
 
-    public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary, final String polyline) {
+    public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary, final String polyline, final Duration duration) {
         this.checkpoints = checkpoints;
+        this.arrivalTime = checkpoints.get(checkpoints.size() - 1).getArrivalDateTime().toLocalDateTime();
         this.summary = summary;
+        this.duration = duration;
         this.polyline = polyline;
         //TODO: delegare
         try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
@@ -42,7 +48,7 @@ public class TravelModeResultImpl implements TravelModeResult{
         //TODO: delegare
         double startLatitude = this.checkpoints.get(0).getLatitude();
         double startLongitude = this.checkpoints.get(0).getLongitude();
-        String url = "https://maps.googleapis.com/maps/api/staticmap?size=400x400&scale=2&" +
+        String url = "https://maps.googleapis.com/maps/api/staticmap?size=600x400&scale=2&" +
                 "markers=color:blue%7Clabel:P%7C" + startLatitude + "," + startLongitude +
                 "&path=enc:" + this.polyline +
                 "&key=" + googleApiKey;
@@ -60,7 +66,8 @@ public class TravelModeResultImpl implements TravelModeResult{
             InputStream inputStream = connection.getInputStream();
 
             // Crea un oggetto Image di JavaFX dall'InputStream
-            return new Image(inputStream);
+            this.mapImage = new Image(inputStream);
+            return this.mapImage;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,5 +82,15 @@ public class TravelModeResultImpl implements TravelModeResult{
     @Override
     public String getSummary() {
         return this.summary;
+    }
+
+    @Override
+    public Duration getDuration() {
+        return this.duration;
+    }
+
+    @Override
+    public LocalDateTime getArrivalTime() {
+        return this.arrivalTime;
     }
 }
