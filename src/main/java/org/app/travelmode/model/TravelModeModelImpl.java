@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import javafx.scene.image.Image;
 import org.app.model.AdvancedJsonReader;
 import org.app.model.AdvancedJsonReaderImpl;
+import org.app.travelmode.directions.DirectionsLeg;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.directions.DirectionsRoute;
 import org.app.travelmode.directions.SimpleDirectionsStep;
@@ -93,6 +94,7 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     @Override
     public void startRouteAnalysis() {
+        this.results.clear();
         final TravelRequest travelRequest = this.requestBuilder.build();
         this.requestRoute(travelRequest);
         for (final DirectionsRoute route : this.directionsResponse.getRoutes()) {
@@ -104,7 +106,7 @@ public class TravelModeModelImpl implements TravelModeModel {
             for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
                 checkpointWithMeteos.add(new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime()));
             }
-            this.results.add(new TravelModeResultImpl(checkpointWithMeteos, route.getSummary(), route.getOverview_polyline().getPoints()));
+            this.results.add(new TravelModeResultImpl(checkpointWithMeteos, route.getSummary(), route.getOverview_polyline().getPoints(), calculareRouteDuration(route)));
         }
     }
 
@@ -118,10 +120,18 @@ public class TravelModeModelImpl implements TravelModeModel {
             final SimpleDirectionsStep step = steps.get(i);
             latitude = step.getEnd_location().getLat();
             longitude = step.getEnd_location().getLng();
-            long duration = (long)step.getDuration().getValue();
+            long duration = (long) step.getDuration().getValue();
             checkpoints.add(new CheckpointImpl(latitude, longitude, checkpoints.get(i).getArrivalDateTime().plusSeconds(duration)));
         }
         return checkpoints;
+    }
+
+    private Duration calculareRouteDuration(final DirectionsRoute route) {
+        double totalDuration = 0;
+        for (final DirectionsLeg leg : route.getLegs()) {
+            totalDuration += leg.getDuration().getValue();
+        }
+        return Duration.ofSeconds((long) totalDuration);
     }
 
     //TODO: delegare ad advanced json reader
@@ -162,6 +172,11 @@ public class TravelModeModelImpl implements TravelModeModel {
     }
 
     public Image getStaticMap() {
-        return  this.results.get(0).getMapImage();
+        return this.results.get(0).getMapImage();
+    }
+
+    @Override
+    public TravelModeResult getTravelModeMainResult() {
+        return this.results.get(0);
     }
 }
