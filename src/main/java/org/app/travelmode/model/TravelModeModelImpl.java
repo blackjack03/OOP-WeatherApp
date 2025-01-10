@@ -106,7 +106,7 @@ public class TravelModeModelImpl implements TravelModeModel {
             for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
                 checkpointWithMeteos.add(new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime()));
             }
-            this.results.add(new TravelModeResultImpl(checkpointWithMeteos, route.getSummary(), route.getOverview_polyline().getPoints(), calculareRouteDuration(route)));
+            this.results.add(new TravelModeResultImpl(checkpointWithMeteos, route.getSummary(), route.getOverview_polyline().getPoints(), calculateRouteDuration(route)));
         }
     }
 
@@ -126,7 +126,7 @@ public class TravelModeModelImpl implements TravelModeModel {
         return checkpoints;
     }
 
-    private Duration calculareRouteDuration(final DirectionsRoute route) {
+    private Duration calculateRouteDuration(final DirectionsRoute route) {
         double totalDuration = 0;
         for (final DirectionsLeg leg : route.getLegs()) {
             totalDuration += leg.getDuration().getValue();
