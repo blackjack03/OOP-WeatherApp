@@ -65,4 +65,6 @@ public interface TravelModeModel {
     void startRouteAnalysis();
 
     Image getStaticMap();
+
+    TravelModeResult getTravelModeMainResult();
 }
