@@ -7,7 +7,7 @@ import java.net.URL;
 
 import com.google.gson.*;
 
-public class AdvancedJsonReader implements AdvancedJsonReaderInterface {
+public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     private String json_raw_text;
     private JsonObject JSON_BODY;
     private boolean isSet = false;
