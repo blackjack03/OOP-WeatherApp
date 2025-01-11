@@ -16,13 +16,11 @@ public class App extends Application {
         loader.setLocation(getClass().getResource("/mainview.fxml"));
         Parent root = loader.load();
 
-        double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
-        double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
-        primaryStage.setMinHeight(900);
-        primaryStage.setMinWidth(1750);
+        
+        primaryStage.setMinHeight(550);
+        primaryStage.setMinWidth(550);
 
-        Scene scene = new Scene(root, screenWidth * 0.8, screenHeight * 0.8);
-        //Scene scene = new Scene(root);
+        Scene scene = new Scene(root);
         primaryStage.setTitle("Weather Application");
         primaryStage.setScene(scene);
         primaryStage.show();
