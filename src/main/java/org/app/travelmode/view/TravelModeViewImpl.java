@@ -27,6 +27,7 @@ public class TravelModeViewImpl implements TravelModeView {
     private final TravelModeController controller;
 
     private final Stage stage;
+    private final Scene scene;
     private final BorderPane root;
     private VBox resultsVBox; //TODO: sistemare
 
@@ -36,12 +37,11 @@ public class TravelModeViewImpl implements TravelModeView {
         this.stage = new Stage();
         this.stage.setTitle(STAGE_NAME);
         this.root = new BorderPane();
+        this.scene = new Scene(root, 850, 600);
     }
 
     @Override
     public void start() {
-
-        final Scene scene = new Scene(root, 850, 600);
 
         final BiConsumer<String, String> onDepartureCitySelected = (desc, pID) -> {
             this.controller.setDepartureLocation(desc);
@@ -84,6 +84,7 @@ public class TravelModeViewImpl implements TravelModeView {
         //TODO: sistemare
         resultsVBox = new VBox(20);
         resultsVBox.setAlignment(Pos.CENTER);
+        resultsVBox.setFillWidth(true);
         resultsVBox.setPrefHeight(scene.getHeight() * 0.7);
         final ScrollPane scrollPane = new ScrollPane(resultsVBox);
         scrollPane.setFitToWidth(true);
@@ -111,7 +112,7 @@ public class TravelModeViewImpl implements TravelModeView {
     @Override
     public void displayResult(final String meteoScore, final String description, final String duration, final String arrivalTime, final Image mapImage) {
         Platform.runLater(() -> {
-            final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalTime, mapImage);
+            final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalTime, mapImage, this.scene.getWindow());
             this.resultsVBox.getChildren().add(resultBox);
         });
     }
