@@ -6,12 +6,12 @@ public class IPLookUp implements IPLookUpInterface {
 
     private final String API_URL = "https://api.codetabs.com/v1/geolocation/json";
     private String ip = "";
-    private String country_code = "";
-    private String country_name = "";
-    private String region_name = "";
+    private String countryCode = "";
+    private String countryName = "";
+    private String regionName = "";
     private String city = "";
-    private String zip_code = "";
-    private String time_zone = "";
+    private String zipCode = "";
+    private String timeZone = "";
     private Pair<Double, Double> coords = null;
 
     IPLookUp() {
@@ -37,17 +37,17 @@ public class IPLookUp implements IPLookUpInterface {
 
     @Override
     public String getCountryCode() {
-        return this.country_code;
+        return this.countryCode;
     }
 
     @Override
     public String getCountry() {
-        return this.country_name;
+        return this.countryName;
     }
 
     @Override
     public String getRegion() {
-        return this.region_name;
+        return this.regionName;
     }
 
     @Override
@@ -57,12 +57,12 @@ public class IPLookUp implements IPLookUpInterface {
 
     @Override
     public String getZipCode() {
-        return this.zip_code;
+        return this.zipCode;
     }
 
     @Override
     public String getTimeZone() {
-        return this.time_zone;
+        return this.timeZone;
     }
 
     @Override
@@ -72,25 +72,25 @@ public class IPLookUp implements IPLookUpInterface {
 
     private void clear() {
         this.ip = "";
-        this.country_code = "";
-        this.country_name = "";
-        this.region_name = "";
+        this.countryCode = "";
+        this.countryName = "";
+        this.regionName = "";
         this.city = "";
-        this.zip_code = "";
-        this.time_zone = "";
+        this.zipCode = "";
+        this.timeZone = "";
         this.coords = null;
     }
 
     private boolean doLookUpReq() {
         try {
-            final AdvancedJsonReader ipinfo = new AdvancedJsonReader(this.API_URL);
+            final AdvancedJsonReader ipinfo = new AdvancedJsonReaderImpl(this.API_URL);
             this.ip = ipinfo.getString("ip");
-            this.country_code = ipinfo.getString("country_code");
-            this.country_name = ipinfo.getString("country_name");
-            this.region_name = ipinfo.getString("region_name");
+            this.countryCode = ipinfo.getString("country_code");
+            this.countryName = ipinfo.getString("country_name");
+            this.regionName = ipinfo.getString("region_name");
             this.city = ipinfo.getString("city");
-            this.zip_code = ipinfo.getString("zip_code");
-            this.time_zone = ipinfo.getString("time_zone");
+            this.zipCode = ipinfo.getString("zip_code");
+            this.timeZone = ipinfo.getString("time_zone");
             this.coords = new Pair<> /* <Double, Double> */
                 (ipinfo.getDouble("latitude"),
                 ipinfo.getDouble("longitude"));
