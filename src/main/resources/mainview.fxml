@@ -205,14 +205,14 @@
                               </HBox>
                            </children>
                         </VBox>
-                        <VBox prefHeight="660.0" prefWidth="1073.0" style="-fx-border-color: black; -fx-border-radius: 20;" />
+                        <VBox prefHeight="736.0" prefWidth="1102.0" style="-fx-border-color: black; -fx-border-radius: 20;" />
                      </children>
                   </HBox>
                   <HBox prefHeight="157.0" prefWidth="1728.0" spacing="40.0">
                      <children>
                         <HBox prefHeight="190.0" prefWidth="1228.0" spacing="25.0" style="-fx-border-color: black; -fx-border-radius: 20;">
                            <children>
-                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20;">
+                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20; -fx-background-color: #93cfeb; -fx-background-radius: 20;">
                                  <HBox.margin>
                                     <Insets bottom="20.0" left="20.0" top="20.0" />
                                  </HBox.margin>
@@ -243,7 +243,7 @@
                                     <Insets left="20.0" right="20.0" />
                                  </padding>
                               </VBox>
-                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20;">
+                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20; -fx-background-color: #93cfeb; -fx-background-radius: 20;">
                                  <children>
                                     <TextField alignment="CENTER" editable="false" prefHeight="18.0" prefWidth="84.0" style="-fx-background-color: transparent;" text="Domani">
                                        <font>
@@ -274,7 +274,7 @@
                                     <Insets left="20.0" right="20.0" />
                                  </padding>
                               </VBox>
-                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20;">
+                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20; -fx-background-color: #93cfeb; -fx-background-radius: 20;">
                                  <children>
                                     <Label fx:id="dayThreeLabel" prefHeight="25.0" prefWidth="150.0">
                                        <font>
@@ -302,7 +302,7 @@
                                     <Insets left="20.0" right="20.0" />
                                  </padding>
                               </VBox>
-                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20;">
+                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20; -fx-background-color: #93cfeb; -fx-background-radius: 20;">
                                  <children>
                                     <Label fx:id="dayFourLabel" prefHeight="25.0" prefWidth="150.0">
                                        <font>
@@ -330,7 +330,7 @@
                                     <Insets left="20.0" right="20.0" />
                                  </padding>
                               </VBox>
-                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20;">
+                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20; -fx-background-color: #93cfeb; -fx-background-radius: 20;">
                                  <children>
                                     <Label fx:id="dayFiveLabel" prefHeight="25.0" prefWidth="150.0">
                                        <font>
@@ -358,7 +358,7 @@
                                     <Insets left="20.0" right="20.0" />
                                  </padding>
                               </VBox>
-                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20;">
+                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20; -fx-background-color: #93cfeb; -fx-background-radius: 20;">
                                  <children>
                                     <Label fx:id="daySixLabel" prefHeight="25.0" prefWidth="150.0">
                                        <font>
@@ -386,7 +386,7 @@
                                     <Insets left="20.0" right="20.0" />
                                  </padding>
                               </VBox>
-                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20;">
+                              <VBox prefHeight="132.0" prefWidth="116.0" style="-fx-border-color: black; -fx-border-radius: 20; -fx-background-color: #93cfeb; -fx-background-radius: 20;">
                                  <children>
                                     <Label fx:id="daySevenLabel" prefHeight="25.0" prefWidth="150.0">
                                        <font>
