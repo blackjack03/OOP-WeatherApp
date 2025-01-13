@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.app.controller.mainGUIcontroller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2000.0" prefWidth="1920.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.app.controller.mainGUIcontroller">
    <center>
       <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
          <content>
@@ -205,7 +205,42 @@
                               </HBox>
                            </children>
                         </VBox>
-                        <VBox prefHeight="736.0" prefWidth="1102.0" style="-fx-border-color: black; -fx-border-radius: 20;" />
+                        <VBox prefHeight="736.0" prefWidth="1102.0" spacing="30.0" style="-fx-border-color: black; -fx-border-radius: 20;">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0" style="-fx-border-color: black; -fx-border-radius: 20; -fx-background-color: #93cfeb; -fx-background-radius: 20;">
+                                 <children>
+                                    <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                                       <children>
+                                          <Label text="Label" />
+                                          <Label text="Label" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="35.0" right="10.0" top="10.0" />
+                                       </padding>
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                           </padding></VBox>
                      </children>
                   </HBox>
                   <HBox prefHeight="157.0" prefWidth="1728.0" spacing="40.0">
