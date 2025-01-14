@@ -1,29 +1,24 @@
 package org.app;
 
-import java.util.*;
-
-import org.jsoup.*;
-import org.jsoup.helper.*;
-import org.jsoup.nodes.*;
-import org.jsoup.select.*;
+import org.app.model.ConfigManager;
 
 import javafx.application.Application;
 
-import java.util.concurrent.TimeUnit;
-import java.io.*;
-
-import javax.swing.*;
-import java.awt.event.*;
-
-import org.app.model.*;
-import org.app.view.CustomControl;
-
 public class Main {
+
+    private final static String FILE_PATH = "src/main/java/org/files/config.json";
 
     public static void main(String[] args) {
         /*String cwd = System.getProperty("user.dir");
         System.out.println("Current working directory: " + cwd);*/
+
+        // caricamento file di configurazione
+        ConfigManager.loadConfig(FILE_PATH);
+        
         Application.launch(App.class, args);
+
+        // salvataggio file di configurazione
+        ConfigManager.saveConfig(FILE_PATH);
     }
 
 }
