@@ -66,5 +66,8 @@ public interface TravelModeModel {
 
     Image getStaticMap();
 
+    /**
+     * @return a {@link TravelModeResult} object representing the results from analyzing the first route recommended by the routing service
+     */
     TravelModeResult getTravelModeMainResult();
 }
