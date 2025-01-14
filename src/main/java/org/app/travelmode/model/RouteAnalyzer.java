@@ -15,4 +15,9 @@ public interface RouteAnalyzer {
      */
     List<SimpleDirectionsStep> calculateIntermediatePoints(DirectionsRoute directionsRoute);
 
+    /**
+     * @return true if this {@link RouteAnalyzer} has already been consumed
+     */
+    boolean isConsumed();
+
 }
