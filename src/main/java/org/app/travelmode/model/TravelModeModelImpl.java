@@ -24,15 +24,29 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     private final PlaceAutocomplete placeAutocomplete;
     private final TravelRequestImpl.Builder requestBuilder;
-    private final RouteAnalyzer routeAnalyzer;
     private String googleApiKey;
     private DirectionsResponse directionsResponse;
     private final List<TravelModeResult> results;
 
+    //TODO: da eliminare
+    private WeatherCondition weatherCondition = new WeatherConditionImpl(WeatherType.THUNDERSTORM, Intensity.HIGH);
+    private WeatherCondition weatherCondition2 = new WeatherConditionImpl(WeatherType.FOG, Intensity.HIGH);
+    private WeatherCondition weatherCondition3 = new WeatherConditionImpl(WeatherType.HAIL, Intensity.HIGH);
+    private WeatherCondition weatherCondition4 = new WeatherConditionImpl(WeatherType.THUNDERSTORM, Intensity.HIGH);
+    private List<WeatherCondition> weatherConditions = List.of(weatherCondition, weatherCondition3, weatherCondition4);
+    private WeatherReport weatherReport = new WeatherReportImpl();
+
     public TravelModeModelImpl() {
+
+        //TODO: eliminare
+        for (final WeatherCondition weatherCondition : weatherConditions) {
+            weatherReport.addCondition(weatherCondition);
+        }
+
+
+
         this.placeAutocomplete = new PlaceAutocompleteImpl();
         this.requestBuilder = new TravelRequestImpl.Builder();
-        this.routeAnalyzer = new RouteAnalyzerImpl(new IntermediatePointFinderImpl(), new SubStepGeneratorImpl());
         //TODO: integrare in json reader
         try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
             final Gson gson = new Gson();
@@ -97,14 +111,15 @@ public class TravelModeModelImpl implements TravelModeModel {
         this.results.clear();
         final TravelRequest travelRequest = this.requestBuilder.build();
         this.requestRoute(travelRequest);
+        final RouteAnalyzer routeAnalyzer = new RouteAnalyzerImpl(new IntermediatePointFinderImpl(), new SubStepGeneratorImpl());
         for (final DirectionsRoute route : this.directionsResponse.getRoutes()) {
-            final List<SimpleDirectionsStep> intermediatePoints = this.routeAnalyzer.calculateIntermediatePoints(route);
+            final List<SimpleDirectionsStep> intermediatePoints = routeAnalyzer.calculateIntermediatePoints(route);
             System.out.println(intermediatePoints);
             final List<Checkpoint> checkpoints = generateCheckpoints(intermediatePoints, travelRequest);
             System.out.println(checkpoints);
             final List<CheckpointWithMeteo> checkpointWithMeteos = new ArrayList<>();
             for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
-                checkpointWithMeteos.add(new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime()));
+                checkpointWithMeteos.add(new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime(), weatherReport));
             }
             this.results.add(new TravelModeResultImpl(checkpointWithMeteos, route.getSummary(), route.getOverview_polyline().getPoints(), calculateRouteDuration(route)));
         }
