@@ -5,12 +5,14 @@ import com.google.gson.JsonObject;
 import javafx.scene.image.Image;
 
 import java.io.FileReader;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+
+/**
+ * Implementation of the {@link TravelModeResult} interface representing the result of the analysis of a trip,
+ * including information about checkpoints, summary, duration, arrival time, polyline, and map image.
+ */
 
 public class TravelModeResultImpl implements TravelModeResult {
 
@@ -19,6 +21,7 @@ public class TravelModeResultImpl implements TravelModeResult {
     private final Duration duration;
     private final LocalDateTime arrivalTime;
     private final String polyline;
+    private final MapImageGenerator mapImageGenerator;
     private Image mapImage;
     private String googleApiKey;
 
@@ -36,6 +39,7 @@ public class TravelModeResultImpl implements TravelModeResult {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        this.mapImageGenerator = new MapImageGeneratorImpl(googleApiKey);
     }
 
     @Override
@@ -45,38 +49,22 @@ public class TravelModeResultImpl implements TravelModeResult {
 
     @Override
     public Image getMapImage() {
-        //TODO: delegare
-        double startLatitude = this.checkpoints.get(0).getLatitude();
-        double startLongitude = this.checkpoints.get(0).getLongitude();
-        String url = "https://maps.googleapis.com/maps/api/staticmap?size=600x400&scale=2&" +
-                "markers=color:blue%7Clabel:P%7C" + startLatitude + "," + startLongitude +
-                "&path=enc:" + this.polyline +
-                "&key=" + googleApiKey;
-        try {
-            // Connessione HTTP per ottenere l'immagine
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setRequestMethod("GET");
-
-            // Controlla se la richiesta è stata eseguita con successo
-            if (connection.getResponseCode() != 200) {
-                throw new RuntimeException("Errore durante la richiesta della mappa: " + connection.getResponseMessage());
-            }
-
-            // Ottieni l'immagine come InputStream
-            InputStream inputStream = connection.getInputStream();
-
-            // Crea un oggetto Image di JavaFX dall'InputStream
-            this.mapImage = new Image(inputStream);
-            return this.mapImage;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        this.mapImage = this.mapImageGenerator.generateMapImage(checkpoints, polyline);
+        return mapImage;
     }
 
     @Override
     public int getMeteoScore() {
-        return 0;
+        if (this.checkpoints.isEmpty()) {
+            throw new IllegalArgumentException("La lista di checkpoint non può essere vuota.");
+        }
+
+        int totalScore = 0;
+        for (final CheckpointWithMeteo checkpoint : this.checkpoints) {
+            totalScore += checkpoint.getWeatherScore();
+        }
+
+        return (int) Math.round((double) totalScore / this.checkpoints.size());
     }
 
     @Override
