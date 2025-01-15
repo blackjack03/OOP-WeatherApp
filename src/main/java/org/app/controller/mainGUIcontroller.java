@@ -27,6 +27,9 @@ public class mainGUIcontroller {
     private ListView<String> cityListView;
 
     @FXML
+    private ContextMenu cityContextMenu;
+
+    @FXML
     private Label humidityLabel;
 
     @FXML
@@ -96,6 +99,7 @@ public class mainGUIcontroller {
         // Testing per immagini
         Image image = new Image(getClass().getResource("/images/0.png").toExternalForm());
         currentWeatherImage.setImage(image);
+        */
         
         // Configurata l'immagine per le impostazioni
         Image settingsButtonImage = new Image("/images/Settings.png");
@@ -104,61 +108,45 @@ public class mainGUIcontroller {
         settingsButtonImageView.setFitHeight(100);
         settingsButtonImageView.setPreserveRatio(true);
         settingsButton.setGraphic(settingsButtonImageView);
-        */
+        
         this.weather = new Weather(Map.of("lat", "44.2333", "lng", "12.0500"));
     
         this.locationSelector = new LocationSelector();
-
-        cityListView.getSelectionModel().selectedItemProperty().addListener((observable,oldValue,newValue)->
-            {
-                if (newValue != null && possibleCities != null &&!newValue.equals(oldValue)) {
-                    //updateWeatherInfo(newValue.getY());
-                    Optional<Pair<String, Integer>> city = possibleCities.stream()
-                            .filter(c -> c.getX().equals(newValue))
-                            .findFirst();
-                    city.ifPresent(pair -> updateWeatherInfo(pair.getY()));
-                }
-        });
             
-            cityListView.setVisible(false);
-            cityListView.setOpacity(0);
-
         citySearchField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                hideListView();
+                cityContextMenu.hide();
             }
         });
 
-        cityListView.setOnMouseClicked(event -> {
-            hideListView();
-        });
-            
         citySearchField.addEventFilter(KeyEvent.KEY_RELEASED, this::onCitySearch);
+
+        citySearchField.setContextMenu(cityContextMenu);
 
     }
 
     private void onCitySearch(KeyEvent event) {
         String query = citySearchField.getText().toLowerCase();
-        //String searchText = citySearchField.getText();
 
-        //List<Pair<String, Integer>> possibleCities = locationSelector.getPossibleLocations(query);
-        possibleCities = locationSelector.getPossibleLocations(query);
-
-        List<String> cityNames = new ArrayList<>();
-        for (Pair<String, Integer> city : possibleCities) {
-            cityNames.add(city.getX());
+        if (query.isEmpty()) {
+            cityContextMenu.hide();
+            return;
         }
 
-        //cityListView.setItems(FXCollections.observableArrayList(cityNames));
+        possibleCities = locationSelector.getPossibleLocations(query);
+        cityContextMenu.getItems().clear();
 
         if (!possibleCities.isEmpty()) {
-            updateWeatherInfo(possibleCities.get(0).getY());
-            cityListView.setItems(FXCollections.observableArrayList(cityNames));
-        } else {
-            cityListView.setItems(FXCollections.observableArrayList("Nessuna città trovata"));
-        }
+            for (Pair<String, Integer> city : possibleCities) {
+                MenuItem cityItem = new MenuItem(city.getX());
+                cityItem.setOnAction(event1 -> updateWeatherInfo(city.getY()));
+                cityContextMenu.getItems().add(cityItem);
 
-        adjustListViewHeight();
+            }
+        } else {
+            MenuItem noResults = new MenuItem("Nessuna città trovata");
+            cityContextMenu.getItems().add(noResults);
+        }
     }
 
     private void updateWeatherInfo(int cityID) {
@@ -171,33 +159,6 @@ public class mainGUIcontroller {
                 updateLabels();
             }
         }
-    }
-
-    private void adjustListViewHeight() {
-        double itemHeight = 24;
-        int maxVisibleItems = 5;
-
-        int itemsCount = cityListView.getItems().size();
-        int visibleRows = Math.min(itemsCount, maxVisibleItems);
-        double newHeight = visibleRows * itemHeight;
-
-        cityListView.setPrefHeight(newHeight > 0 ? newHeight : 0);
-
-        if (itemsCount > 0) {
-            showListView();
-        } else {
-            hideListView();
-        }
-    }
-
-    private void showListView() {
-        cityListView.setVisible(true);
-        cityListView.setOpacity(1);
-    }
-
-    private void hideListView() {
-        cityListView.setVisible(false);
-        cityListView.setOpacity(0);
     }
 
     private void updateLabels() {
