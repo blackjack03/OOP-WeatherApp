@@ -111,7 +111,7 @@ public class ResultBox extends StackPane {
         clip.setX(0);
         clip.setY(0);
         mapImageView.setClip(clip);
-        
+
         final Rectangle border = new Rectangle();
         border.widthProperty().bind(mapImageView.fitWidthProperty().add(10));
         border.heightProperty().bind(mapImageView.fitHeightProperty().add(10));
