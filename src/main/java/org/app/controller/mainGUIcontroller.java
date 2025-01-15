@@ -118,7 +118,20 @@ public class mainGUIcontroller {
                             .findFirst();
                     city.ifPresent(pair -> updateWeatherInfo(pair.getY()));
                 }
-            });
+        });
+            
+            cityListView.setVisible(false);
+            cityListView.setOpacity(0);
+
+        citySearchField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                hideListView();
+            }
+        });
+
+        cityListView.setOnMouseClicked(event -> {
+            hideListView();
+        });
             
         citySearchField.addEventFilter(KeyEvent.KEY_RELEASED, this::onCitySearch);
 
@@ -136,13 +149,16 @@ public class mainGUIcontroller {
             cityNames.add(city.getX());
         }
 
-        cityListView.setItems(FXCollections.observableArrayList(cityNames));
+        //cityListView.setItems(FXCollections.observableArrayList(cityNames));
 
         if (!possibleCities.isEmpty()) {
             updateWeatherInfo(possibleCities.get(0).getY());
+            cityListView.setItems(FXCollections.observableArrayList(cityNames));
         } else {
             cityListView.setItems(FXCollections.observableArrayList("Nessuna città trovata"));
         }
+
+        adjustListViewHeight();
     }
 
     private void updateWeatherInfo(int cityID) {
@@ -155,6 +171,33 @@ public class mainGUIcontroller {
                 updateLabels();
             }
         }
+    }
+
+    private void adjustListViewHeight() {
+        double itemHeight = 24;
+        int maxVisibleItems = 5;
+
+        int itemsCount = cityListView.getItems().size();
+        int visibleRows = Math.min(itemsCount, maxVisibleItems);
+        double newHeight = visibleRows * itemHeight;
+
+        cityListView.setPrefHeight(newHeight > 0 ? newHeight : 0);
+
+        if (itemsCount > 0) {
+            showListView();
+        } else {
+            hideListView();
+        }
+    }
+
+    private void showListView() {
+        cityListView.setVisible(true);
+        cityListView.setOpacity(1);
+    }
+
+    private void hideListView() {
+        cityListView.setVisible(false);
+        cityListView.setOpacity(0);
     }
 
     private void updateLabels() {
