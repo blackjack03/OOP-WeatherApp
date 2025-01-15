@@ -62,8 +62,11 @@ public class TravelModeViewImpl implements TravelModeView {
         searchButton.setOnAction(event -> {
             final LocalTime departureTime = LocalTime.of(departureInputBox.getSelectedHour(), departureInputBox.getSelectedMinute());
             this.controller.setDepartureTime(departureTime);
+            searchButton.setDisable(true);
             this.controller.startRouteAnalysis();
         });
+
+        final Button requestAlternatives = new Button("OTTIENI PERCORSI ALTERNATIVI");
 
         final StackPane centerPane = new StackPane();
         centerPane.getChildren().add(searchButton);
