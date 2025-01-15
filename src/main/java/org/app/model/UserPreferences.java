@@ -3,18 +3,18 @@ package org.app.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserPreferences {
-    private String defaultCuty;
+    private String defaultCity;
     private String units;
     private String language;
 
     @JsonProperty
-    public String getDefaultCuty() {
-        return defaultCuty;
+    public String getDefaultCity() {
+        return defaultCity;
     }
 
     @JsonProperty
-    public void setDefaultCuty(String defaultCuty) {
-        this.defaultCuty = defaultCuty;
+    public void setDefaultCity(String defaultCity) {
+        this.defaultCity = defaultCity;
     }
 
     @JsonProperty
