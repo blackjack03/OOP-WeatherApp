@@ -6,7 +6,7 @@ import javafx.application.Application;
 
 public class Main {
 
-    private final static String FILE_PATH = "src/main/java/org/files/config.json";
+    private final static String FILE_PATH = "src/main/java/org/files/configuration.json";
 
     public static void main(String[] args) {
         /*String cwd = System.getProperty("user.dir");

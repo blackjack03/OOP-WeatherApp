@@ -14,6 +14,7 @@ public class ConfigManager {
             config = mapper.readValue(new File(filePath), AppConfig.class);
             System.out.println ("Configuration loaded successfully.");
         } catch (IOException e) {
+            //e.printStackTrace();
             throw new RuntimeException ("ERROR! File cannot be loaded.");
         }
     }
@@ -31,6 +32,7 @@ public class ConfigManager {
             mapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), config);
             System.out.println ("Configuration saved successfully.");
         } catch (IOException e) {
+            //e.printStackTrace();
             throw new RuntimeException ("ERROR! Save unsuccessful");
         }
     }
