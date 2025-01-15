@@ -14,6 +14,8 @@ public interface WeatherInterface {
 
     Optional<Map<String, Map<String, String>>> getDailyInfo();
 
+    Optional<Map<String, Number>> getWeatherOn(int day, int month, int year, String hour);
+
     int getForecastDays();
 
     Optional<Pair<String, Map<String, Number>>> getWeatherNow();

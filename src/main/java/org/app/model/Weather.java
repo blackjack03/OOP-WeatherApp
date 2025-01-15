@@ -20,13 +20,14 @@ public class Weather implements WeatherInterface {
     private AbstractPair<String, String> coords;
 
     private final String FORECAST_API_URL = "https://api.open-meteo.com/v1/forecast?latitude=%LAT&longitude=%LNG&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,wind_direction_10m,pressure_msl,soil_temperature_0cm&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max&timezone=auto&forecast_days=8";
-    private final String NOW_API_URL = "https://api.open-meteo.com/v1/forecast?latitude=44.2218&longitude=12.0414&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&timezone=auto&forecast_days=1";
+    private final String NOW_API_URL = "https://api.open-meteo.com/v1/forecast?latitude=%LAT&longitude=%LNG&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&timezone=auto&forecast_days=1";
+    private final String DETAILS_API_URL = "https://api.open-meteo.com/v1/forecast?latitude=%LAT&longitude=%LNG&minutely_15=precipitation,snowfall,freezing_level_height,weather_code,wind_gusts_10m,visibility&start_date=%DATE&end_date=%DATE";
     private final String URL_CITY_INFO = "https://www.ilmeteo.it/meteo/";
 
-    // 14-days forecast info hour-by-hour
+    // 8-days forecast info hour-by-hour
     private final Map<String, Map<String, Map<String, Number>>> FORECAST_HOURS = new HashMap<>();
 
-    // 14-days general forecast info (day weather icon, min/max temperature)
+    // 8-days general forecast info (day weather icon, min/max temperature)
     private final Map<String, Map<String, Number>> DAILY_GENERAL_FORECAST = new HashMap<>();
 
     // Sunset, Sunrise
@@ -35,7 +36,11 @@ public class Weather implements WeatherInterface {
     // City Info
     private final Map<String, Number> CITY_INFO = new HashMap<>();
 
+    // Now Weather
     private final Map<String, Number> NOW = new HashMap<>();
+
+    // Specific Weather of Day
+    private final Map<String, Number> DAY_HOUR_DETAILS = new HashMap<>();
 
     private int forecast_days = 0;
 
@@ -177,6 +182,54 @@ public class Weather implements WeatherInterface {
     }
 
     @Override
+    public Optional<Map<String, Number>> getWeatherOn(final int day, final int month, final int year, final String hour) {
+        try {
+            final String nearHour = this.roundToNearestQuarter(hour);
+            final StringBuilder dateBuilder = new StringBuilder();
+            dateBuilder.append(year).append("-");
+            if (month < 10) {
+                dateBuilder.append("0");
+                dateBuilder.append(month);
+            } else {
+                dateBuilder.append(month);
+            }
+            dateBuilder.append("-");
+            if (day < 10) {
+                dateBuilder.append("0");
+                dateBuilder.append(day);
+            } else {
+                dateBuilder.append(day);
+            }
+            final String DATE = dateBuilder.toString();
+            dateBuilder.append("T");
+            dateBuilder.append(nearHour);
+            final String DATE_HOUR = dateBuilder.toString();
+            final String URL = DETAILS_API_URL
+                .replace("%LAT", this.coords.getX())
+                .replace("%LNG", this.coords.getY())
+                .replace("%DATE", DATE);
+            final var reader = new AdvancedJsonReader(URL);
+            final JsonArray MINUTES = reader.getJsonArray("minutely_15.time");
+            final List<String> MINUTES_LIST = new ArrayList<>();
+            for (int i = 0; i < MINUTES.size(); i++) {
+                MINUTES_LIST.add(MINUTES.get(i).getAsString());
+            }
+            final int IDX = MINUTES_LIST.indexOf(DATE_HOUR);
+            final Map<String, Number> OUT = new HashMap<>();
+            OUT.put("precipitation", reader.getJsonArray("minutely_15.precipitation").get(IDX).getAsNumber());
+            OUT.put("snowfall", reader.getJsonArray("minutely_15.snowfall").get(IDX).getAsNumber());
+            OUT.put("freezing_level_height", reader.getJsonArray("minutely_15.freezing_level_height").get(IDX).getAsNumber());
+            OUT.put("weather_code", reader.getJsonArray("minutely_15.weather_code").get(IDX).getAsNumber());
+            OUT.put("wind_gusts", reader.getJsonArray("minutely_15.wind_gusts_10m").get(IDX).getAsNumber());
+            OUT.put("visibility", reader.getJsonArray("minutely_15.visibility").get(IDX).getAsNumber());
+            return Optional.of(OUT);
+        } catch(final Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public int getForecastDays() {
         return this.forecast_days;
     }
@@ -210,7 +263,9 @@ public class Weather implements WeatherInterface {
         if (this.last_update == 0 ||
             this.checkMinutesPassed(this.last_update, 20)) {
             try {
-                final var reader = new AdvancedJsonReader(this.NOW_API_URL);
+                final var reader = new AdvancedJsonReader(this.NOW_API_URL
+                    .replace("%LAT", this.coords.getX())
+                    .replace("%LNG", this.coords.getY()));
                 if (!this.setCurrentWeather(reader)) {
                     this.last_update = 0;
                     return Optional.empty();
@@ -327,5 +382,33 @@ public class Weather implements WeatherInterface {
         final String numberStr = str.replaceAll("[^\\d]", "");
         return Integer.parseInt(numberStr);
     }
+
+    private String roundToNearestQuarter(final String orario) {
+        final String[] parti = orario.split(":");
+        int ore = Integer.parseInt(parti[0]);
+        int minuti = Integer.parseInt(parti[1]);
+
+        final int resto = minuti % 15;
+
+        if (resto < 8) {
+            minuti -= resto;
+        } else {
+            minuti += (15 - resto);
+        }
+
+        if (minuti == 60) {
+            minuti = 0;
+            ore += 1;
+            if (ore == 24) {
+                ore = 0;
+            }
+        }
+
+        final String oreFormattate = String.format("%02d", ore);
+        final String minutiFormattati = String.format("%02d", minuti);
+
+        return oreFormattate + ":" + minutiFormattati;
+    }
+
 
 }
