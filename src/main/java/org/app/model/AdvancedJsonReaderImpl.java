@@ -12,13 +12,13 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     private JsonObject JSON_BODY;
     private boolean isSet = false;
 
-    AdvancedJsonReaderImpl() { /* empty body */ }
+    public AdvancedJsonReaderImpl() { /* empty body */ }
 
-    AdvancedJsonReaderImpl(final String jsonURL) throws Exception {
+    public AdvancedJsonReaderImpl(final String jsonURL) throws Exception {
         requestJSON(jsonURL);
     }
 
-    AdvancedJsonReaderImpl(final JsonObject jsonObj) {
+    public AdvancedJsonReaderImpl(final JsonObject jsonObj) {
         this.json_raw_text = jsonObj.toString();
         parseAndSetJson();
     }
