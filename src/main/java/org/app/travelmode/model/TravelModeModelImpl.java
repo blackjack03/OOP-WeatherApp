@@ -77,7 +77,7 @@ public class TravelModeModelImpl implements TravelModeModel {
                 "&key=" + googleApiKey;
         final ZoneId departureZoneId;
         try { //TODO: da migliorare
-            final AdvancedJsonReaderImpl jsonReader = new AdvancedJsonReader(placeDetailsUrl);
+            final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl(placeDetailsUrl);
             int utcOffset = jsonReader.getInt("result\\utc_offset");
             departureZoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
         } catch (Exception e) {
