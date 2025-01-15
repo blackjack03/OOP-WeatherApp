@@ -41,6 +41,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.18.1")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.opencsv:opencsv:5.5.2")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
 
     /*
      * Simple Logging Facade for Java (SLF4J) with Apache Log4j

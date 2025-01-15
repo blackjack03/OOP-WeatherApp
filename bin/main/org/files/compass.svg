@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Brújula_N" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="800px" height="800px" viewBox="0 0 800 800" enable-background="new 0 0 800 800" xml:space="preserve">
+<symbol  id="elm" viewBox="-300.5 -300.5 601 601">
+	<polygon fill="#FFDD55" stroke="#333" stroke-linejoin="round" points="0,300 30,30 300,0 30,-30 0,-300 -30,-30 -300,0 -30,30
+			"/>
+	<polygon fill="#806600" stroke="#333" points="0,300 30,30 0,0 30,-30 0,-300 	"/>
+	<polygon fill="#806600" stroke="#333" points="300,0 30,-30 0,0 -30,-30 -300,0 	"/>
+	<line fill="none" stroke="#333" x1="-30" y1="30" x2="0" y2="0"/>
+</symbol>
+<radialGradient id="bg_blue" cx="400" cy="400" r="225" gradientUnits="userSpaceOnUse">
+	<stop  offset="0" style="stop-color:#39C"/>
+	<stop  offset="0.66" style="stop-color:#39C;stop-opacity:0.5"/>
+	<stop  offset="1" style="stop-color:#39C;stop-opacity:0"/>
+</radialGradient>
+<circle fill="url(#bg_blue)" cx="400" cy="400" r="225"/>
+<use xlink:href="#elm"  width="601" height="601" x="-300.5" y="-300.5" transform="matrix(0.7179 -0.2974 -0.2974 -0.7179 400 400)" overflow="visible"/>
+<use xlink:href="#elm"  width="601" height="601" x="-300.5" y="-300.5" transform="matrix(0.7179 0.2974 -0.2974 0.7179 400 400)" overflow="visible"/>
+<use xlink:href="#elm"  width="601" height="601" x="-300.5" y="-300.5" transform="matrix(0.6267 0.6267 0.6267 -0.6267 400 400)" overflow="visible"/>
+<use xlink:href="#elm"  width="601" height="601" id="XMLID_1_" x="-300.5" y="-300.5" transform="matrix(1 0 0 -1 400 400)" overflow="visible"/>
+<polygon fill="#FFFF66" stroke="#333" stroke-miterlimit="10" points="400.001,100 400,400 100,400 370,370 "/>
+<line fill="none" stroke="#333" stroke-miterlimit="10" x1="400" y1="400" x2="370" y2="370"/>
+<linearGradient id="hl_N" gradientUnits="userSpaceOnUse" x1="550.0002" y1="250" x2="850.0002" y2="250" gradientTransform="matrix(0 -1 1 0 150.0002 950.0002)">
+	<stop  offset="0" style="stop-color:#F00;stop-opacity:0"/>
+	<stop  offset="0.25" style="stop-color:#F00;stop-opacity:0.5"/>
+	<stop  offset="1" style="stop-color:#F00"/>
+</linearGradient>
+<polygon id="hl_N" fill="url(#hl_N)" points="400,400 370,370 400,100 430,370 "/>
+<g id="text">
+	<text transform="matrix(1 0 0 1 381 72.444)" fill="#F00" font-family="'DejaVuSans'" font-size="60">N</text>
+	<text transform="matrix(1 0 0 1 384 762.444)" fill="#333" font-family="'DejaVuSans'" font-size="60">S</text>
+	<text transform="matrix(1 0 0 1 26.387 418)" fill="#333" font-family="'DejaVuSans'" font-size="60">O</text>
+	<text transform="matrix(1 0 0 1 731.0452 418)" fill="#333" font-family="'DejaVuSans'" font-size="60">E</text>
+	<text transform="matrix(1 0 0 1 132.762 192.434)" fill="#333" font-family="'DejaVuSans'" font-size="42">NO</text>
+	<text transform="matrix(1 0 0 1 601.0227 192.434)" fill="#333" font-family="'DejaVuSans'" font-size="42">NE</text>
+	<text transform="matrix(1 0 0 1 138.1409 632.434)" fill="#333" font-family="'DejaVuSans'" font-size="42">SO</text>
+	<text transform="matrix(1 0 0 1 603.4016 632.434)" fill="#333" font-family="'DejaVuSans'" font-size="42">SE</text>
+	<text transform="matrix(1 0 0 1 238.0354 136.623)" fill="#333" font-family="'DejaVuSans'" font-size="28">NNO</text>
+	<text transform="matrix(1 0 0 1 500.2092 136.623)" fill="#333" font-family="'DejaVuSans'" font-size="28">NNE</text>
+	<text transform="matrix(1 0 0 1 91.4885 287.623)" fill="#333" font-family="'DejaVuSans'" font-size="28">ONO</text>
+	<text transform="matrix(1 0 0 1 647.8362 287.623)" fill="#333" font-family="'DejaVuSans'" font-size="28">ENE</text>
+	<text transform="matrix(1 0 0 1 93.0745 513.623)" fill="#333" font-family="'DejaVuSans'" font-size="28">OSO</text>
+	<text transform="matrix(1 0 0 1 649.4221 513.623)" fill="#333" font-family="'DejaVuSans'" font-size="28">ESE</text>
+	<text transform="matrix(1 0 0 1 241.2073 676.623)" fill="#333" font-family="'DejaVuSans'" font-size="28">SSO</text>
+	<text transform="matrix(1 0 0 1 503.3811 676.623)" fill="#333" font-family="'DejaVuSans'" font-size="28">SSE</text>
+</g>
+</svg>
