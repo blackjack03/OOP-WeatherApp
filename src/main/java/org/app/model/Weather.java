@@ -39,9 +39,6 @@ public class Weather implements WeatherInterface {
     // Now Weather
     private final Map<String, Number> NOW = new HashMap<>();
 
-    // Specific Weather of Day
-    private final Map<String, Number> DAY_HOUR_DETAILS = new HashMap<>();
-
     private int forecast_days = 0;
 
     // Current weather last update vars
