@@ -78,7 +78,7 @@ public class TravelModeModelImpl implements TravelModeModel {
         final ZoneId departureZoneId;
         try { //TODO: da migliorare
             final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl(placeDetailsUrl);
-            int utcOffset = jsonReader.getInt("result\\utc_offset");
+            int utcOffset = jsonReader.getInt("result.utc_offset");
             departureZoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -120,17 +120,18 @@ public class TravelModeModelImpl implements TravelModeModel {
         }
 
         final RouteAnalyzer routeAnalyzer = new RouteAnalyzerImpl(new IntermediatePointFinderImpl(), new SubStepGeneratorImpl());
-        for (final DirectionsRoute route : directionResult.getRoutes()) {
-            final List<SimpleDirectionsStep> intermediatePoints = routeAnalyzer.calculateIntermediatePoints(route);
-            System.out.println(intermediatePoints);
-            final List<Checkpoint> checkpoints = generateCheckpoints(intermediatePoints, travelRequest);
-            System.out.println(checkpoints);
-            final List<CheckpointWithMeteo> checkpointWithMeteos = new ArrayList<>();
-            for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
-                checkpointWithMeteos.add(new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime(), weatherReport));
-            }
-            this.results.add(new TravelModeResultImpl(checkpointWithMeteos, route.getSummary(), route.getOverview_polyline().getPoints(), calculateRouteDuration(route)));
+
+        final DirectionsRoute firstRoute = directionResult.getRoutes().get(0);
+
+        final List<SimpleDirectionsStep> intermediatePoints = routeAnalyzer.calculateIntermediatePoints(firstRoute);
+        System.out.println(intermediatePoints);
+        final List<Checkpoint> checkpoints = generateCheckpoints(intermediatePoints, travelRequest);
+        System.out.println(checkpoints);
+        final List<CheckpointWithMeteo> checkpointWithMeteos = new ArrayList<>();
+        for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
+            checkpointWithMeteos.add(new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime(), weatherReport));
         }
+        this.results.add(new TravelModeResultImpl(checkpointWithMeteos, firstRoute.getSummary(), firstRoute.getOverview_polyline().getPoints(), calculateRouteDuration(firstRoute)));
     }
 
     private List<Checkpoint> generateCheckpoints(final List<SimpleDirectionsStep> steps, final TravelRequest travelRequest) {
