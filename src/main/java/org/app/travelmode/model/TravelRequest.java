@@ -2,6 +2,8 @@ package org.app.travelmode.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 /**
  * It represents a request with all the elements necessary to calculate a trip between two places
@@ -50,4 +52,17 @@ public interface TravelRequest {
      */
     LocalDate getDepartureDate();
 
+    /**
+     * Allows you to get the time zone of the departure location
+     *
+     * @return the time zone of the departure location stored in this request
+     */
+    ZoneId getDepartureTimeZone();
+
+    /**
+     * Allows you to get the {@link ZonedDateTime} stored in this request
+     *
+     * @return the {@link ZonedDateTime} stored in this request
+     */
+    ZonedDateTime getDepartureDateTime();
 }

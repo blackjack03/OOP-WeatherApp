@@ -1,10 +1,13 @@
 package org.app.travelmode.controller;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 import org.app.travelmode.model.*;
@@ -28,37 +31,51 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
     }
 
     @Override
-    public TravelRequestImpl.Builder setDepartureLocation(final String departureLocation) {
-        return this.model.setDepartureLocation(departureLocation);
+    public void setDepartureLocation(final String departureLocation) {
+        this.model.setDepartureLocation(departureLocation);
     }
 
     @Override
-    public TravelRequestImpl.Builder setDeparturePlaceId(final String departurePlaceId) {
-        return this.model.setDeparturePlaceId(departurePlaceId);
+    public void setDeparturePlaceId(final String departurePlaceId) {
+        this.model.setDeparturePlaceId(departurePlaceId);
     }
 
     @Override
-    public TravelRequestImpl.Builder setArrivalLocation(final String arrivalLocation) {
-        return this.model.setArrivalLocation(arrivalLocation);
+    public void setArrivalLocation(final String arrivalLocation) {
+        this.model.setArrivalLocation(arrivalLocation);
     }
 
     @Override
-    public TravelRequestImpl.Builder setArrivalPlaceId(final String arrivalPlaceId) {
-        return this.model.setArrivalPlaceId(arrivalPlaceId);
+    public void setArrivalPlaceId(final String arrivalPlaceId) {
+        this.model.setArrivalPlaceId(arrivalPlaceId);
     }
 
     @Override
-    public TravelRequestImpl.Builder setDepartureTime(final LocalTime departureTime) {
-        return this.model.setDepartureTime(departureTime);
+    public void setDepartureTime(final LocalTime departureTime) {
+        this.model.setDepartureTime(departureTime);
     }
 
     @Override
-    public TravelRequestImpl.Builder setDepartureDate(final LocalDate departureDate) {
-        return this.model.setDepartureDate(departureDate);
+    public void setDepartureDate(final LocalDate departureDate) {
+        this.model.setDepartureDate(departureDate);
     }
 
     @Override
     public void startRouteAnalysis() {
         this.model.startRouteAnalysis();
+        final TravelModeResult mainResult = this.model.getTravelModeMainResult();
+        final String meteoScore = String.valueOf(mainResult.getMeteoScore());
+        final Duration duration = mainResult.getDuration();
+        final String durationString = "Durata: " + duration.toString();
+        final String arrivalTime = mainResult.getArrivalTime().toString();
+        displayResult(meteoScore, mainResult.getSummary(), durationString, arrivalTime, mainResult.getMapImage());
+    }
+
+    public Image getStaticMap() {
+        return this.model.getStaticMap();
+    }
+
+    private void displayResult(final String meteoScore, final String description, final String duration, final String arrivalTime, final Image mapImage) {
+        this.view.displayResult(meteoScore, description, duration, arrivalTime, mapImage);
     }
 }

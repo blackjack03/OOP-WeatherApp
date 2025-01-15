@@ -1,11 +1,11 @@
 {
-    "api" : {
-        "baseUrl" : "URL-API",
-        "apiKey" : "API-KEY"
-    },
-    "userPreferences" : {
-        "defaultCity" : "Rome",
-        "units" : "metric",
-        "language" : "Italian"
-    }   
+  "api" : {
+    "baseUrl" : "URL-API",
+    "apiKey" : "API-KEY"
+  },
+  "userPreferences" : {
+    "defaultCity" : "Rome",
+    "units" : "metric",
+    "language" : "Italian"
+  }
 }
