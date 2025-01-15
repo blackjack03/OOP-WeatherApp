@@ -19,14 +19,16 @@ import java.net.URL;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class TravelModeModelImpl implements TravelModeModel {
 
     private final PlaceAutocomplete placeAutocomplete;
     private final TravelRequestImpl.Builder requestBuilder;
-    private String googleApiKey;
-    private DirectionsResponse directionsResponse;
     private final List<TravelModeResult> results;
+    private Optional<DirectionsResponse> directionsResponse;
+    private String googleApiKey;
 
     //TODO: da eliminare
     private WeatherCondition weatherCondition = new WeatherConditionImpl(WeatherType.THUNDERSTORM, Intensity.HIGH);
@@ -42,7 +44,6 @@ public class TravelModeModelImpl implements TravelModeModel {
         for (final WeatherCondition weatherCondition : weatherConditions) {
             weatherReport.addCondition(weatherCondition);
         }
-
 
 
         this.placeAutocomplete = new PlaceAutocompleteImpl();
@@ -110,9 +111,16 @@ public class TravelModeModelImpl implements TravelModeModel {
     public void startRouteAnalysis() {
         this.results.clear();
         final TravelRequest travelRequest = this.requestBuilder.build();
-        this.requestRoute(travelRequest);
+        this.directionsResponse = Optional.ofNullable(requestRoute(travelRequest));
+        final DirectionsResponse directionResult;
+        try {
+            directionResult = this.directionsResponse.get();
+        } catch (NoSuchElementException e) {
+            throw new IllegalStateException("Il servizio di calcolo delle indicazioni stradali non ha fornito alcun risultato");
+        }
+
         final RouteAnalyzer routeAnalyzer = new RouteAnalyzerImpl(new IntermediatePointFinderImpl(), new SubStepGeneratorImpl());
-        for (final DirectionsRoute route : this.directionsResponse.getRoutes()) {
+        for (final DirectionsRoute route : directionResult.getRoutes()) {
             final List<SimpleDirectionsStep> intermediatePoints = routeAnalyzer.calculateIntermediatePoints(route);
             System.out.println(intermediatePoints);
             final List<Checkpoint> checkpoints = generateCheckpoints(intermediatePoints, travelRequest);
@@ -150,11 +158,12 @@ public class TravelModeModelImpl implements TravelModeModel {
     }
 
     //TODO: delegare ad advanced json reader
-    private void requestRoute(final TravelRequest travelRequest) {
+    private DirectionsResponse requestRoute(final TravelRequest travelRequest) {
         final String urlString = "https://maps.googleapis.com/maps/api/directions/json" +
                 "?destination=place_id%3A" + travelRequest.getArrivalLocationPlaceId() +
                 "&origin=place_id%3A" + travelRequest.getDepartureLocationPlaceId() +
                 "&departure_time=" + travelRequest.getDepartureDateTime().toEpochSecond() +
+                "&alternatives=true" +
                 "&language=it" +
                 "&units=metric" +
                 "&key=" + googleApiKey;
@@ -179,11 +188,11 @@ public class TravelModeModelImpl implements TravelModeModel {
 
             System.out.println(response.toString());
             final Gson gson = new Gson();
-            directionsResponse = gson.fromJson(response.toString(), DirectionsResponse.class);
-            System.out.println(directionsResponse);
+            return gson.fromJson(response.toString(), DirectionsResponse.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public Image getStaticMap() {
