@@ -5,47 +5,24 @@ import com.google.gson.JsonObject;
 import javafx.scene.image.Image;
 import org.app.model.AdvancedJsonReader;
 import org.app.model.AdvancedJsonReaderImpl;
-import org.app.travelmode.directions.DirectionsLeg;
 import org.app.travelmode.directions.DirectionsResponse;
-import org.app.travelmode.directions.DirectionsRoute;
-import org.app.travelmode.directions.SimpleDirectionsStep;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
-import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class TravelModeModelImpl implements TravelModeModel {
 
     private final PlaceAutocomplete placeAutocomplete;
     private final TravelRequestImpl.Builder requestBuilder;
-    private final List<TravelModeResult> results;
+    private Directions directions;
     private Optional<DirectionsResponse> directionsResponse;
     private String googleApiKey;
 
-    //TODO: da eliminare
-    private WeatherCondition weatherCondition = new WeatherConditionImpl(WeatherType.THUNDERSTORM, Intensity.HIGH);
-    private WeatherCondition weatherCondition2 = new WeatherConditionImpl(WeatherType.FOG, Intensity.HIGH);
-    private WeatherCondition weatherCondition3 = new WeatherConditionImpl(WeatherType.HAIL, Intensity.HIGH);
-    private WeatherCondition weatherCondition4 = new WeatherConditionImpl(WeatherType.THUNDERSTORM, Intensity.HIGH);
-    private List<WeatherCondition> weatherConditions = List.of(weatherCondition, weatherCondition3, weatherCondition4);
-    private WeatherReport weatherReport = new WeatherReportImpl();
 
     public TravelModeModelImpl() {
-
-        //TODO: eliminare
-        for (final WeatherCondition weatherCondition : weatherConditions) {
-            weatherReport.addCondition(weatherCondition);
-        }
-
-
         this.placeAutocomplete = new PlaceAutocompleteImpl();
         this.requestBuilder = new TravelRequestImpl.Builder();
         //TODO: integrare in json reader
@@ -56,7 +33,6 @@ public class TravelModeModelImpl implements TravelModeModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.results = new ArrayList<>();
     }
 
     @Override
@@ -108,56 +84,12 @@ public class TravelModeModelImpl implements TravelModeModel {
     }
 
     @Override
-    public void startRouteAnalysis() {
-        this.results.clear();
-        final TravelRequest travelRequest = this.requestBuilder.build();
-        this.directionsResponse = Optional.ofNullable(requestRoute(travelRequest));
-        final DirectionsResponse directionResult;
-        try {
-            directionResult = this.directionsResponse.get();
-        } catch (NoSuchElementException e) {
-            throw new IllegalStateException("Il servizio di calcolo delle indicazioni stradali non ha fornito alcun risultato");
-        }
-
-        final RouteAnalyzer routeAnalyzer = new RouteAnalyzerImpl(new IntermediatePointFinderImpl(), new SubStepGeneratorImpl());
-
-        final DirectionsRoute firstRoute = directionResult.getRoutes().get(0);
-
-        final List<SimpleDirectionsStep> intermediatePoints = routeAnalyzer.calculateIntermediatePoints(firstRoute);
-        System.out.println(intermediatePoints);
-        final List<Checkpoint> checkpoints = generateCheckpoints(intermediatePoints, travelRequest);
-        System.out.println(checkpoints);
-        final List<CheckpointWithMeteo> checkpointWithMeteos = new ArrayList<>();
-        for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
-            checkpointWithMeteos.add(new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime(), weatherReport));
-        }
-        this.results.add(new TravelModeResultImpl(checkpointWithMeteos, firstRoute.getSummary(), firstRoute.getOverview_polyline().getPoints(), calculateRouteDuration(firstRoute)));
+    public void startDirectionsAnalysis(final TravelRequest travelRequest) {
+        this.directions = new DirectionsImpl(travelRequest);
+        directions.askForDirections();
     }
 
-    private List<Checkpoint> generateCheckpoints(final List<SimpleDirectionsStep> steps, final TravelRequest travelRequest) {
-        final List<Checkpoint> checkpoints = new ArrayList<>();
-        final SimpleDirectionsStep firstStep = steps.get(0);
-        double latitude = firstStep.getStart_location().getLat();
-        double longitude = firstStep.getStart_location().getLng();
-        checkpoints.add(new CheckpointImpl(latitude, longitude, travelRequest.getDepartureDateTime()));
-        for (int i = 0; i < steps.size(); i++) {
-            final SimpleDirectionsStep step = steps.get(i);
-            latitude = step.getEnd_location().getLat();
-            longitude = step.getEnd_location().getLng();
-            long duration = (long) step.getDuration().getValue();
-            checkpoints.add(new CheckpointImpl(latitude, longitude, checkpoints.get(i).getArrivalDateTime().plusSeconds(duration)));
-        }
-        return checkpoints;
-    }
-
-    private Duration calculateRouteDuration(final DirectionsRoute route) {
-        double totalDuration = 0;
-        for (final DirectionsLeg leg : route.getLegs()) {
-            totalDuration += leg.getDuration().getValue();
-        }
-        return Duration.ofSeconds((long) totalDuration);
-    }
-
+    /*
     //TODO: delegare ad advanced json reader
     private DirectionsResponse requestRoute(final TravelRequest travelRequest) {
         final String urlString = "https://maps.googleapis.com/maps/api/directions/json" +
@@ -194,14 +126,24 @@ public class TravelModeModelImpl implements TravelModeModel {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
     public Image getStaticMap() {
-        return this.results.get(0).getMapImage();
+        return null;
     }
 
     @Override
     public TravelModeResult getTravelModeMainResult() {
-        return this.results.get(0);
+        return this.directions.getMainResult();
+    }
+
+    @Override
+    public List<TravelModeResult> getAlternativesResults() {
+        return this.directions.getAlternativeResults();
+    }
+
+    @Override
+    public TravelRequest finalizeTheRequest() {
+        return this.requestBuilder.build();
     }
 }
