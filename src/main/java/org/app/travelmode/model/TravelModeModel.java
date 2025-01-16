@@ -62,7 +62,7 @@ public interface TravelModeModel {
     /**
      * Start the analysis of possible routes between the inserted places
      */
-    void startRouteAnalysis();
+    void startDirectionsAnalysis(TravelRequest travelRequest);
 
     Image getStaticMap();
 
@@ -70,4 +70,18 @@ public interface TravelModeModel {
      * @return a {@link TravelModeResult} object representing the results from analyzing the first route recommended by the routing service
      */
     TravelModeResult getTravelModeMainResult();
+
+    /**
+     * Returns a list of alternative route results after analyzing the navigation service's response.
+     *
+     * @return a {@link List} of {@link TravelModeResult} for alternative routes.
+     */
+    List<TravelModeResult> getAlternativesResults();
+
+    /**
+     * Builds a {@link TravelRequest} based on the information entered by the user.
+     *
+     * @return {@link TravelRequest} object.
+     */
+    TravelRequest finalizeTheRequest();
 }
