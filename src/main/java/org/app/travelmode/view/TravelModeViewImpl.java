@@ -62,14 +62,19 @@ public class TravelModeViewImpl implements TravelModeView {
         searchButton.setOnAction(event -> {
             final LocalTime departureTime = LocalTime.of(departureInputBox.getSelectedHour(), departureInputBox.getSelectedMinute());
             this.controller.setDepartureTime(departureTime);
-            searchButton.setDisable(true);
+            //searchButton.setDisable(true);
+            this.resultsVBox.getChildren().clear();
             this.controller.startRouteAnalysis();
         });
 
         final Button requestAlternatives = new Button("OTTIENI PERCORSI ALTERNATIVI");
+        requestAlternatives.setOnAction(event -> {
+            this.controller.computeAlternativeResults();
+        });
 
-        final StackPane centerPane = new StackPane();
-        centerPane.getChildren().add(searchButton);
+        final VBox centerPane = new VBox(10);
+        centerPane.setAlignment(Pos.CENTER);
+        centerPane.getChildren().addAll(searchButton, requestAlternatives);
         centerPane.setStyle(
                 "-fx-border-color: black;" +                // Colore del bordo
                         "-fx-border-width: 2px;" +          // Larghezza del bordo
@@ -82,7 +87,9 @@ public class TravelModeViewImpl implements TravelModeView {
         root.setCenter(centerPane);
 
         root.setLeft(departureInputBox);
+        BorderPane.setAlignment(departureInputBox, Pos.TOP_RIGHT);
         root.setRight(arrivalInputBox);
+        BorderPane.setAlignment(arrivalInputBox, Pos.TOP_LEFT);
 
         //TODO: sistemare
         resultsVBox = new VBox(20);
