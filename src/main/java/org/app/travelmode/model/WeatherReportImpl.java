@@ -14,33 +14,38 @@ public class WeatherReportImpl implements WeatherReport {
     private static final int MIN_SCORE = 0;
     private static final int MAX_SCORE = 100;
 
-    private final List<WeatherCondition> weatherConditions;
+    private final List<WeatherCondition> meteoConditions;
 
     public WeatherReportImpl() {
-        this.weatherConditions = new ArrayList<>();
+        this.meteoConditions = new ArrayList<>();
     }
 
     @Override
     public void addCondition(final WeatherCondition condition) {
-        this.weatherConditions.add(condition);
+        this.meteoConditions.add(condition);
+    }
+
+    @Override
+    public void addConditions(final List<WeatherCondition> conditions) {
+        this.meteoConditions.addAll(conditions);
     }
 
     @Override
     public List<WeatherCondition> getConditions() {
-        return List.copyOf(this.weatherConditions);
+        return List.copyOf(this.meteoConditions);
     }
 
     @Override
     public int calculateWeatherScore() {
-        if (this.weatherConditions.isEmpty()) {
+        if (this.meteoConditions.isEmpty()) {
             return MAX_SCORE;
         }
 
         double totalImpact = 0;
         double maxPossibleImpact = 0;
 
-        for (final WeatherCondition condition : this.weatherConditions) {
-            double impact = condition.getImpact();
+        for (final WeatherCondition condition : this.meteoConditions) {
+            double impact = condition.getWeightedIntensityScore();
             totalImpact += impact;
             maxPossibleImpact += MAX_IMPACT;
         }
