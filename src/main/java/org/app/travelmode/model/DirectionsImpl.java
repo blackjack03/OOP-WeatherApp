@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.app.model.AdvancedJsonReader;
 import org.app.model.AdvancedJsonReaderImpl;
+import org.app.model.Weather;
 import org.app.travelmode.directions.DirectionsLeg;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.directions.DirectionsRoute;
@@ -11,9 +12,8 @@ import org.app.travelmode.directions.SimpleDirectionsStep;
 
 import java.io.FileReader;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 public class DirectionsImpl implements Directions {
 
@@ -24,20 +24,7 @@ public class DirectionsImpl implements Directions {
     private String googleApiKey;
 
 
-    //TODO: da eliminare
-    private final WeatherCondition weatherCondition = new WeatherConditionImpl(WeatherType.THUNDERSTORM, Intensity.HIGH);
-    private final WeatherCondition weatherCondition2 = new WeatherConditionImpl(WeatherType.FOG, Intensity.HIGH);
-    private final WeatherCondition weatherCondition3 = new WeatherConditionImpl(WeatherType.HAIL, Intensity.HIGH);
-    private final WeatherCondition weatherCondition4 = new WeatherConditionImpl(WeatherType.THUNDERSTORM, Intensity.HIGH);
-    private final List<WeatherCondition> weatherConditions = List.of(weatherCondition, weatherCondition3, weatherCondition4);
-    private final WeatherReport weatherReport = new WeatherReportImpl();
-
-
     public DirectionsImpl() {
-        //TODO: eliminare
-        for (final WeatherCondition weatherCondition : weatherConditions) {
-            weatherReport.addCondition(weatherCondition);
-        }
 
         this.mainResult = Optional.empty();
         this.alternativeResult = Optional.empty();
@@ -154,7 +141,7 @@ public class DirectionsImpl implements Directions {
 
         final List<CheckpointWithMeteo> checkpointsWithMeteo = new ArrayList<>();
         for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
-            checkpointsWithMeteo.add(new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime(), weatherReport));
+            checkpointsWithMeteo.add(this.addWeatherInformation(checkpoint));
         }
 
         return new TravelModeResultImpl(checkpointsWithMeteo, route.getSummary(), route.getOverview_polyline().getPoints(), calculateRouteDuration(route));
@@ -194,5 +181,27 @@ public class DirectionsImpl implements Directions {
             totalDuration += leg.getDuration().getValue();
         }
         return Duration.ofSeconds((long) totalDuration);
+    }
+
+    private CheckpointWithMeteo addWeatherInformation(final Checkpoint checkpoint) {
+        final double latitude = checkpoint.getLatitude();
+        final double longitude = checkpoint.getLongitude();
+        final ZonedDateTime arrivalDateTime = checkpoint.getArrivalDateTime();
+        final Map<String, String> coordinates = new HashMap<>();
+        coordinates.put("lat", String.valueOf(latitude));
+        coordinates.put("lng", String.valueOf(longitude));
+        final Weather weather = new Weather(coordinates);
+        final String arrivalHour = arrivalDateTime.getHour() + ":" + arrivalDateTime.getMinute();
+        final Map<String, Number> weatherInformation = weather.getWeatherOn(arrivalDateTime.getDayOfMonth(), arrivalDateTime.getMonthValue(), arrivalDateTime.getYear(), arrivalHour).get();
+        final WeatherConditionFactory weatherConditionFactory = new WeatherConditionFactoryImpl();
+        final List<WeatherCondition> weatherConditions = new ArrayList<>();
+        weatherConditions.add(weatherConditionFactory.createFreezingRisk(weatherInformation.get("freezing_level_height").doubleValue()));
+        weatherConditions.add(weatherConditionFactory.createSnowfall(weatherInformation.get("snowfall").doubleValue()));
+        weatherConditions.add(weatherConditionFactory.createPrecipitation(weatherInformation.get("precipitation").doubleValue()));
+        weatherConditions.add(weatherConditionFactory.createVisibility(weatherInformation.get("visibility").doubleValue()));
+        weatherConditions.add(weatherConditionFactory.createWindGust(weatherInformation.get("wind_gusts").doubleValue()));
+        final WeatherReport weatherReport = new WeatherReportImpl();
+        weatherReport.addConditions(weatherConditions);
+        return new CheckpointWithMeteoImpl(latitude, longitude, arrivalDateTime, weatherReport);
     }
 }
