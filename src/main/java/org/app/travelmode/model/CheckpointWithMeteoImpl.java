@@ -11,6 +11,10 @@ public class CheckpointWithMeteoImpl extends CheckpointImpl implements Checkpoin
         this.weatherReport = weatherReport;
     }
 
+    public CheckpointWithMeteoImpl(final Checkpoint checkpoint, final WeatherReport weatherReport) {
+        this(checkpoint.getLatitude(), checkpoint.getLongitude(), checkpoint.getArrivalDateTime(), weatherReport);
+    }
+
     @Override
     public WeatherReport getWeatherReport() {
         return this.weatherReport;
