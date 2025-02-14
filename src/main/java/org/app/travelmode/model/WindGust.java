@@ -5,13 +5,16 @@ public class WindGust extends AbstractWeatherCondition {
     private static final double WEIGHT = 1.6;
     private static final String NAME = "WindGust";
 
+    private final WindGustLevel intensity;
+
     public WindGust(double windGustSpeed) {
-        super(NAME, WindGustLevel.fromValue(windGustSpeed).getIntensityScore());
+        super(NAME, WEIGHT);
+        this.intensity = WindGustLevel.fromValue(windGustSpeed);
     }
 
     @Override
-    public double getWeightedIntensityScore() {
-        return getIntensityScore() * WEIGHT;
+    public int getIntensityScore() {
+        return this.intensity.getIntensityScore();
     }
 
     private enum WindGustLevel {
