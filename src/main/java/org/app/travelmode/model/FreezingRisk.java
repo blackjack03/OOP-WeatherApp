@@ -5,13 +5,16 @@ public class FreezingRisk extends AbstractWeatherCondition {
     private static final double WEIGHT = 1.8;
     private static final String NAME = "Freezing Risk";
 
+    private final FreezingLevel intensity;
+
     public FreezingRisk(double freezingHeightMetres) {
-        super(NAME, FreezingLevel.fromValue(freezingHeightMetres).getIntensityScore());
+        super(NAME, WEIGHT);
+        this.intensity = FreezingLevel.fromValue(freezingHeightMetres);
     }
 
     @Override
-    public double getWeightedIntensityScore() {
-        return getIntensityScore() * WEIGHT;
+    public int getIntensityScore() {
+        return intensity.getIntensityScore();
     }
 
     private enum FreezingLevel {
