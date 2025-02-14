@@ -6,5 +6,7 @@ public interface WeatherCondition {
 
     int getIntensityScore();
 
+    double getWorstWeightedIntensityScore();
+
     double getWeightedIntensityScore();
 }
