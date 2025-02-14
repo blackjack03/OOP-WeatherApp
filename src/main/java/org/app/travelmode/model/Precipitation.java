@@ -5,13 +5,16 @@ public class Precipitation extends AbstractWeatherCondition {
     private static final String NAME = "Precipitation";
     private static final double WEIGHT = 1.3;
 
+    private final PrecipitationLevel intensity;
+
     public Precipitation(double precipitationMm) {
-        super(NAME, PrecipitationLevel.fromValue(precipitationMm).getIntensityScore());
+        super(NAME, WEIGHT);
+        this.intensity = PrecipitationLevel.fromValue(precipitationMm);
     }
 
     @Override
-    public double getWeightedIntensityScore() {
-        return getIntensityScore() * WEIGHT;
+    public int getIntensityScore() {
+        return this.intensity.getIntensityScore();
     }
 
     private enum PrecipitationLevel {
