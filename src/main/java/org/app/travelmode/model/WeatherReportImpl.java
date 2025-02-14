@@ -47,7 +47,7 @@ public class WeatherReportImpl implements WeatherReport {
         for (final WeatherCondition condition : this.weatherConditions) {
             double impact = condition.getWeightedIntensityScore();
             totalImpact += impact;
-            maxPossibleImpact += MAX_IMPACT;
+            maxPossibleImpact += condition.getWorstWeightedIntensityScore();
         }
 
         double normalizedImpact = totalImpact / maxPossibleImpact;
