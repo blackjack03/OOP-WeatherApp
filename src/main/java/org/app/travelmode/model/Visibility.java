@@ -5,13 +5,16 @@ public class Visibility extends AbstractWeatherCondition {
     private static final double WEIGHT = 1.8;
     private static final String NAME = "Visibility";
 
+    private final VisibilityLevel intensity;
+
     public Visibility(double visibilityMeter) {
-        super(NAME, VisibilityLevel.fromValue(visibilityMeter).getIntensityScore());
+        super(NAME, WEIGHT);
+        this.intensity = VisibilityLevel.fromValue(visibilityMeter);
     }
 
     @Override
-    public double getWeightedIntensityScore() {
-        return getIntensityScore() * WEIGHT;
+    public int getIntensityScore() {
+        return this.intensity.getIntensityScore();
     }
 
     private enum VisibilityLevel {
