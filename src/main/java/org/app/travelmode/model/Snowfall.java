@@ -5,14 +5,16 @@ public class Snowfall extends AbstractWeatherCondition {
     private static final double WEIGHT = 1.5;
     private static final String NAME = "Snowfall";
 
+    private final SnowfallLevel intensity;
+
     public Snowfall(double snowfallCm) {
-        super(NAME, SnowfallLevel.fromValue(snowfallCm).getIntensityScore());
+        super(NAME, WEIGHT);
+        this.intensity = SnowfallLevel.fromValue(snowfallCm);
     }
 
-
     @Override
-    public double getWeightedIntensityScore() {
-        return getIntensityScore() * WEIGHT;
+    public int getIntensityScore() {
+        return this.intensity.getIntensityScore();
     }
 
     private enum SnowfallLevel {
