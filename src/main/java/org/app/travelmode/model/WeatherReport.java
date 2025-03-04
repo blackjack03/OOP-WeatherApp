@@ -26,6 +26,14 @@ public interface WeatherReport {
     List<WeatherCondition> getConditions();
 
     /**
+     * Return a score from 0 to 100 based on the combined impact of weather conditions.
+     * A score of 100 represents ideal weather, while 0 represents the worst-case scenario.
+     *
+     * @return an integer score between 0 and 100 representing this score
+     */
+    int getWeatherScore();
+
+    /**
      * Calculates a score from 0 to 100 based on the combined impact of weather conditions.
      * A score of 100 represents ideal weather, while 0 represents the worst-case scenario.
      *
