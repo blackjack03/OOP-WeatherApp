@@ -2,7 +2,7 @@ package org.app.travelmode.model;
 
 public class Visibility extends AbstractWeatherCondition {
 
-    private static final double WEIGHT = 1.8;
+    private static final double WEIGHT = 1.6;
     private static final String NAME = "Visibility";
 
     private final VisibilityLevel intensity;
