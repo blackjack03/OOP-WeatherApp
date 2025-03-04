@@ -22,6 +22,6 @@ public class CheckpointWithMeteoImpl extends CheckpointImpl implements Checkpoin
 
     @Override
     public int getWeatherScore() {
-        return this.weatherReport.calculateWeatherScore();
+        return this.weatherReport.getWeatherScore();
     }
 }
