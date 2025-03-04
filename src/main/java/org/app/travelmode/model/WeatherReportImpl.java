@@ -2,6 +2,7 @@ package org.app.travelmode.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation of the {@link WeatherReport} interface that represents a report
@@ -15,9 +16,11 @@ public class WeatherReportImpl implements WeatherReport {
     private static final int MAX_SCORE = 100;
 
     private final List<WeatherCondition> weatherConditions;
+    private Optional<Integer> weatherScore;
 
     public WeatherReportImpl() {
         this.weatherConditions = new ArrayList<>();
+        this.weatherScore = Optional.empty();
     }
 
     @Override
@@ -33,6 +36,11 @@ public class WeatherReportImpl implements WeatherReport {
     @Override
     public List<WeatherCondition> getConditions() {
         return List.copyOf(this.weatherConditions);
+    }
+
+    @Override
+    public int getWeatherScore() {
+        return weatherScore.orElseGet(this::calculateWeatherScore);
     }
 
     @Override
@@ -53,6 +61,8 @@ public class WeatherReportImpl implements WeatherReport {
         double normalizedImpact = totalImpact / maxPossibleImpact;
         int score = (int) Math.round((1 - normalizedImpact) * 100);
 
-        return Math.max(MIN_SCORE, Math.min(MAX_SCORE, score));
+        int finalScore = Math.max(MIN_SCORE, Math.min(MAX_SCORE, score));
+        this.weatherScore = Optional.of(finalScore);
+        return finalScore;
     }
 }
