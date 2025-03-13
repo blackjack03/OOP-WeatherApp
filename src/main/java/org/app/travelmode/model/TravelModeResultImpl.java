@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation of the {@link TravelModeResult} interface representing the result of the analysis of a trip,
@@ -22,7 +23,9 @@ public class TravelModeResultImpl implements TravelModeResult {
     private final LocalDateTime arrivalTime;
     private final String polyline;
     private final MapImageGenerator mapImageGenerator;
-    private Image mapImage;
+    private Optional<Image> mapImage;
+    private Optional<String> durationString;
+    private Optional<Integer> meteoScore;
     private String googleApiKey;
 
     public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary, final String polyline, final Duration duration) {
@@ -31,6 +34,9 @@ public class TravelModeResultImpl implements TravelModeResult {
         this.summary = summary;
         this.duration = duration;
         this.polyline = polyline;
+        this.mapImage = Optional.empty();
+        this.durationString = Optional.empty();
+        this.meteoScore = Optional.empty();
         //TODO: delegare
         try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
             final Gson gson = new Gson();
@@ -49,8 +55,10 @@ public class TravelModeResultImpl implements TravelModeResult {
 
     @Override
     public Image getMapImage() {
-        this.mapImage = this.mapImageGenerator.generateMapImage(checkpoints, polyline);
-        return mapImage;
+        if (this.mapImage.isEmpty()) {
+            this.mapImage = Optional.of(mapImageGenerator.generateMapImage(checkpoints, polyline));
+        }
+        return mapImage.get();
     }
 
     @Override
@@ -58,13 +66,10 @@ public class TravelModeResultImpl implements TravelModeResult {
         if (this.checkpoints.isEmpty()) {
             throw new IllegalArgumentException("La lista di checkpoint non può essere vuota.");
         }
-
-        int totalScore = 0;
-        for (final CheckpointWithMeteo checkpoint : this.checkpoints) {
-            totalScore += checkpoint.getWeatherScore();
+        if (this.meteoScore.isEmpty()) {
+            this.meteoScore = Optional.of(calculateMeteoScore(this.checkpoints));
         }
-
-        return (int) Math.round((double) totalScore / this.checkpoints.size());
+        return meteoScore.get();
     }
 
     @Override
@@ -80,5 +85,27 @@ public class TravelModeResultImpl implements TravelModeResult {
     @Override
     public LocalDateTime getArrivalTime() {
         return this.arrivalTime;
+    }
+
+    @Override
+    public String getDurationString() {
+        if (this.durationString.isEmpty()) {
+            this.durationString = Optional.of(formatDuration(duration));
+        }
+        return this.durationString.get();
+    }
+
+    private String formatDuration(final Duration duration) {
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        return hours + " ore " + minutes + " minuti";
+    }
+
+    private Integer calculateMeteoScore(final List<CheckpointWithMeteo> checkpoints) {
+        int totalScore = 0;
+        for (final CheckpointWithMeteo checkpoint : checkpoints) {
+            totalScore += checkpoint.getWeatherScore();
+        }
+        return (int) Math.round((double) totalScore / checkpoints.size());
     }
 }
