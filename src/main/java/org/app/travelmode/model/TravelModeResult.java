@@ -50,4 +50,12 @@ public interface TravelModeResult {
      * @return a {@link LocalDateTime} object representing the estimated arrival time.
      */
     LocalDateTime getArrivalTime();
+
+    /**
+     * Returns a string of the form h + "ore " + m + "minuti";
+     * where h and m are the hours and minutes respectively.
+     *
+     * @return a string representing the duration of the trip
+     */
+    String getDurationString();
 }
