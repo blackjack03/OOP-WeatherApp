@@ -4,8 +4,8 @@ import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -81,9 +81,10 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
 
     private void displayResult(final TravelModeResult travelModeResult) {
         final String meteoScore = String.valueOf(travelModeResult.getMeteoScore());
-        final Duration duration = travelModeResult.getDuration();
-        final String durationString = "Durata: " + duration.toString();
-        final String arrivalTime = travelModeResult.getArrivalTime().toString();
-        this.view.displayResult(meteoScore, travelModeResult.getSummary(), durationString, arrivalTime, travelModeResult.getMapImage());
+        final String durationString = travelModeResult.getDurationString();
+        final LocalDateTime arrivalDateTime = travelModeResult.getArrivalTime();
+        final String arrivalTime = arrivalDateTime.toLocalTime().toString();
+        final String arrivalDate = arrivalDateTime.toLocalDate().toString();
+        this.view.displayResult(meteoScore, travelModeResult.getSummary(), durationString, arrivalDate, arrivalTime, travelModeResult.getMapImage());
     }
 }
