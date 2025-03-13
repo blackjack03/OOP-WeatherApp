@@ -40,7 +40,10 @@ public class WeatherReportImpl implements WeatherReport {
 
     @Override
     public int getWeatherScore() {
-        return weatherScore.orElseGet(this::calculateWeatherScore);
+        if (this.weatherScore.isEmpty()) {
+            this.weatherScore = Optional.of(calculateWeatherScore());
+        }
+        return this.weatherScore.get();
     }
 
     @Override
