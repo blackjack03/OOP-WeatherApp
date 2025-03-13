@@ -16,5 +16,15 @@ public interface TravelModeView {
      */
     void displayError(String message);
 
-    void displayResult(String meteoScore, String description, String duration, String arrivalTime, Image mapImage);
+    /**
+     * Allows you to view the result of the analysis of a route.
+     *
+     * @param meteoScore  The score related to the weather conditions of the route.
+     * @param description A short description of the route.
+     * @param duration    The duration of the journey.
+     * @param arrivalDate The expected arrival date.
+     * @param arrivalTime The expected arrival time.
+     * @param mapImage    An image of a map representing the route.
+     */
+    void displayResult(String meteoScore, String description, String duration, String arrivalDate, String arrivalTime, Image mapImage);
 }
