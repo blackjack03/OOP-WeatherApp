@@ -14,4 +14,14 @@ public interface CityInputBox {
      * @return the {@link TextField} used to enter the city
      */
     TextField getCityTextField();
+
+    /**
+     * Disable all input fields in the component
+     */
+    void disableAllInputs();
+
+    /**
+     * Activate all input fields of the component
+     */
+    void activateAllInputs();
 }
