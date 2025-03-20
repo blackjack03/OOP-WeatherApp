@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -23,6 +24,10 @@ import java.util.function.Function;
 public class TravelModeViewImpl implements TravelModeView {
 
     private static final String STAGE_NAME = "Navigation Mode Test";
+    private static final String DEPARTURE_BOX_TITLE = "Partenza";
+    private static final String ARRIVAL_BOX_TITLE = "Arrivo";
+    private static final String SEARCH_BUTTON_TEXT = "CERCA PERCORSO";
+    private static final String ALTERNATIVES_BUTTON_TEXT = "OTTIENI PERCORSI ALTERNATIVI";
 
     private final TravelModeController controller;
 
@@ -54,21 +59,27 @@ public class TravelModeViewImpl implements TravelModeView {
         final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions = this.controller::getPlacePredictions;
         final Consumer<LocalDate> onDateSelected = this.controller::setDepartureDate;
 
-        final CityDateTimeInputBoxImpl departureInputBox = new CityDateTimeInputBoxImpl("Partenza", onDepartureCitySelected, fetcPredictions, onDateSelected, true);
-        final CityInputBoxImpl arrivalInputBox = new CityInputBoxImpl("Arrivo", onArrivalCitySelected, fetcPredictions, true);
+        final CityDateTimeInputBoxImpl departureInputBox = new CityDateTimeInputBoxImpl(DEPARTURE_BOX_TITLE, onDepartureCitySelected, fetcPredictions, onDateSelected, true);
+        final CityInputBoxImpl arrivalInputBox = new CityInputBoxImpl(ARRIVAL_BOX_TITLE, onArrivalCitySelected, fetcPredictions, true);
 
 
-        final Button searchButton = new Button("CERCA PERCORSO");
+        final Button searchButton = new Button(SEARCH_BUTTON_TEXT);
+        final Button requestAlternatives = new Button(ALTERNATIVES_BUTTON_TEXT);
+        final Button newSearchButton = new Button("AVVIA UNA NUOVA RICERCA");
+
         searchButton.setOnAction(event -> {
-            final LocalTime departureTime = LocalTime.of(departureInputBox.getSelectedHour(), departureInputBox.getSelectedMinute());
-            this.controller.setDepartureTime(departureTime);
+            this.controller.setDepartureTime(departureInputBox.getSelectedTime());
             //searchButton.setDisable(true);
+            //departureInputBox.disableAllInputs();
+            //arrivalInputBox.disableAllInputs();
+            requestAlternatives.setDisable(false);
             this.resultsVBox.getChildren().clear();
             this.controller.startRouteAnalysis();
         });
 
-        final Button requestAlternatives = new Button("OTTIENI PERCORSI ALTERNATIVI");
+        requestAlternatives.setDisable(true);
         requestAlternatives.setOnAction(event -> {
+            requestAlternatives.setDisable(true);
             this.controller.computeAlternativeResults();
         });
 
@@ -96,10 +107,12 @@ public class TravelModeViewImpl implements TravelModeView {
         resultsVBox.setAlignment(Pos.CENTER);
         resultsVBox.setFillWidth(true);
         resultsVBox.setPrefHeight(scene.getHeight() * 0.7);
+        resultsVBox.setStyle("-fx-padding: 20px");
         final ScrollPane scrollPane = new ScrollPane(resultsVBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        //scrollPane.setStyle("-fx-border-color: transparent;" + "-fx-background-color: transparent;");
         root.setBottom(scrollPane);
         BorderPane.setAlignment(scrollPane, Pos.CENTER);
 
