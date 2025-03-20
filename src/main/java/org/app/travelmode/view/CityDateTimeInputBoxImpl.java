@@ -6,6 +6,7 @@ import javafx.scene.layout.VBox;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -14,6 +15,7 @@ import java.util.function.Function;
 public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDateTimeInputBox {
 
     private static final double SPACING = 5;
+    private static final String TITLED_PANE_PROMPT = "Personalizza data e ora";
 
     private final Spinner<Integer> hourSpinner;
     private final Spinner<Integer> minuteSpinner;
@@ -26,10 +28,12 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
         // Spinner per le ore (0-23)
         this.hourSpinner = new Spinner<>();
         hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12));
+        hourSpinner.setStyle("-fx-font-size: 14px; -fx-border-color: #3498db; -fx-border-radius: 5px;");
 
         // Spinner per i minuti (0-59) con incremento di 5 minuti
         this.minuteSpinner = new Spinner<>();
         minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 5));
+        minuteSpinner.setStyle("-fx-font-size: 14px; -fx-border-color: #3498db; -fx-border-radius: 5px;");
 
         this.datePicker = new DatePicker();
         final LocalDate oggi = LocalDate.now();
@@ -52,6 +56,7 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
         datePicker.setOnAction(event -> onDateSelected.accept(datePicker.getValue()));
         datePicker.setShowWeekNumbers(false);
         datePicker.setEditable(false);
+        datePicker.setStyle("-fx-font-size: 14px; -fx-border-color: #3498db; -fx-border-radius: 5px;");
 
         final HBox timeHBox = new HBox();
         timeHBox.getChildren().addAll(hourSpinner, minuteSpinner);
@@ -59,8 +64,9 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
         final VBox dateTimeVBox = new VBox(SPACING);
         dateTimeVBox.getChildren().addAll(timeHBox, datePicker);
 
-        dateTimeTitledPane = new TitledPane("Personalizza data e ora", dateTimeVBox);
+        dateTimeTitledPane = new TitledPane(TITLED_PANE_PROMPT, dateTimeVBox);
         dateTimeTitledPane.setExpanded(false);
+        dateTimeTitledPane.setStyle("-fx-font-size: 16px;");
 
         this.getChildren().add(dateTimeTitledPane);
 
@@ -99,4 +105,29 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
         return this.minuteSpinner.getValue();
     }
 
+    @Override
+    public LocalTime getSelectedTime() {
+        if (this.dateTimeTitledPane.isExpanded()) {
+            return LocalTime.of(this.hourSpinner.getValue(), this.minuteSpinner.getValue());
+        }
+        return LocalTime.now();
+    }
+
+    @Override
+    public void disableAllInputs() {
+        this.setDisableAllInputs(true);
+    }
+
+    @Override
+    public void activateAllInputs() {
+        this.setDisableAllInputs(false);
+    }
+
+    @Override
+    protected void setDisableAllInputs(boolean disable) {
+        super.setDisableAllInputs(disable);
+        this.hourSpinner.setDisable(disable);
+        this.minuteSpinner.setDisable(disable);
+        this.datePicker.setDisable(disable);
+    }
 }
