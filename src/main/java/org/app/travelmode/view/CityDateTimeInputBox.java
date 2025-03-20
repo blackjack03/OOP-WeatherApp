@@ -3,6 +3,8 @@ package org.app.travelmode.view;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Spinner;
 
+import java.time.LocalTime;
+
 public interface CityDateTimeInputBox extends CityInputBox {
 
     /**
@@ -29,4 +31,11 @@ public interface CityDateTimeInputBox extends CityInputBox {
      * @return the selected number in the minute spinner
      */
     int getSelectedMinute();
+
+    /**
+     * Return the selected departure time
+     *
+     * @return a {@link LocalTime} representing the selected departure time
+     */
+    LocalTime getSelectedTime();
 }
