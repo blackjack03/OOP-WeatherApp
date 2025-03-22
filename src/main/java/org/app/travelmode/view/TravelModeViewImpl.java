@@ -5,17 +5,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -30,19 +25,19 @@ public class TravelModeViewImpl implements TravelModeView {
     private static final String ALTERNATIVES_BUTTON_TEXT = "OTTIENI PERCORSI ALTERNATIVI";
 
     private final TravelModeController controller;
-
     private final Stage stage;
     private final Scene scene;
-    private final BorderPane root;
-    private VBox resultsVBox; //TODO: sistemare
+    private final VBox root;
+    private VBox resultsVBox;
 
 
     public TravelModeViewImpl(final TravelModeController controller) {
         this.controller = controller;
         this.stage = new Stage();
         this.stage.setTitle(STAGE_NAME);
-        this.root = new BorderPane();
-        this.scene = new Scene(root, 850, 600);
+        this.root = new VBox(20);
+        this.scene = new Scene(root, 900, 650);
+        this.scene.getStylesheets().add(ClassLoader.getSystemResource("css/style.css").toExternalForm());
     }
 
     @Override
@@ -56,11 +51,11 @@ public class TravelModeViewImpl implements TravelModeView {
             this.controller.setArrivalLocation(desc);
             this.controller.setArrivalPlaceId(pID);
         };
-        final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions = this.controller::getPlacePredictions;
+        final Function<String, List<PlaceAutocompletePrediction>> fetchPredictions = this.controller::getPlacePredictions;
         final Consumer<LocalDate> onDateSelected = this.controller::setDepartureDate;
 
-        final CityDateTimeInputBoxImpl departureInputBox = new CityDateTimeInputBoxImpl(DEPARTURE_BOX_TITLE, onDepartureCitySelected, fetcPredictions, onDateSelected, true);
-        final CityInputBoxImpl arrivalInputBox = new CityInputBoxImpl(ARRIVAL_BOX_TITLE, onArrivalCitySelected, fetcPredictions, true);
+        final CityDateTimeInputBoxImpl departureInputBox = new CityDateTimeInputBoxImpl(DEPARTURE_BOX_TITLE, onDepartureCitySelected, fetchPredictions, onDateSelected, true);
+        final CityInputBoxImpl arrivalInputBox = new CityInputBoxImpl(ARRIVAL_BOX_TITLE, onArrivalCitySelected, fetchPredictions, true);
 
 
         final Button searchButton = new Button(SEARCH_BUTTON_TEXT);
@@ -72,55 +67,45 @@ public class TravelModeViewImpl implements TravelModeView {
             //searchButton.setDisable(true);
             //departureInputBox.disableAllInputs();
             //arrivalInputBox.disableAllInputs();
-            requestAlternatives.setDisable(false);
             this.resultsVBox.getChildren().clear();
             this.controller.startRouteAnalysis();
+            requestAlternatives.setDisable(false);
         });
+        searchButton.getStyleClass().add("main-button");
 
         requestAlternatives.setDisable(true);
         requestAlternatives.setOnAction(event -> {
             requestAlternatives.setDisable(true);
             this.controller.computeAlternativeResults();
         });
+        requestAlternatives.getStyleClass().add("main-button");
 
-        final VBox centerPane = new VBox(10);
+        final VBox centerPane = new VBox(15);
         centerPane.setAlignment(Pos.CENTER);
         centerPane.getChildren().addAll(searchButton, requestAlternatives);
-        centerPane.setStyle(
-                "-fx-border-color: black;" +                // Colore del bordo
-                        "-fx-border-width: 2px;" +          // Larghezza del bordo
-                        "-fx-padding: 10px;" +               // Spazio interno
-                        "-fx-background-color: white;" +    // Colore di sfondo
-                        "-fx-border-radius: 15px; " +        // Arrotondamento del bordo
-                        "-fx-background-radius: 15px;"      // Arrotondamento dello sfondo
-        );
+        centerPane.getStyleClass().add("control-box");
         centerPane.setMaxHeight(departureInputBox.getHeight());
-        root.setCenter(centerPane);
 
-        root.setLeft(departureInputBox);
-        BorderPane.setAlignment(departureInputBox, Pos.TOP_RIGHT);
-        root.setRight(arrivalInputBox);
-        BorderPane.setAlignment(arrivalInputBox, Pos.TOP_LEFT);
+        final HBox topPane = new HBox(20);
+        topPane.setAlignment(Pos.CENTER);
+        topPane.getChildren().addAll(departureInputBox, centerPane, arrivalInputBox);
+        topPane.getStyleClass().add("top-pane");
 
-        //TODO: sistemare
         resultsVBox = new VBox(20);
         resultsVBox.setAlignment(Pos.CENTER);
         resultsVBox.setFillWidth(true);
-        resultsVBox.setPrefHeight(scene.getHeight() * 0.7);
-        resultsVBox.setStyle("-fx-padding: 20px");
+        resultsVBox.getStyleClass().add("result-box");
+
         final ScrollPane scrollPane = new ScrollPane(resultsVBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        //scrollPane.setStyle("-fx-border-color: transparent;" + "-fx-background-color: transparent;");
-        root.setBottom(scrollPane);
-        BorderPane.setAlignment(scrollPane, Pos.CENTER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.getStyleClass().add("scroll-pane");
 
-
-        scene.heightProperty().addListener((obs, oldWidth, newWidth) -> {
-            double availableHeight = scene.getHeight();
-            resultsVBox.setPrefHeight(availableHeight * 0.7);
-        });
+        root.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(topPane, scrollPane);
+        root.getStyleClass().add("root-pane");
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         this.stage.setScene(scene);
         this.stage.show();
