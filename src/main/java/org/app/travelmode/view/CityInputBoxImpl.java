@@ -25,49 +25,17 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
 
     public CityInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected, final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, boolean resize) {
         super();
+
         this.label = new Label(title);
-        this.label.setStyle(
-                "-fx-font-family: 'Arial Rounded MT Bold', sans-serif;" +
-                        "-fx-font-size: 22px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-text-fill: #2980b9;" //+
-                        //"-fx-padding: 4px, 4px, 0px, 4px;"
-        );
         label.setMaxWidth(Double.MAX_VALUE);
         label.setAlignment(Pos.CENTER);
+        this.label.getStyleClass().add("label-title");
+
         this.cityTextField = new TextField();
         this.suggestionsMenu = new ContextMenu();
         this.cityTextField.setMinWidth(TEXT_FIELD_MIN_WIDTH);
         this.cityTextField.setPromptText(INPUT_PROMPT);
-
-        this.cityTextField.setStyle(
-                "-fx-font-size: 16px;" +
-                        "-fx-text-fill: #2c3e50;" +
-                        "-fx-border-color: #3498db;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-background-color: #ecf0f1;" +
-                        "-fx-border-radius: 10px;" +
-                        "-fx-background-radius: 10px;"
-        );
-        this.cityTextField.setOnMouseEntered(e -> this.cityTextField.setStyle(
-                "-fx-font-size: 16px;" +
-                        "-fx-text-fill: #2c3e50;" +
-                        "-fx-border-color: #1abc9c;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-background-color: #e3f2fd;" +
-                        "-fx-border-radius: 10px;" +
-                        "-fx-background-radius: 10px;"
-        ));
-        this.cityTextField.setOnMouseExited(e -> this.cityTextField.setStyle(
-                "-fx-font-size: 16px;" +
-                        "-fx-text-fill: #2c3e50;" +
-                        "-fx-border-color: #3498db;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-background-color: #ecf0f1;" +
-                        "-fx-border-radius: 10px;" +
-                        "-fx-background-radius: 10px;"
-        ));
-
+        this.cityTextField.getStyleClass().add("city-input-text-field");
         this.cityTextField.setOnKeyTyped(event -> {
             final String inputChar = event.getCharacter();
             if (!inputChar.equals("\r") && !inputChar.equals("\t")) { // aggiungere "!inputChar.equals("")" per evitare di eseguire il codice quando si cancella una lettera
@@ -87,14 +55,7 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
         this.setAlignment(Pos.CENTER_LEFT);
         this.getChildren().addAll(this.label, this.cityTextField);
         this.setSpacing(10);
-        this.setStyle(
-                "-fx-border-color: #2980b9;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-padding: 15px;" +
-                        "-fx-background-color: #ffffff;" +
-                        "-fx-border-radius: 15px;" +
-                        "-fx-background-radius: 15px;"
-        );
+        this.getStyleClass().add("city-input-box");
 
         if (resize) {
             resize();
