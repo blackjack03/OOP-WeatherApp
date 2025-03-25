@@ -1,30 +1,9 @@
-/* Stile generale della finestra */
-.root {
+/********* Stile di TravelModeViewImpl *********/
+.root-pane {
     -fx-background-color: linear-gradient(to bottom, #e3f2fd, #bbdefb);
     -fx-padding: 20px;
 }
 
-/* Stile della barra superiore con input */
-.top-pane {
-    -fx-background-color: white;
-    -fx-border-radius: 15px;
-    -fx-background-radius: 15px;
-    -fx-border-color: #1e88e5;
-    -fx-border-width: 2px;
-    -fx-padding: 15px;
-}
-
-/* Stile degli input di città */
-.city-input-box {
-    -fx-font-size: 14px;
-    -fx-border-color: #1e88e5;
-    -fx-border-radius: 10px;
-    -fx-background-color: #ffffff;
-    -fx-padding: 5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
-}
-
-/* Stile dei pulsanti */
 .main-button {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
@@ -33,43 +12,147 @@
     -fx-border-radius: 15px;
     -fx-background-radius: 15px;
     -fx-padding: 10px 20px;
-    /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);*/
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
 }
+
 .main-button:hover {
     -fx-background-color: #1565c0;
 }
 
-/* Stile della sezione centrale */
-.center-pane {
+.top-pane {
     -fx-background-color: white;
     -fx-border-radius: 15px;
     -fx-background-radius: 15px;
     -fx-border-color: #1e88e5;
     -fx-border-width: 2px;
-    -fx-padding: 20px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 2);
+    -fx-padding: 15px 25px 15px 25px;
 }
 
-/* Stile della ScrollPane */
+.results-section {
+    -fx-background-color: transparent;
+    -fx-padding: 10px;
+}
+
 .scroll-pane {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
 }
 
-/* Stile del ResultBox */
-.result-box {
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+
+/********* Stile per CityInputBox *********/
+
+.city-input-box {
+    -fx-border-color: #2980b9;
+    -fx-border-width: 2px;
+    -fx-padding: 15px;
     -fx-background-color: white;
-    -fx-border-color: #42a5f5;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+}
+
+.city-input-text-field {
+    -fx-font-size: 16px;
+    -fx-text-fill: #2c3e50;
+    -fx-border-color: #3498db;
     -fx-border-width: 2px;
     -fx-border-radius: 10px;
+    -fx-background-color: #ecf0f1;
     -fx-background-radius: 10px;
-    -fx-padding: 10px;
-    /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);*/
 }
 
-/* Stile del titolo */
+.city-input-text-field:hover {
+    -fx-border-color: #1abc9c;
+}
+
 .label-title {
-    -fx-font-size: 18px;
+    -fx-font-family: "Arial Rounded MT Bold", sans-serif;
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
-    -fx-text-fill: #1e88e5;
+    -fx-text-fill: #2980b9;
+}
+
+
+/********* Stile per CityDateTimeInputBox *********/
+
+.spinner-custom {
+    -fx-font-size: 14px;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 5px;
+}
+
+.date-picker-disabled-cell {
+    -fx-background-color: #f4f4f4;
+    -fx-text-fill: #b0b0b0;
+    -fx-opacity: 0.7;
+}
+
+.date-picker-enabled-cell {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #2c3e50;
+}
+
+.date-picker-enabled-cell:hover {
+    -fx-background-color: #d1e8ff;
+    -fx-text-fill: #2c3e50;
+}
+
+.date-picker-custom {
+    -fx-font-size: 14px;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 5px;
+}
+
+.titled-pane-custom {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+
+/********* Stile per ResultBox *********/
+
+.result-box {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #ced6e0;
+    -fx-border-width: 2px;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-padding: 20px 50px 20px 50px;
+}
+
+.meteo-score {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: linear-gradient(to right, #3498db, #2c3e50);
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+.result-box .label {
+    -fx-font-family: "Arial Rounded MT Bold", sans-serif;
+    -fx-font-size: 20px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #2980b9;
+}
+
+.info-box { /* Da applicare ad infoPane */
+    -fx-background-color: linear-gradient(to bottom, #f8f9fa, #ecf0f1);
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 2px;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    /*-fx-padding: 20px;*/
+}
+
+.center-info-box {
+    -fx-padding: 20px 0 20px 0;
+    /*-fx-border-color: #f3cd09;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;*/
 }
