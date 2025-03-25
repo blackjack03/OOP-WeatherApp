@@ -60,13 +60,9 @@ public class TravelModeViewImpl implements TravelModeView {
 
         final Button searchButton = new Button(SEARCH_BUTTON_TEXT);
         final Button requestAlternatives = new Button(ALTERNATIVES_BUTTON_TEXT);
-        final Button newSearchButton = new Button("AVVIA UNA NUOVA RICERCA");
 
         searchButton.setOnAction(event -> {
             this.controller.setDepartureTime(departureInputBox.getSelectedTime());
-            //searchButton.setDisable(true);
-            //departureInputBox.disableAllInputs();
-            //arrivalInputBox.disableAllInputs();
             this.resultsVBox.getChildren().clear();
             this.controller.startRouteAnalysis();
             requestAlternatives.setDisable(false);
@@ -83,23 +79,24 @@ public class TravelModeViewImpl implements TravelModeView {
         final VBox centerPane = new VBox(15);
         centerPane.setAlignment(Pos.CENTER);
         centerPane.getChildren().addAll(searchButton, requestAlternatives);
-        centerPane.getStyleClass().add("control-box");
         centerPane.setMaxHeight(departureInputBox.getHeight());
 
         final HBox topPane = new HBox(20);
         topPane.setAlignment(Pos.CENTER);
+        topPane.setMaxWidth(1200);
         topPane.getChildren().addAll(departureInputBox, centerPane, arrivalInputBox);
+        HBox.setHgrow(centerPane, Priority.ALWAYS);
         topPane.getStyleClass().add("top-pane");
 
         resultsVBox = new VBox(20);
         resultsVBox.setAlignment(Pos.CENTER);
         resultsVBox.setFillWidth(true);
-        resultsVBox.getStyleClass().add("result-box");
+        resultsVBox.getStyleClass().add("results-section");
 
         final ScrollPane scrollPane = new ScrollPane(resultsVBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.getStyleClass().add("scroll-pane");
 
         root.setAlignment(Pos.CENTER);
