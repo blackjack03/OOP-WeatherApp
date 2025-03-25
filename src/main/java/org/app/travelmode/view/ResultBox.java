@@ -5,17 +5,14 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Window;
 
 
-public class ResultBox extends StackPane {
+public class ResultBox extends HBox {
 
     private static final String DURATION_TEXT = "Durata:";
     private static final String DESCRIPTION_TEXT = "Tramite:";
@@ -51,48 +48,10 @@ public class ResultBox extends StackPane {
 
         updateMaxWidth(window);
 
-        /*
-        // Stile per meteoScore
-        this.meteoScore.setStyle(
-                "-fx-font-size: 24px;" +                // Dimensione testo
-                        "-fx-font-weight: bold;" +             // Grassetto
-                        "-fx-text-fill: #2c3e50;" +            // Colore del testo
-                        "-fx-border-color: #3498db;" +         // Colore del bordo
-                        "-fx-border-width: 3px;" +             // Spessore del bordo
-                        "-fx-background-color: #ecf0f1;" +     // Colore di sfondo
-                        "-fx-alignment: center;" +             // Allineamento del testo
-                        "-fx-border-radius: 10px;" +           // Arrotondamento bordi
-                        "-fx-background-radius: 10px;"         // Arrotondamento sfondo
-        );
-        this.meteoScore.setMinSize(80, 80);         // Quadrato 80x80
-        this.meteoScore.setMaxSize(80, 80);*/
-
-
-        // Stile per meteoScore con design più accattivante
-        this.meteoScore.setStyle(
-                "-fx-font-size: 28px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-text-fill: #ffffff;" +
-                        "-fx-background-color: linear-gradient(to right, #3498db, #2c3e50);" +
-                        "-fx-border-radius: 15px;" +
-                        "-fx-background-radius: 15px;" +
-                        "-fx-padding: 20px;" +
-                        "-fx-alignment: center;"
-        );
         this.meteoScore.setMinSize(100, 100);
         this.meteoScore.setMaxSize(100, 100);
-
-
-        // Stile per le etichette descrittive
-        Label[] labels = {this.description1, this.description2, this.durationLbl1, this.durationLbl2, this.expectedArrival, this.arrivalDate, this.arrivalTime};
-        for (final Label label : labels) {
-            label.setStyle(
-                    "-fx-font-family: 'Arial Rounded MT Bold', sans-serif;" +
-                            "-fx-font-size: 20px;" +
-                            "-fx-font-weight: 900;" +
-                            "-fx-text-fill: #5b9adf;"
-            );
-        }
+        this.meteoScore.getStyleClass().remove("label");
+        this.meteoScore.getStyleClass().add("meteo-score");
 
         final VBox descriptionBox = new VBox(5, this.description1, this.description2);
         final VBox durationBox = new VBox(5, this.durationLbl1, this.durationLbl2);
@@ -101,42 +60,16 @@ public class ResultBox extends StackPane {
         durationBox.setAlignment(Pos.CENTER_LEFT);
         arrivalBox.setAlignment(Pos.CENTER_LEFT);
 
+        final BorderPane infoPane = new BorderPane();
+        //infoPane.getStyleClass().add("info-box");
+
         final VBox centerInfoVBox = new VBox(35, descriptionBox, durationBox, arrivalBox);
         centerInfoVBox.setAlignment(Pos.CENTER_LEFT);
-        centerInfoVBox.setStyle(
-                "-fx-padding: 20px 0 20px 0;" +
-                        //"-fx-background-color: #ffffff;" +     // Sfondo bianco
-                        "-fx-border-color: #08ebbe;" +         // Colore bordo
-                        "-fx-border-width: 1px;" +             // Spessore bordo
-                        "-fx-border-radius: 10px;" +           // Arrotondamento bordo
-                        "-fx-background-radius: 10px;"         // Arrotondamento sfondo
-        );
+        centerInfoVBox.getStyleClass().add("center-info-box");
 
-        final BorderPane infoPane = new BorderPane();
         infoPane.setTop(this.meteoScore);
+        //BorderPane.setAlignment(this.meteoScore, Pos.CENTER);
         infoPane.setCenter(centerInfoVBox);
-        /*infoPane.setStyle(
-                "-fx-background-color: #f8f9fa;" +     // Colore di sfondo generale
-                        // "-fx-border-color: #f3cd09;" +         // Bordo esterno
-                        "-fx-border-width: 2px;" +             // Spessore bordo esterno
-                        "-fx-border-radius: 15px;" +           // Arrotondamento bordo
-                        "-fx-background-radius: 15px;"         // Arrotondamento sfondo
-        );*/
-
-        /*infoPane.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #f8f9fa, #ecf0f1);" +
-                        "-fx-border-color: #bdc3c7;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-border-radius: 15px;" +
-                        "-fx-background-radius: 15px;" +
-                        "-fx-padding: 20px;"
-        );*/
-
-
-        //infoPane.setPrefWidth(MIN_WIDTH * 0.35);
-        //infoPane.setMaxWidth(maxWidth * 0.35);
-        infoPane.setPrefWidth(720 * 0.35);
-
 
         final ImageView mapImageView = new ImageView(mapImage);
         mapImageView.setSmooth(true);
@@ -164,42 +97,11 @@ public class ResultBox extends StackPane {
         border.setFill(Color.LIGHTBLUE);
 
         final StackPane mapContainer = new StackPane(border, mapImageView);
-        mapContainer.setStyle(
-                "-fx-background-color: #f8f9fa;" +     // Colore di sfondo generale
-                        // "-fx-border-color: #004a9b;" +         // Bordo esterno
-                        "-fx-border-width: 2px;" +             // Spessore bordo esterno
-                        "-fx-border-radius: 15px;" +           // Arrotondamento bordo
-                        "-fx-background-radius: 15px;"         // Arrotondamento sfondo
-        );
 
-
-        final HBox mainLayout = new HBox(50, infoPane, mapContainer);
-        mainLayout.setAlignment(Pos.CENTER);
-        mainLayout.setStyle(
-                //"-fx-padding: 20px;" +                 // Spaziatura esterna
-                "-fx-background-color: #f8f9fa;" +     // Colore di sfondo generale
-                        //"-fx-border-color: #ff0000;" +         // Bordo esterno
-                        "-fx-border-width: 2px;" +             // Spessore bordo esterno
-                        "-fx-border-radius: 15px;" +           // Arrotondamento bordo
-                        "-fx-background-radius: 15px;"         // Arrotondamento sfondo
-        );
-
-
-        this.setStyle(
-                "-fx-padding: 20px;" +                 // Spaziatura esterna
-                        "-fx-background-color: #f8f9fa;" +     // Colore di sfondo generale
-                        "-fx-border-color: #ced6e0;" +         // Bordo esterno
-                        "-fx-border-width: 2px;" +             // Spessore bordo esterno
-                        "-fx-border-radius: 15px;" +           // Arrotondamento bordo
-                        "-fx-background-radius: 15px;"         // Arrotondamento sfondo
-        );
-        this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         this.prefWidthProperty().bind(Bindings.createDoubleBinding(
                 () -> Math.min(this.maxWidth, Math.max(MIN_WIDTH, this.getWidth())),
                 this.widthProperty()
         ));
-        this.prefHeightProperty().bind(this.prefWidthProperty().divide(WIDTH_RATIO).multiply(HEIGHT_RATIO));
-        this.minHeightProperty().bind(mainLayout.heightProperty().add(20 * 2));
         this.sceneProperty().addListener((observable, oldScene, newScene) -> {
             if (newScene != null) {
                 final Window actualWindow = newScene.getWindow();
@@ -207,9 +109,12 @@ public class ResultBox extends StackPane {
                 actualWindow.yProperty().addListener((obs, oldVal, newVal) -> updateMaxWidth(actualWindow));
             }
         });
-
+        this.setSpacing(50);
         this.setAlignment(Pos.CENTER);
-        this.getChildren().add(mainLayout);
+        this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
+        this.getStyleClass().add("result-box");
+        this.getChildren().addAll(infoPane, mapContainer);
+        HBox.setHgrow(infoPane, Priority.ALWAYS);
     }
 
     private void updateMaxWidth(final Window window) {
