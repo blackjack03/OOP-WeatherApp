@@ -28,12 +28,12 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
         // Spinner per le ore (0-23)
         this.hourSpinner = new Spinner<>();
         hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12));
-        hourSpinner.setStyle("-fx-font-size: 14px; -fx-border-color: #3498db; -fx-border-radius: 5px;");
+        hourSpinner.getStyleClass().add("spinner-custom");
 
         // Spinner per i minuti (0-59) con incremento di 5 minuti
         this.minuteSpinner = new Spinner<>();
         minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 5));
-        minuteSpinner.setStyle("-fx-font-size: 14px; -fx-border-color: #3498db; -fx-border-radius: 5px;");
+        minuteSpinner.getStyleClass().add("spinner-custom");
 
         this.datePicker = new DatePicker();
         final LocalDate oggi = LocalDate.now();
@@ -45,18 +45,16 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
                 super.updateItem(date, empty);
                 if (date.isBefore(start) || date.isAfter(end)) {
                     setDisable(true);
-                    setStyle("-fx-background-color: #f4f4f4; -fx-text-fill: #b0b0b0; -fx-opacity: 0.6;");
+                    getStyleClass().add("date-picker-disabled-cell");
                 } else {
-                    setStyle("-fx-background-color: #ffffff; -fx-text-fill: #2c3e50;");
-                    setOnMouseEntered(e -> setStyle("-fx-background-color: #d1e8ff; -fx-text-fill: #2c3e50;"));
-                    setOnMouseExited(e -> setStyle("-fx-background-color: #ffffff; -fx-text-fill: #2c3e50;"));
+                    getStyleClass().add("date-picker-enabled-cell");
                 }
             }
         });
         datePicker.setOnAction(event -> onDateSelected.accept(datePicker.getValue()));
         datePicker.setShowWeekNumbers(false);
         datePicker.setEditable(false);
-        datePicker.setStyle("-fx-font-size: 14px; -fx-border-color: #3498db; -fx-border-radius: 5px;");
+        datePicker.getStyleClass().add("date-picker-custom");
 
         final HBox timeHBox = new HBox();
         timeHBox.getChildren().addAll(hourSpinner, minuteSpinner);
@@ -66,7 +64,7 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
 
         dateTimeTitledPane = new TitledPane(TITLED_PANE_PROMPT, dateTimeVBox);
         dateTimeTitledPane.setExpanded(false);
-        dateTimeTitledPane.setStyle("-fx-font-size: 16px;");
+        dateTimeTitledPane.getStyleClass().add("titled-pane-custom");
 
         this.getChildren().add(dateTimeTitledPane);
 
