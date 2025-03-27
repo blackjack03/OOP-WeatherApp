@@ -68,6 +68,4 @@ public interface TravelModeController {
      * Analyzes the alternative routes between the two entered locations and inserts the results into the view.
      */
     void computeAlternativeResults();
-
-    Image getStaticMap();
 }
