@@ -11,9 +11,11 @@ import java.util.Optional;
  */
 public class WeatherReportImpl implements WeatherReport {
 
-    private static final double MAX_IMPACT = 100.0;
     private static final int MIN_SCORE = 0;
     private static final int MAX_SCORE = 100;
+    private static final int MULTIPLIER = 50;
+    private static final double VERTICAL_SHIFT = 227.12;
+    private static final double HORIZONTAL_SHIFT = 93.91;
 
     private final List<WeatherCondition> weatherConditions;
     private Optional<Integer> weatherScore;
@@ -53,19 +55,22 @@ public class WeatherReportImpl implements WeatherReport {
         }
 
         double totalImpact = 0;
-        double maxPossibleImpact = 0;
 
+        System.out.println("\n*****Condizioni meteo:");
         for (final WeatherCondition condition : this.weatherConditions) {
+            System.out.print("Condizione:" + condition.getConditionName());
             double impact = condition.getWeightedIntensityScore();
+            System.out.println("\t\tImpatto non pesato:" + condition.getIntensityScore() + "\tImpatto pesato:" + impact);
             totalImpact += impact;
-            maxPossibleImpact += condition.getWorstWeightedIntensityScore();
         }
+        System.out.println("Impatto totale: " + totalImpact);
 
-        double normalizedImpact = totalImpact / maxPossibleImpact;
-        int score = (int) Math.round((1 - normalizedImpact) * 100);
+        long normalizedImpact = Math.round(MULTIPLIER * Math.log(totalImpact + HORIZONTAL_SHIFT) - VERTICAL_SHIFT); //TODO: valutare il moltiplicatore
+        System.out.println("Normalized impatto: " + normalizedImpact);
+        int score = (int) Math.min(MAX_SCORE, Math.max(MIN_SCORE, MAX_SCORE - normalizedImpact));
+        System.out.println("Punteggio calcolato: " + score);
 
-        int finalScore = Math.max(MIN_SCORE, Math.min(MAX_SCORE, score));
-        this.weatherScore = Optional.of(finalScore);
-        return finalScore;
+        this.weatherScore = Optional.of(score);
+        return score;
     }
 }
