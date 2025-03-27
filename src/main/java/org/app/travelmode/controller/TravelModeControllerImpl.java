@@ -1,7 +1,6 @@
 package org.app.travelmode.controller;
 
 import javafx.application.Application;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -73,10 +72,6 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
         for (final TravelModeResult travelModeResult : travelModeResults) {
             displayResult(travelModeResult);
         }
-    }
-
-    public Image getStaticMap() {
-        return this.model.getStaticMap();
     }
 
     private void displayResult(final TravelModeResult travelModeResult) {
