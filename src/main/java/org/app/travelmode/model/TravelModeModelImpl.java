@@ -2,7 +2,6 @@ package org.app.travelmode.model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import javafx.scene.image.Image;
 import org.app.model.AdvancedJsonReader;
 import org.app.model.AdvancedJsonReaderImpl;
 import org.app.travelmode.directions.DirectionsResponse;
@@ -87,49 +86,6 @@ public class TravelModeModelImpl implements TravelModeModel {
     public void startDirectionsAnalysis(final TravelRequest travelRequest) {
         this.directions = new DirectionsImpl(travelRequest);
         directions.askForDirections();
-    }
-
-    /*
-    //TODO: delegare ad advanced json reader
-    private DirectionsResponse requestRoute(final TravelRequest travelRequest) {
-        final String urlString = "https://maps.googleapis.com/maps/api/directions/json" +
-                "?destination=place_id%3A" + travelRequest.getArrivalLocationPlaceId() +
-                "&origin=place_id%3A" + travelRequest.getDepartureLocationPlaceId() +
-                "&departure_time=" + travelRequest.getDepartureDateTime().toEpochSecond() +
-                "&alternatives=true" +
-                "&language=it" +
-                "&units=metric" +
-                "&key=" + googleApiKey;
-
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            int responseCode = connection.getResponseCode();
-            final StringBuilder response = new StringBuilder();
-            if (responseCode == 200) { // 200 OK
-                final BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    response.append(line);
-                }
-                br.close();
-            } else {
-                throw new Exception("Errore nella richiesta: " + responseCode);
-            }
-
-            System.out.println(response.toString());
-            final Gson gson = new Gson();
-            return gson.fromJson(response.toString(), DirectionsResponse.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }*/
-
-    public Image getStaticMap() {
-        return null;
     }
 
     @Override
