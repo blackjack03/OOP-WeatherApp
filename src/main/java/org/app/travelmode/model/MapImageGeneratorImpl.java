@@ -18,7 +18,7 @@ public class MapImageGeneratorImpl implements MapImageGenerator {
     @Override
     public Image generateMapImage(final List<CheckpointWithMeteo> checkpoints, final String polyline) {
         try {
-            final StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/staticmap?size=650x370&scale=2&path=enc:");
+            final StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/staticmap?size=650x488&scale=2&language=it&path=enc:");
             urlBuilder.append(polyline).append("&key=").append(googleApiKey);
 
             for (final CheckpointWithMeteo checkpoint : checkpoints) {
