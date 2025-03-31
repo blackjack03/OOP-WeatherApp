@@ -23,6 +23,9 @@ public class ResultBox extends HBox {
     private static final int WIDTH_RATIO = 16;
     private static final double MIN_WIDTH = 800;
     private static final double MIN_HEIGHT = 450;
+    private static final double METEO_SCORE_SIZE = 100;
+    private static final double DISPLAY_SCALE_FACTOR = 0.8;
+    private static final double MAX_WIDTH_FACTOR = 0.65;
 
     private final Label meteoScore;
     private final Label description1;
@@ -35,10 +38,11 @@ public class ResultBox extends HBox {
     private final Image mapImage;
     private double maxWidth;
 
-    public ResultBox(final String meteoScore, final String description, final String duration, final String arrivalDate, final String arrivalTime, final Image mapImage, final Window window) {
-        this.meteoScore = new Label(meteoScore);
+    public ResultBox(int meteoScore, final String description, final String duration, final String arrivalDate, final String arrivalTime, final Image mapImage, final Window window) {
+        this.meteoScore = new Label(String.valueOf(meteoScore));
         this.description1 = new Label(DESCRIPTION_TEXT);
         this.description2 = new Label(description);
+        this.description2.setWrapText(true);
         this.durationLbl1 = new Label(DURATION_TEXT);
         this.durationLbl2 = new Label(duration);
         this.expectedArrival = new Label(ARRIVAL_TEXT);
@@ -48,8 +52,8 @@ public class ResultBox extends HBox {
 
         updateMaxWidth(window);
 
-        this.meteoScore.setMinSize(100, 100);
-        this.meteoScore.setMaxSize(100, 100);
+        this.meteoScore.setMinSize(METEO_SCORE_SIZE, METEO_SCORE_SIZE);
+        this.meteoScore.setMaxSize(METEO_SCORE_SIZE, METEO_SCORE_SIZE);
         this.meteoScore.getStyleClass().remove("label");
         this.meteoScore.getStyleClass().add("meteo-score");
 
@@ -61,14 +65,12 @@ public class ResultBox extends HBox {
         arrivalBox.setAlignment(Pos.CENTER_LEFT);
 
         final BorderPane infoPane = new BorderPane();
-        //infoPane.getStyleClass().add("info-box");
 
         final VBox centerInfoVBox = new VBox(35, descriptionBox, durationBox, arrivalBox);
         centerInfoVBox.setAlignment(Pos.CENTER_LEFT);
         centerInfoVBox.getStyleClass().add("center-info-box");
 
         infoPane.setTop(this.meteoScore);
-        //BorderPane.setAlignment(this.meteoScore, Pos.CENTER);
         infoPane.setCenter(centerInfoVBox);
 
         final ImageView mapImageView = new ImageView(mapImage);
@@ -79,12 +81,11 @@ public class ResultBox extends HBox {
                 mapImageView.fitWidthProperty()
         ));
 
-        // Creazione di una maschera con bordi arrotondati
         final Rectangle clip = new Rectangle();
         clip.widthProperty().bind(mapImageView.fitWidthProperty());
         clip.heightProperty().bind(mapImageView.fitHeightProperty());
-        clip.setArcWidth(50);  // Arrotondamento orizzontale
-        clip.setArcHeight(50); // Arrotondamento verticale
+        clip.setArcWidth(50);
+        clip.setArcHeight(50);
         clip.setX(0);
         clip.setY(0);
         mapImageView.setClip(clip);
@@ -113,14 +114,31 @@ public class ResultBox extends HBox {
         this.setAlignment(Pos.CENTER);
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         this.getStyleClass().add("result-box");
+        this.addColor(meteoScore);
         this.getChildren().addAll(infoPane, mapContainer);
         HBox.setHgrow(infoPane, Priority.ALWAYS);
     }
 
     private void updateMaxWidth(final Window window) {
-        final Screen screen = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth() * 0.8, window.getHeight() * 0.8).get(0);
-        this.maxWidth = screen.getBounds().getWidth() * 0.65;
+        final Screen screen = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth() * DISPLAY_SCALE_FACTOR, window.getHeight() * DISPLAY_SCALE_FACTOR).get(0);
+        this.maxWidth = screen.getBounds().getWidth() * MAX_WIDTH_FACTOR;
         this.setMaxWidth(maxWidth);
         this.setMaxHeight(maxWidth * HEIGHT_RATIO / WIDTH_RATIO);
+    }
+
+    private void addColor(int meteoScore) {
+        if (meteoScore >= 76) {
+            this.getStyleClass().add("result-box-green");
+            this.meteoScore.getStyleClass().add("meteo-score-green");
+        } else if (meteoScore >= 51) {
+            this.getStyleClass().add("result-box-yellow");
+            this.meteoScore.getStyleClass().add("meteo-score-yellow");
+        } else if (meteoScore >= 26) {
+            this.getStyleClass().add("result-box-orange");
+            this.meteoScore.getStyleClass().add("meteo-score-orange");
+        } else {
+            this.getStyleClass().add("result-box-red");
+            this.meteoScore.getStyleClass().add("meteo-score-red");
+        }
     }
 }
