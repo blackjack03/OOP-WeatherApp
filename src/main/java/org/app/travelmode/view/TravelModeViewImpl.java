@@ -115,7 +115,7 @@ public class TravelModeViewImpl implements TravelModeView {
     }
 
     @Override
-    public void displayResult(final String meteoScore, final String description, final String duration, final String arrivalDate, final String arrivalTime, final Image mapImage) {
+    public void displayResult(int meteoScore, final String description, final String duration, final String arrivalDate, final String arrivalTime, final Image mapImage) {
         Platform.runLater(() -> {
             final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalDate, arrivalTime, mapImage, this.scene.getWindow());
             this.resultsVBox.getChildren().add(resultBox);
