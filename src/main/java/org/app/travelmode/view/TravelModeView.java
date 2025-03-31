@@ -26,5 +26,5 @@ public interface TravelModeView {
      * @param arrivalTime The expected arrival time.
      * @param mapImage    An image of a map representing the route.
      */
-    void displayResult(String meteoScore, String description, String duration, String arrivalDate, String arrivalTime, Image mapImage);
+    void displayResult(int meteoScore, String description, String duration, String arrivalDate, String arrivalTime, Image mapImage);
 }
