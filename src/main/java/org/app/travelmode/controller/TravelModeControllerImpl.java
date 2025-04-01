@@ -75,11 +75,10 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
     }
 
     private void displayResult(final TravelModeResult travelModeResult) {
-        final String meteoScore = String.valueOf(travelModeResult.getMeteoScore());
         final String durationString = travelModeResult.getDurationString();
         final LocalDateTime arrivalDateTime = travelModeResult.getArrivalTime();
-        final String arrivalTime = arrivalDateTime.toLocalTime().toString();
+        final String arrivalTime = arrivalDateTime.toLocalTime().getHour() + ":" + arrivalDateTime.toLocalTime().getMinute();
         final String arrivalDate = arrivalDateTime.toLocalDate().toString();
-        this.view.displayResult(meteoScore, travelModeResult.getSummary(), durationString, arrivalDate, arrivalTime, travelModeResult.getMapImage());
+        this.view.displayResult(travelModeResult.getMeteoScore(), travelModeResult.getSummary(), durationString, arrivalDate, arrivalTime, travelModeResult.getMapImage());
     }
 }
