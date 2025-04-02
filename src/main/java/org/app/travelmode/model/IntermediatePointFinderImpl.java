@@ -51,7 +51,7 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
             intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), endPoint, startPoint, distanceCounter.doubleValue()));
         }
 
-        return intermediatePoints;
+        return List.copyOf(intermediatePoints);
     }
 
     /**
