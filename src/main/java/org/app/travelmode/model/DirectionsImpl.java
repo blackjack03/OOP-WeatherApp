@@ -108,7 +108,7 @@ public class DirectionsImpl implements Directions {
                     results.add(analyzeRoute(routes.get(i)));
                 }
                 this.alternativeResult = Optional.of(results);
-                return results;
+                return List.copyOf(results);
             } else {
                 throw new UnsupportedOperationException("Non sono disponibili percorsi alternativi");
             }
