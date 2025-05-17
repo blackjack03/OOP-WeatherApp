@@ -184,24 +184,33 @@ public class DirectionsImpl implements Directions {
     }
 
     private CheckpointWithMeteo addWeatherInformation(final Checkpoint checkpoint) {
-        final double latitude = checkpoint.getLatitude();
-        final double longitude = checkpoint.getLongitude();
+        final Map<String, String> coordinates = Map.of(
+                "lat", String.valueOf(checkpoint.getLatitude()),
+                "lng", String.valueOf(checkpoint.getLongitude())
+        );
+
         final ZonedDateTime arrivalDateTime = checkpoint.getArrivalDateTime();
-        final Map<String, String> coordinates = new HashMap<>();
-        coordinates.put("lat", String.valueOf(latitude));
-        coordinates.put("lng", String.valueOf(longitude));
+        final String arrivalHour = String.format("%d:%d", arrivalDateTime.getHour(), arrivalDateTime.getMinute());
+
         final Weather weather = new Weather(coordinates);
-        final String arrivalHour = arrivalDateTime.getHour() + ":" + arrivalDateTime.getMinute();
-        final Map<String, Number> weatherInformation = weather.getWeatherOn(arrivalDateTime.getDayOfMonth(), arrivalDateTime.getMonthValue(), arrivalDateTime.getYear(), arrivalHour).get();
+        final Map<String, Number> weatherInformation = weather.getWeatherOn(
+                arrivalDateTime.getDayOfMonth(),
+                arrivalDateTime.getMonthValue(),
+                arrivalDateTime.getYear(),
+                arrivalHour).orElseThrow(() -> new IllegalStateException("Impossibile ottenere le informazioni meteo"));
+
         final WeatherConditionFactory weatherConditionFactory = new WeatherConditionFactoryImpl();
-        final List<WeatherCondition> weatherConditions = new ArrayList<>();
-        weatherConditions.add(weatherConditionFactory.createFreezingRisk(weatherInformation.get("freezing_level_height").doubleValue()));
-        weatherConditions.add(weatherConditionFactory.createSnowfall(weatherInformation.get("snowfall").doubleValue()));
-        weatherConditions.add(weatherConditionFactory.createPrecipitation(weatherInformation.get("precipitation").doubleValue()));
-        weatherConditions.add(weatherConditionFactory.createVisibility(weatherInformation.get("visibility").doubleValue()));
-        weatherConditions.add(weatherConditionFactory.createWindGust(weatherInformation.get("wind_gusts").doubleValue()));
+        final List<WeatherCondition> weatherConditions = Arrays.asList(
+                weatherConditionFactory.createFreezingRisk(weatherInformation.get("freezing_level_height").doubleValue()),
+                weatherConditionFactory.createSnowfall(weatherInformation.get("snowfall").doubleValue()),
+                weatherConditionFactory.createPrecipitation(weatherInformation.get("precipitation").doubleValue()),
+                weatherConditionFactory.createVisibility(weatherInformation.get("visibility").doubleValue()),
+                weatherConditionFactory.createWindGust(weatherInformation.get("wind_gusts").doubleValue())
+        );
+
         final WeatherReport weatherReport = new WeatherReportImpl();
         weatherReport.addConditions(weatherConditions);
-        return new CheckpointWithMeteoImpl(latitude, longitude, arrivalDateTime, weatherReport);
+
+        return new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), arrivalDateTime, weatherReport);
     }
 }
