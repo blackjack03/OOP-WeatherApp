@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.app.model.AdvancedJsonReader;
 import org.app.model.AdvancedJsonReaderImpl;
-import org.app.model.Weather;
 import org.app.travelmode.directions.DirectionsLeg;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.directions.DirectionsRoute;
@@ -12,7 +11,6 @@ import org.app.travelmode.directions.SimpleDirectionsStep;
 
 import java.io.FileReader;
 import java.time.Duration;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 public class DirectionsImpl implements Directions {
@@ -139,9 +137,10 @@ public class DirectionsImpl implements Directions {
         final List<Checkpoint> checkpoints = generateCheckpoints(intermediatePoints);
         System.out.println(checkpoints);
 
+        final WeatherInformationService weatherInformationService = new WeatherInformationServiceImpl(new WeatherConditionFactoryImpl());
         final List<CheckpointWithMeteo> checkpointsWithMeteo = new ArrayList<>();
         for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
-            checkpointsWithMeteo.add(this.addWeatherInformation(checkpoint));
+            checkpointsWithMeteo.add(weatherInformationService.enrichWithWeather(checkpoint));
         }
 
         return new TravelModeResultImpl(checkpointsWithMeteo, route.getSummary(), route.getOverview_polyline().getPoints(), calculateRouteDuration(route));
@@ -183,34 +182,4 @@ public class DirectionsImpl implements Directions {
         return Duration.ofSeconds((long) totalDuration);
     }
 
-    private CheckpointWithMeteo addWeatherInformation(final Checkpoint checkpoint) {
-        final Map<String, String> coordinates = Map.of(
-                "lat", String.valueOf(checkpoint.getLatitude()),
-                "lng", String.valueOf(checkpoint.getLongitude())
-        );
-
-        final ZonedDateTime arrivalDateTime = checkpoint.getArrivalDateTime();
-        final String arrivalHour = String.format("%d:%d", arrivalDateTime.getHour(), arrivalDateTime.getMinute());
-
-        final Weather weather = new Weather(coordinates);
-        final Map<String, Number> weatherInformation = weather.getWeatherOn(
-                arrivalDateTime.getDayOfMonth(),
-                arrivalDateTime.getMonthValue(),
-                arrivalDateTime.getYear(),
-                arrivalHour).orElseThrow(() -> new IllegalStateException("Impossibile ottenere le informazioni meteo"));
-
-        final WeatherConditionFactory weatherConditionFactory = new WeatherConditionFactoryImpl();
-        final List<WeatherCondition> weatherConditions = Arrays.asList(
-                weatherConditionFactory.createFreezingRisk(weatherInformation.get("freezing_level_height").doubleValue()),
-                weatherConditionFactory.createSnowfall(weatherInformation.get("snowfall").doubleValue()),
-                weatherConditionFactory.createPrecipitation(weatherInformation.get("precipitation").doubleValue()),
-                weatherConditionFactory.createVisibility(weatherInformation.get("visibility").doubleValue()),
-                weatherConditionFactory.createWindGust(weatherInformation.get("wind_gusts").doubleValue())
-        );
-
-        final WeatherReport weatherReport = new WeatherReportImpl();
-        weatherReport.addConditions(weatherConditions);
-
-        return new CheckpointWithMeteoImpl(checkpoint.getLatitude(), checkpoint.getLongitude(), arrivalDateTime, weatherReport);
-    }
 }
