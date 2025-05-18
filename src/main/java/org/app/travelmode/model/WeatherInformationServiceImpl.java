@@ -14,6 +14,7 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
         this.weatherConditionFactory = weatherConditionFactory;
     }
 
+    @Override
     public CheckpointWithMeteo enrichWithWeather(final Checkpoint checkpoint) {
         final Map<String, Number> weatherInformation = getWeatherInfo(checkpoint);
         final WeatherReport weatherReport = createWeatherReport(weatherInformation);
