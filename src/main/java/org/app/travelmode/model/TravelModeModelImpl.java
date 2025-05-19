@@ -1,42 +1,31 @@
 package org.app.travelmode.model;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import org.app.model.AdvancedJsonReader;
-import org.app.model.AdvancedJsonReaderImpl;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
-import java.io.FileReader;
 import java.time.*;
 import java.util.List;
 import java.util.Optional;
 
 public class TravelModeModelImpl implements TravelModeModel {
 
-    private final PlaceAutocomplete placeAutocomplete;
     private final TravelRequestImpl.Builder requestBuilder;
+    private final GoogleApiClientFactory apiClientFactory;
+    private final PlacePredictionsApiClient placePredictionsApiClient;
     private Directions directions;
     private Optional<DirectionsResponse> directionsResponse;
-    private String googleApiKey;
 
 
     public TravelModeModelImpl() {
-        this.placeAutocomplete = new PlaceAutocompleteImpl();
         this.requestBuilder = new TravelRequestImpl.Builder();
-        //TODO: integrare in json reader
-        try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
-            final Gson gson = new Gson();
-            final JsonObject jsonObject = gson.fromJson(jsonReader, JsonObject.class);
-            this.googleApiKey = jsonObject.get("google-api-key").getAsString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.apiClientFactory = new GoogleApiClientFactoryImpl();
+        this.placePredictionsApiClient = this.apiClientFactory.createPlacePredictionsApiClient();
+        this.directionsResponse = Optional.empty();
     }
 
     @Override
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
-        return this.placeAutocomplete.getPlacePredictions(input);
+        return this.placePredictionsApiClient.getPlacePredictions(input);
     }
 
     @Override
@@ -46,20 +35,9 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     @Override
     public void setDeparturePlaceId(final String departurePlaceId) {
-        final String placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json" +
-                "?fields=utc_offset" +
-                "&place_id=" + departurePlaceId +
-                "&key=" + googleApiKey;
-        final ZoneId departureZoneId;
-        try { //TODO: da migliorare
-            final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl(placeDetailsUrl);
-            int utcOffset = jsonReader.getInt("result.utc_offset");
-            departureZoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(departureZoneId);
-        this.requestBuilder.setDeparturePlaceId(departurePlaceId).setDepartureZoneId(departureZoneId);
+        final PlaceDetailsApiClient placeDetailsApiClient = this.apiClientFactory.createPlaceDetailsApiClient();
+        this.requestBuilder.setDeparturePlaceId(departurePlaceId)
+                .setDepartureZoneId(placeDetailsApiClient.getTimezone(departurePlaceId));
     }
 
     @Override
