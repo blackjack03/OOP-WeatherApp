@@ -1,6 +1,9 @@
 package org.app.travelmode.model;
 
+import com.google.gson.Gson;
 import org.app.travelmode.directions.DirectionsResponse;
+
+import java.util.Objects;
 
 public class DirectionApiClient extends AbstractGoogleApiClient {
 
@@ -12,6 +15,7 @@ public class DirectionApiClient extends AbstractGoogleApiClient {
 
     public DirectionsResponse getDirections(final TravelRequest travelRequest) {
         final GoogleApiRequestBuilder requestBuilder = new GoogleApiRequestBuilderImpl(this.getBaseUrl(), this.getApiKey());
+        DirectionsResponse directionsResponse = null;
         final String url = requestBuilder.addParameter("destination", "place_id:" + travelRequest.getArrivalLocationPlaceId())
                 .addParameter("origin", "place_id:" + travelRequest.getDepartureLocationPlaceId())
                 .addParameter("departure_time", String.valueOf(travelRequest.getDepartureDateTime().toEpochSecond()))
@@ -19,7 +23,14 @@ public class DirectionApiClient extends AbstractGoogleApiClient {
                 .addParameter("language", "it")
                 .addParameter("units", "metric")
                 .build();
-        return this.executeRequest(url, DirectionsResponse.class);
+        try {
+            final Gson gson = new Gson();
+            directionsResponse = gson.fromJson(this.requestJson(url), DirectionsResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Objects.requireNonNull(directionsResponse, "La chiamata all'api directions ha restituito un risultato nullo.");
+        return directionsResponse;
     }
 
 }
