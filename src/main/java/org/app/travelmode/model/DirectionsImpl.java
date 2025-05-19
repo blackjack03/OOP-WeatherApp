@@ -1,15 +1,10 @@
 package org.app.travelmode.model;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import org.app.model.AdvancedJsonReader;
-import org.app.model.AdvancedJsonReaderImpl;
 import org.app.travelmode.directions.DirectionsLeg;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.directions.DirectionsRoute;
 import org.app.travelmode.directions.SimpleDirectionsStep;
 
-import java.io.FileReader;
 import java.time.Duration;
 import java.util.*;
 
@@ -19,23 +14,12 @@ public class DirectionsImpl implements Directions {
     private Optional<TravelModeResult> mainResult;
     private Optional<List<TravelModeResult>> alternativeResult;
     private Optional<DirectionsResponse> directionsResponse;
-    private String googleApiKey;
 
 
     public DirectionsImpl() {
-
         this.mainResult = Optional.empty();
         this.alternativeResult = Optional.empty();
         this.directionsResponse = Optional.empty();
-
-        //TODO: integrare in json reader
-        try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
-            final Gson gson = new Gson();
-            final JsonObject jsonObject = gson.fromJson(jsonReader, JsonObject.class);
-            this.googleApiKey = jsonObject.get("google-api-key").getAsString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public DirectionsImpl(final TravelRequest travelRequest) {
@@ -61,27 +45,9 @@ public class DirectionsImpl implements Directions {
 
     @Override
     public void askForDirections(final TravelRequest travelRequest) {
-        final String urlString = "https://maps.googleapis.com/maps/api/directions/json" +
-                "?destination=place_id%3A" + travelRequest.getArrivalLocationPlaceId() +
-                "&origin=place_id%3A" + travelRequest.getDepartureLocationPlaceId() +
-                "&departure_time=" + travelRequest.getDepartureDateTime().toEpochSecond() +
-                "&alternatives=true" +
-                "&language=it" +
-                "&units=metric" +
-                "&key=" + googleApiKey;
-
-        final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl();
-
-        try {
-            jsonReader.requestJSON(urlString);
-            final String rawJSon = jsonReader.getRawJSON();
-            System.out.println(rawJSon);
-
-            final Gson gson = new Gson();
-            this.directionsResponse = Optional.of(gson.fromJson(rawJSon, DirectionsResponse.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        final GoogleApiClientFactory googleApiClientFactory = new GoogleApiClientFactoryImpl();
+        final DirectionApiClient directionApiClient = googleApiClientFactory.createDirectionApiClient();
+        this.directionsResponse = Optional.of(directionApiClient.getDirections(travelRequest));
     }
 
     @Override
