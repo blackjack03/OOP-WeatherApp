@@ -14,7 +14,7 @@ public class LocationSelector implements LocationSelectorInterface {
 
     public LocationSelector() {
         try {
-            final CSVParser parser = new CSVParser(CSV_PATH);
+            final CSVStdParser parser = new CSVStdParser(CSV_PATH);
             this.CSV = parser.readCSVToMap();
             for (int i = 0; i < CSV.size(); i++) {
                 final int idx = Integer.parseInt(CSV.get(i).get("id"));

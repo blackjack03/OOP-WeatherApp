@@ -1,7 +1,5 @@
 package org.app;
-
 import org.app.model.ConfigManager;
-
 import javafx.application.Application;
 
 public class Main {

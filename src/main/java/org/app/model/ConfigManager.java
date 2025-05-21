@@ -9,31 +9,31 @@ public class ConfigManager {
     private static AppConfig config;
     
     public static void loadConfig(String filePath) {
-        ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
         try {
             config = mapper.readValue(new File(filePath), AppConfig.class);
-            System.out.println ("Configuration loaded successfully.");
-        } catch (IOException e) {
+            System.out.println("Configuration loaded successfully.");
+        } catch (final IOException e) {
             //e.printStackTrace();
-            throw new RuntimeException ("ERROR! File cannot be loaded.");
+            throw new RuntimeException("ERROR! File cannot be loaded.");
         }
     }
 
     public static AppConfig getConfig() {
         if (config == null) {
-            throw new IllegalStateException ("Configuration not loaded; call loadConfig first. ");
+            throw new IllegalStateException("Configuration not loaded; call loadConfig first. ");
         }
         return config;
     }
 
     public static void saveConfig(String filePath) {
-        ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), config);
-            System.out.println ("Configuration saved successfully.");
-        } catch (IOException e) {
+            System.out.println("Configuration saved successfully.");
+        } catch (final IOException e) {
             //e.printStackTrace();
-            throw new RuntimeException ("ERROR! Save unsuccessful");
+            throw new RuntimeException("ERROR! Save unsuccessful");
         }
     }
 
