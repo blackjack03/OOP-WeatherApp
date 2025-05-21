@@ -1,18 +1,11 @@
 package org.app.travelmode.model;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import org.app.model.AdvancedJsonReader;
-import org.app.model.AdvancedJsonReaderImpl;
-import org.app.model.Weather;
 import org.app.travelmode.directions.DirectionsLeg;
 import org.app.travelmode.directions.DirectionsResponse;
 import org.app.travelmode.directions.DirectionsRoute;
 import org.app.travelmode.directions.SimpleDirectionsStep;
 
-import java.io.FileReader;
 import java.time.Duration;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 public class DirectionsImpl implements Directions {
@@ -21,23 +14,12 @@ public class DirectionsImpl implements Directions {
     private Optional<TravelModeResult> mainResult;
     private Optional<List<TravelModeResult>> alternativeResult;
     private Optional<DirectionsResponse> directionsResponse;
-    private String googleApiKey;
 
 
     public DirectionsImpl() {
-
         this.mainResult = Optional.empty();
         this.alternativeResult = Optional.empty();
         this.directionsResponse = Optional.empty();
-
-        //TODO: integrare in json reader
-        try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
-            final Gson gson = new Gson();
-            final JsonObject jsonObject = gson.fromJson(jsonReader, JsonObject.class);
-            this.googleApiKey = jsonObject.get("google-api-key").getAsString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public DirectionsImpl(final TravelRequest travelRequest) {
@@ -63,27 +45,9 @@ public class DirectionsImpl implements Directions {
 
     @Override
     public void askForDirections(final TravelRequest travelRequest) {
-        final String urlString = "https://maps.googleapis.com/maps/api/directions/json" +
-                "?destination=place_id%3A" + travelRequest.getArrivalLocationPlaceId() +
-                "&origin=place_id%3A" + travelRequest.getDepartureLocationPlaceId() +
-                "&departure_time=" + travelRequest.getDepartureDateTime().toEpochSecond() +
-                "&alternatives=true" +
-                "&language=it" +
-                "&units=metric" +
-                "&key=" + googleApiKey;
-
-        final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl();
-
-        try {
-            jsonReader.requestJSON(urlString);
-            final String rawJSon = jsonReader.getRawJSON();
-            System.out.println(rawJSon);
-
-            final Gson gson = new Gson();
-            this.directionsResponse = Optional.of(gson.fromJson(rawJSon, DirectionsResponse.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        final GoogleApiClientFactory googleApiClientFactory = new GoogleApiClientFactoryImpl();
+        final DirectionApiClient directionApiClient = googleApiClientFactory.createDirectionApiClient();
+        this.directionsResponse = Optional.of(directionApiClient.getDirections(travelRequest));
     }
 
     @Override
@@ -132,41 +96,26 @@ public class DirectionsImpl implements Directions {
      */
     private TravelModeResult analyzeRoute(final DirectionsRoute route) {
         final RouteAnalyzer routeAnalyzer = new RouteAnalyzerImpl(new IntermediatePointFinderImpl(), new SubStepGeneratorImpl());
+        final CheckpointGenerator checkpointGenerator = new CheckpointGeneratorImpl();
 
         final List<SimpleDirectionsStep> intermediatePoints = routeAnalyzer.calculateIntermediatePoints(route);
         System.out.println(intermediatePoints);
 
-        final List<Checkpoint> checkpoints = generateCheckpoints(intermediatePoints);
+        final List<Checkpoint> checkpoints = checkpointGenerator.generateCheckpoints(intermediatePoints, this.travelRequest.getDepartureDateTime());
         System.out.println(checkpoints);
 
+        final WeatherInformationService weatherInformationService = new WeatherInformationServiceImpl(new WeatherConditionFactoryImpl());
         final List<CheckpointWithMeteo> checkpointsWithMeteo = new ArrayList<>();
-        for (final Checkpoint checkpoint : checkpoints) { //TODO: da rivedere
-            checkpointsWithMeteo.add(this.addWeatherInformation(checkpoint));
+        for (final Checkpoint checkpoint : checkpoints) {
+            checkpointsWithMeteo.add(weatherInformationService.enrichWithWeather(checkpoint));
         }
 
-        return new TravelModeResultImpl(checkpointsWithMeteo, route.getSummary(), route.getOverview_polyline().getPoints(), calculateRouteDuration(route));
-    }
-
-    /**
-     * Generates a list of checkpoints from a list of directions steps.
-     *
-     * @param steps the list of {@link SimpleDirectionsStep} to process.
-     * @return a {@link List} of {@link Checkpoint}.
-     */
-    private List<Checkpoint> generateCheckpoints(final List<SimpleDirectionsStep> steps) {
-        final List<Checkpoint> checkpoints = new ArrayList<>();
-        final SimpleDirectionsStep firstStep = steps.get(0);
-        double latitude = firstStep.getStart_location().getLat();
-        double longitude = firstStep.getStart_location().getLng();
-        checkpoints.add(new CheckpointImpl(latitude, longitude, travelRequest.getDepartureDateTime()));
-        for (int i = 0; i < steps.size(); i++) {
-            final SimpleDirectionsStep step = steps.get(i);
-            latitude = step.getEnd_location().getLat();
-            longitude = step.getEnd_location().getLng();
-            long duration = (long) step.getDuration().getValue();
-            checkpoints.add(new CheckpointImpl(latitude, longitude, checkpoints.get(i).getArrivalDateTime().plusSeconds(duration)));
-        }
-        return checkpoints;
+        return new TravelModeResultImpl(
+                checkpointsWithMeteo,
+                route.getSummary(),
+                route.getOverview_polyline().getPoints(),
+                calculateRouteDuration(route)
+        );
     }
 
     /**
@@ -183,25 +132,4 @@ public class DirectionsImpl implements Directions {
         return Duration.ofSeconds((long) totalDuration);
     }
 
-    private CheckpointWithMeteo addWeatherInformation(final Checkpoint checkpoint) {
-        final double latitude = checkpoint.getLatitude();
-        final double longitude = checkpoint.getLongitude();
-        final ZonedDateTime arrivalDateTime = checkpoint.getArrivalDateTime();
-        final Map<String, String> coordinates = new HashMap<>();
-        coordinates.put("lat", String.valueOf(latitude));
-        coordinates.put("lng", String.valueOf(longitude));
-        final Weather weather = new Weather(coordinates);
-        final String arrivalHour = arrivalDateTime.getHour() + ":" + arrivalDateTime.getMinute();
-        final Map<String, Number> weatherInformation = weather.getWeatherOn(arrivalDateTime.getDayOfMonth(), arrivalDateTime.getMonthValue(), arrivalDateTime.getYear(), arrivalHour).get();
-        final WeatherConditionFactory weatherConditionFactory = new WeatherConditionFactoryImpl();
-        final List<WeatherCondition> weatherConditions = new ArrayList<>();
-        weatherConditions.add(weatherConditionFactory.createFreezingRisk(weatherInformation.get("freezing_level_height").doubleValue()));
-        weatherConditions.add(weatherConditionFactory.createSnowfall(weatherInformation.get("snowfall").doubleValue()));
-        weatherConditions.add(weatherConditionFactory.createPrecipitation(weatherInformation.get("precipitation").doubleValue()));
-        weatherConditions.add(weatherConditionFactory.createVisibility(weatherInformation.get("visibility").doubleValue()));
-        weatherConditions.add(weatherConditionFactory.createWindGust(weatherInformation.get("wind_gusts").doubleValue()));
-        final WeatherReport weatherReport = new WeatherReportImpl();
-        weatherReport.addConditions(weatherConditions);
-        return new CheckpointWithMeteoImpl(latitude, longitude, arrivalDateTime, weatherReport);
-    }
 }
