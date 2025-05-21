@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import org.app.model.LocationSelector;
 import org.app.model.Pair;
-import org.app.model.Weather;
+import org.app.model.AllWeather;
 
 // import javafx.beans.property.*;
 
@@ -57,7 +57,7 @@ public class mainGUIcontroller {
     private Button settingsButton;
 
     private final LocationSelector locationSelector = new LocationSelector();
-    private Weather weather;
+    private AllWeather weather;
     private List<Pair<String, Integer>> possibleCities = new ArrayList<>();
 
     /*
@@ -109,7 +109,7 @@ public class mainGUIcontroller {
         settingsButtonImageView.setPreserveRatio(true);
         settingsButton.setGraphic(settingsButtonImageView); */
         
-        this.weather = new Weather(Map.of("lat", "44.2333", "lng", "12.0500"));
+        this.weather = new AllWeather(Map.of("lat", "44.2333", "lng", "12.0500"));
 
         citySearchField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
