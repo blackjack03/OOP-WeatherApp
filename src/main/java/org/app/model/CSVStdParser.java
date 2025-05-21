@@ -39,4 +39,13 @@ public class CSVStdParser extends CSVReader implements CSVParser {
         return resultList;
     }
 
+    @Override
+    public List<String> getHeader() throws IOException, CsvException {
+        final List<String[]> allRows = this.readAll();
+        if (allRows.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList(allRows.get(0));
+    }
+
 }

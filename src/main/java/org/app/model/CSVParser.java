@@ -10,4 +10,6 @@ public interface CSVParser {
 
     List<Map<String, String>> readCSVToMap() throws IOException, CsvException;
 
+    List<String> getHeader() throws IOException, CsvException;
+
 }
