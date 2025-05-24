@@ -5,19 +5,19 @@ import javafx.scene.image.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.control.*;
 
-import javafx.collections.FXCollections;
+// import javafx.collections.FXCollections;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+// import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.app.model.LocationSelector;
 import org.app.model.Pair;
-import org.app.model.Weather;
+import org.app.model.AllWeather;
 
-import javafx.beans.property.*;
+// import javafx.beans.property.*;
 
 public class mainGUIcontroller {
     @FXML
@@ -56,8 +56,8 @@ public class mainGUIcontroller {
     @FXML
     private Button settingsButton;
 
-    private LocationSelector locationSelector;
-    private Weather weather;
+    private final LocationSelector locationSelector = new LocationSelector();
+    private AllWeather weather;
     private List<Pair<String, Integer>> possibleCities = new ArrayList<>();
 
     /*
@@ -102,17 +102,15 @@ public class mainGUIcontroller {
         */
         
         // Configurata l'immagine per le impostazioni
-        Image settingsButtonImage = new Image("/images/Settings.png");
+        /* Image settingsButtonImage = new Image("/images/Settings.png");
         ImageView settingsButtonImageView = new ImageView(settingsButtonImage);
         settingsButtonImageView.setFitHeight(100);
         settingsButtonImageView.setFitHeight(100);
         settingsButtonImageView.setPreserveRatio(true);
-        settingsButton.setGraphic(settingsButtonImageView);
+        settingsButton.setGraphic(settingsButtonImageView); */
         
-        this.weather = new Weather(Map.of("lat", "44.2333", "lng", "12.0500"));
-    
-        this.locationSelector = new LocationSelector();
-            
+        this.weather = new AllWeather(Map.of("lat", "44.2333", "lng", "12.0500"));
+
         citySearchField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 cityContextMenu.hide();
@@ -125,8 +123,8 @@ public class mainGUIcontroller {
 
     }
 
-    private void onCitySearch(KeyEvent event) {
-        String query = citySearchField.getText().toLowerCase();
+    private void onCitySearch(final KeyEvent event) {
+        final String query = citySearchField.getText().toLowerCase();
 
         if (query.isEmpty()) {
             cityContextMenu.hide();
@@ -137,23 +135,22 @@ public class mainGUIcontroller {
         cityContextMenu.getItems().clear();
 
         if (!possibleCities.isEmpty()) {
-            for (Pair<String, Integer> city : possibleCities) {
-                MenuItem cityItem = new MenuItem(city.getX());
+            for (final Pair<String, Integer> city : possibleCities) {
+                final MenuItem cityItem = new MenuItem(city.getX());
                 cityItem.setOnAction(event1 -> updateWeatherInfo(city.getY()));
                 cityContextMenu.getItems().add(cityItem);
 
             }
         } else {
-            MenuItem noResults = new MenuItem("Nessuna città trovata");
+            final MenuItem noResults = new MenuItem("Nessuna città trovata");
             cityContextMenu.getItems().add(noResults);
         }
     }
 
-    private void updateWeatherInfo(int cityID) {
-        Optional<Map<String, String>> locationInfoOpt = locationSelector.getByID(cityID);
+    private void updateWeatherInfo(final int cityID) {
+        final Optional<Map<String, String>> locationInfoOpt = locationSelector.getByID(cityID);
         if (locationInfoOpt.isPresent()) {
-            Map<String, String> locationInfo = locationInfoOpt.get();
-
+            final Map<String, String> locationInfo = locationInfoOpt.get();
             weather.setLocation(locationInfo);
             if (weather.reqestsAllForecast()) {
                 updateLabels();
@@ -162,11 +159,11 @@ public class mainGUIcontroller {
     }
 
     private void updateLabels() {
-        Optional<Pair<String, Map<String, Number>>> currentWeatherOpt = weather.getWeatherNow();
+        final Optional<Pair<String, Map<String, Number>>> currentWeatherOpt = weather.getWeatherNow();
 
         if (currentWeatherOpt.isPresent()) {
-            Pair<String, Map<String, Number>> currentWeatherPair = currentWeatherOpt.get();
-            Map<String, Number> currentWeather = currentWeatherPair.getY();
+            final Pair<String, Map<String, Number>> currentWeatherPair = currentWeatherOpt.get();
+            final Map<String, Number> currentWeather = currentWeatherPair.getY();
             currentTemperatureLabel.setText("Temperatura: " + currentWeather.get("temperature_C") + " °C");
             humidityLabel.setText("Umidità: " + currentWeather.get("humidity") + "%");
             windSpeedLabel.setText("Velocità del vento: " + currentWeather.get("wind_speed_kmh") + " km/h");

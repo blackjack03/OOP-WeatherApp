@@ -1,6 +1,6 @@
 package org.app.travelmode.model;
 
-import org.app.model.Weather;
+import org.app.model.AllWeather;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -29,7 +29,7 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
     }
 
     private Map<String, Number> getWeatherInfo(final Checkpoint checkpoint) {
-        final Weather weather = new Weather(createCoordinatesMap(checkpoint));
+        final AllWeather weather = new AllWeather(createCoordinatesMap(checkpoint));
         final ZonedDateTime arrivalDateTime = checkpoint.getArrivalDateTime();
         final String arrivalHour = String.format("%d:%d", arrivalDateTime.getHour(), arrivalDateTime.getMinute());
 
