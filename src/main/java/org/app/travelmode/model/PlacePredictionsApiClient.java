@@ -6,16 +6,20 @@ import org.app.travelmode.placeautocomplete.PlaceAutocompleteResponse;
 
 import java.util.List;
 
-public class PlacePredictionsApiClient extends AbstractGoogleApiClient {
+public class PlacePredictionsApiClient extends AbstractGoogleApiClient implements PlaceAutocomplete{
 
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/autocomplete/json";
 
+    private final GoogleApiRequestBuilder requestBuilder;
+
     public PlacePredictionsApiClient(final String apiKey) {
         super(BASE_URL, apiKey);
+        this.requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
     }
 
+    @Override
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
-        final GoogleApiRequestBuilder requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
+        this.requestBuilder.reset();
         PlaceAutocompleteResponse placeAutocompleteResponse = null;
         final String url = requestBuilder.addParameter("input", input)
                 .addParameter("language", "it")
