@@ -8,4 +8,5 @@ public interface GoogleApiClientFactory {
 
     PlacePredictionsApiClient createPlacePredictionsApiClient();
 
+    StaticMapApiClient createStaticMapApiClient();
 }
