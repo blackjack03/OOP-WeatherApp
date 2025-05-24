@@ -34,4 +34,9 @@ public class GoogleApiClientFactoryImpl implements GoogleApiClientFactory {
     public PlacePredictionsApiClient createPlacePredictionsApiClient() {
         return new PlacePredictionsApiClient(this.googleApiKey);
     }
+
+    @Override
+    public StaticMapApiClient createStaticMapApiClient() {
+        return new StaticMapApiClientImpl(this.googleApiKey);
+    }
 }
