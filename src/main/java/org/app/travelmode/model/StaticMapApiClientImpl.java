@@ -7,7 +7,7 @@ import java.net.URL;
 import java.io.InputStream;
 import java.util.List;
 
-public class MapImageGeneratorImpl extends AbstractGoogleApiClient implements MapImageGenerator {
+public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements StaticMapApiClient {
 
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/staticmap?";
     private static final String DEFAULT_SIZE = "650x488";
@@ -16,7 +16,7 @@ public class MapImageGeneratorImpl extends AbstractGoogleApiClient implements Ma
 
     private final GoogleApiRequestBuilder requestBuilder;
 
-    public MapImageGeneratorImpl(final String apiKey) {
+    public StaticMapApiClientImpl(final String apiKey) {
         super(BASE_URL, apiKey);
         this.requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
     }
