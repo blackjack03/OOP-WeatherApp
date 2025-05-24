@@ -6,7 +6,7 @@ import org.app.model.AdvancedJsonReaderImpl;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
-public class PlaceDetailsApiClient extends AbstractGoogleApiClient {
+public class PlaceDetailsApiClient extends AbstractGoogleApiClient implements PlaceDetails {
 
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/details/json";
 
@@ -14,6 +14,7 @@ public class PlaceDetailsApiClient extends AbstractGoogleApiClient {
         super(BASE_URL, apiKey);
     }
 
+    @Override
     public ZoneId getTimezone(final String placeId) {
         final GoogleApiRequestBuilder requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
         ZoneId zoneId = null;
