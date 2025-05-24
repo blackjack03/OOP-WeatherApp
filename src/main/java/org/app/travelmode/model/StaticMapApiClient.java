@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 
 import java.util.List;
 
-public interface MapImageGenerator {
+public interface StaticMapApiClient {
 
     /**
      * Creates an image representing a map with a route.
