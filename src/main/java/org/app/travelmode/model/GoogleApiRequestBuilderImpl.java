@@ -7,19 +7,35 @@ public class GoogleApiRequestBuilderImpl implements GoogleApiRequestBuilder {
 
     private final StringBuilder urlBuilder;
     private final String apiKey;
+    private final String baseUrl;
+    private boolean hasParameters;
 
     public GoogleApiRequestBuilderImpl(final String baseUrl, final String apiKey) {
         this.urlBuilder = new StringBuilder(baseUrl);
         this.apiKey = apiKey;
+        this.baseUrl = baseUrl;
+        this.hasParameters = baseUrl.contains("?");
     }
 
     @Override
     public GoogleApiRequestBuilder addParameter(final String key, final String value) {
-        char separator = this.urlBuilder.toString().contains("?") ? '&' : '?';
-        this.urlBuilder.append(separator)
-                .append(key)
+        if (this.hasParameters) {
+            this.urlBuilder.append('&');
+        } else {
+            this.urlBuilder.append('?');
+            this.hasParameters = true;
+        }
+        this.urlBuilder.append(key)
                 .append('=')
                 .append(URLEncoder.encode(value, StandardCharsets.UTF_8));
+        return this;
+    }
+
+    @Override
+    public GoogleApiRequestBuilder reset() {
+        this.urlBuilder.setLength(0);
+        this.urlBuilder.append(this.baseUrl);
+        this.hasParameters = baseUrl.contains("?");
         return this;
     }
 
