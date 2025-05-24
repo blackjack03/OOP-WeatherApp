@@ -1,10 +1,7 @@
 package org.app.travelmode.model;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import javafx.scene.image.Image;
 
-import java.io.FileReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,11 +19,10 @@ public class TravelModeResultImpl implements TravelModeResult {
     private final Duration duration;
     private final LocalDateTime arrivalTime;
     private final String polyline;
-    private final MapImageGenerator mapImageGenerator;
+    private final StaticMapApiClient mapImageGenerator;
     private Optional<Image> mapImage;
     private Optional<String> durationString;
     private Optional<Integer> meteoScore;
-    private String googleApiKey;
 
     public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary, final String polyline, final Duration duration) {
         this.checkpoints = checkpoints;
@@ -37,15 +33,8 @@ public class TravelModeResultImpl implements TravelModeResult {
         this.mapImage = Optional.empty();
         this.durationString = Optional.empty();
         this.meteoScore = Optional.empty();
-        //TODO: delegare
-        try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
-            final Gson gson = new Gson();
-            final JsonObject jsonObject = gson.fromJson(jsonReader, JsonObject.class);
-            this.googleApiKey = jsonObject.get("google-api-key").getAsString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        this.mapImageGenerator = new MapImageGeneratorImpl(googleApiKey);
+        final GoogleApiClientFactory googleApiClientFactory = new GoogleApiClientFactoryImpl();
+        this.mapImageGenerator = googleApiClientFactory.createStaticMapApiClient();
     }
 
     @Override
