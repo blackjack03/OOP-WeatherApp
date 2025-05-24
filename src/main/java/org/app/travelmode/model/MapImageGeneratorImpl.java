@@ -7,44 +7,29 @@ import java.net.URL;
 import java.io.InputStream;
 import java.util.List;
 
-public class MapImageGeneratorImpl implements MapImageGenerator {
+public class MapImageGeneratorImpl extends AbstractGoogleApiClient implements MapImageGenerator {
 
-    private final String googleApiKey;
+    private static final String BASE_URL = "https://maps.googleapis.com/maps/api/staticmap?";
+    private static final String DEFAULT_SIZE = "650x488";
+    private static final String DEFAULT_SCALE = "2";
+    private static final String DEFAULT_LANGUAGE = "it";
 
-    public MapImageGeneratorImpl(final String googleApiKey) {
-        this.googleApiKey = googleApiKey;
+    private final GoogleApiRequestBuilder requestBuilder;
+
+    public MapImageGeneratorImpl(final String apiKey) {
+        super(BASE_URL, apiKey);
+        this.requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
     }
 
     @Override
     public Image generateMapImage(final List<CheckpointWithMeteo> checkpoints, final String polyline) {
         try {
-            final StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/staticmap?size=650x488&scale=2&language=it&path=enc:");
-            urlBuilder.append(polyline).append("&key=").append(googleApiKey);
-
-            for (final CheckpointWithMeteo checkpoint : checkpoints) {
-                int weatherScore = checkpoint.getWeatherScore();
-
-                switch (WeatherScoreCategory.fromScore(weatherScore)) {
-                    case GOOD:
-                        addMarker(urlBuilder, checkpoint, "yellow");
-                        break;
-                    case BAD:
-                        addMarker(urlBuilder, checkpoint, "orange");
-                        break;
-                    case TERRIBLE:
-                        addMarker(urlBuilder, checkpoint, "red");
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            final String url = urlBuilder.toString();
+            final String url = buildMapUrl(checkpoints, polyline);
 
             final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("GET");
 
-            if (connection.getResponseCode() != 200) {
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 throw new RuntimeException("Errore durante la richiesta della mappa: " + connection.getResponseMessage());
             }
 
@@ -56,11 +41,37 @@ public class MapImageGeneratorImpl implements MapImageGenerator {
         return null;
     }
 
-    private void addMarker(final StringBuilder urlBuilder, final CheckpointWithMeteo checkpoint, final String color) {
-        urlBuilder.append("&markers=color:").append(color + "%7C")
-                //.append("%7Clabel:%7C")
-                .append(checkpoint.getLatitude()).append(",")
-                .append(checkpoint.getLongitude());
+    private String buildMapUrl(final List<CheckpointWithMeteo> checkpoints, final String polyline) {
+        this.requestBuilder.addParameter("size", DEFAULT_SIZE)
+                .addParameter("scale", DEFAULT_SCALE)
+                .addParameter("language", DEFAULT_LANGUAGE)
+                .addParameter("path", "enc:" + polyline);
+
+        for (final CheckpointWithMeteo checkpoint : checkpoints) {
+            addCheckpointMarker(checkpoint);
+        }
+        return this.requestBuilder.build();
     }
+
+    private void addCheckpointMarker(final CheckpointWithMeteo checkpoint) {
+        final String color = selectMarkerColor(checkpoint.getWeatherScore());
+        if (color != null) {
+            this.requestBuilder.addParameter("markers", String.format("color:%s|%f,%f",
+                    color,
+                    checkpoint.getLatitude(),
+                    checkpoint.getLongitude())
+            );
+        }
+    }
+
+    private String selectMarkerColor(int weatherScore) {
+        return switch (WeatherScoreCategory.fromScore(weatherScore)) {
+            case GOOD -> "yellow";
+            case BAD -> "orange";
+            case TERRIBLE -> "red";
+            default -> null;
+        };
+    }
+
 }
 
