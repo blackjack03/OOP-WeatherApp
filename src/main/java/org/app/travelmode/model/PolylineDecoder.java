@@ -14,7 +14,7 @@ public class PolylineDecoder {
      * Decodes a polyline into a list of coordinates.
      *
      * @param encodedPolyline The encoded polyline.
-     * @return A list of LatLngs representing the points on the polyline.
+     * @return A list of {@link LatLng} representing the points on the polyline.
      */
     public static List<LatLng> decode(final String encodedPolyline){
         final List<LatLng> polyline = new ArrayList<>();
