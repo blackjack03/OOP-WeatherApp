@@ -8,10 +8,18 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementation of the {@link TravelModeResult} interface representing the result of the analysis of a trip,
- * including information about checkpoints, summary, duration, arrival time, polyline, and map image.
+ * Implementation of {@link TravelModeResult} that provides comprehensive trip analysis results
+ * including weather conditions, route visualization, and timing information.
+ *
+ * <p>This class manages:
+ * <ul>
+ *     <li>Route checkpoints with weather data</li>
+ *     <li>Trip duration and arrival time</li>
+ *     <li>Route visualization with static maps</li>
+ *     <li>Weather score calculations</li>
+ *     <li>Route summary information</li>
+ * </ul>
  */
-
 public class TravelModeResultImpl implements TravelModeResult {
 
     private final List<CheckpointWithMeteo> checkpoints;
@@ -24,6 +32,14 @@ public class TravelModeResultImpl implements TravelModeResult {
     private Optional<String> durationString;
     private Optional<Integer> meteoScore;
 
+    /**
+     * Constructs a new TravelModeResultImpl with the specified parameters.
+     *
+     * @param checkpoints list of checkpoints with weather information
+     * @param summary     textual description of the route
+     * @param polyline    encoded polyline string representing the route
+     * @param duration    total duration of the trip
+     */
     public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary, final String polyline, final Duration duration) {
         this.checkpoints = checkpoints;
         this.arrivalTime = checkpoints.get(checkpoints.size() - 1).getArrivalDateTime().toLocalDateTime();
@@ -37,11 +53,17 @@ public class TravelModeResultImpl implements TravelModeResult {
         this.mapImageGenerator = googleApiClientFactory.createStaticMapApiClient();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CheckpointWithMeteo> getCheckpoints() {
         return List.copyOf(checkpoints);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Image getMapImage() {
         if (this.mapImage.isEmpty()) {
@@ -50,6 +72,9 @@ public class TravelModeResultImpl implements TravelModeResult {
         return mapImage.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getMeteoScore() {
         if (this.checkpoints.isEmpty()) {
@@ -61,21 +86,33 @@ public class TravelModeResultImpl implements TravelModeResult {
         return meteoScore.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getSummary() {
         return this.summary;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Duration getDuration() {
         return this.duration;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LocalDateTime getArrivalTime() {
         return this.arrivalTime;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDurationString() {
         if (this.durationString.isEmpty()) {
@@ -84,12 +121,25 @@ public class TravelModeResultImpl implements TravelModeResult {
         return this.durationString.get();
     }
 
+    /**
+     * Create a string like "hh ore mm minuti" starting from a {@link Duration} object,
+     * hh represents the number of hours and mm represents the number of minutes.
+     *
+     * @param duration the {@link Duration} object to format.
+     * @return a {@link String} representing the duration of the trip in the format "hh ore mm minuti".
+     */
     private String formatDuration(final Duration duration) {
         long hours = duration.toHours();
         long minutes = duration.toMinutes() % 60;
         return hours + " ore " + minutes + " minuti";
     }
 
+    /**
+     * Calculate the average weather score for the entire route.
+     *
+     * @param checkpoints A list of {@link CheckpointWithMeteo} representing the points along the route where weather conditions have been verified.
+     * @return an integer representing the average weather score.
+     */
     private Integer calculateMeteoScore(final List<CheckpointWithMeteo> checkpoints) {
         int totalScore = 0;
         for (final CheckpointWithMeteo checkpoint : checkpoints) {

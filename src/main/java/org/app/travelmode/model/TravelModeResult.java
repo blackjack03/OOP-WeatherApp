@@ -6,6 +6,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Represents the result of the travel mode analysis, containing route information,
+ * weather conditions, timing details, and visualization data.
+ */
 public interface TravelModeResult {
 
     /**
@@ -17,6 +21,7 @@ public interface TravelModeResult {
 
     /**
      * Generates and returns the map image representing the trip's route.
+     * The image is cached after the first generation.
      *
      * @return an {@link Image} object representing the trip's map.
      */
@@ -25,7 +30,7 @@ public interface TravelModeResult {
     /**
      * Calculates and returns the average weather score based on the checkpoints.
      *
-     * @return an integer representing the average weather score.
+     * @return an integer from 0 to 100 representing the average weather score.
      * @throws IllegalArgumentException if the list of checkpoints is empty.
      */
     int getMeteoScore();
@@ -52,10 +57,10 @@ public interface TravelModeResult {
     LocalDateTime getArrivalTime();
 
     /**
-     * Returns a string of the form h + "ore " + m + "minuti";
-     * where h and m are the hours and minutes respectively.
+     * Return a string like "hh ore mm minuti":
+     * hh represents the number of hours, and mm represents the number of minutes.
      *
-     * @return a string representing the duration of the trip
+     * @return a {@link String} representing the duration of the trip in the format "hh ore mm minuti".
      */
     String getDurationString();
 }

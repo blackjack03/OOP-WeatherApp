@@ -5,6 +5,11 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+/**
+ * Implementation of the {@link TravelRequest} interface.
+ * <p>
+ * It represents a request with all the elements necessary to calculate a trip between two places.
+ */
 public final class TravelRequestImpl implements TravelRequest {
 
     private final String departureLocation;
@@ -16,6 +21,17 @@ public final class TravelRequestImpl implements TravelRequest {
     private final ZoneId departureTimeZone;
     private final ZonedDateTime departureDateTime;
 
+    /**
+     * Constructs a new {@link TravelRequestImpl} object with the specified parameters.
+     *
+     * @param departureLocation the name of the departure location.
+     * @param departurePlaceId  the PlaceId associated with the departure location.
+     * @param arrivalLocation   the name of the arrival location.
+     * @param arrivalPlaceId    the PlaceId associated with the arrival location.
+     * @param departureTime     the departure time.
+     * @param departureDate     the departure date.
+     * @param departureTimeZone the time zone of the departure location.
+     */
     private TravelRequestImpl(final String departureLocation, final String departurePlaceId, final String arrivalLocation, final String arrivalPlaceId, final LocalTime departureTime, final LocalDate departureDate, final ZoneId departureTimeZone) {
         this.departureLocation = departureLocation;
         this.departurePlaceId = departurePlaceId;
@@ -27,41 +43,65 @@ public final class TravelRequestImpl implements TravelRequest {
         this.departureDateTime = ZonedDateTime.of(departureDate, departureTime, departureTimeZone);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDepartureLocation() {
         return this.departureLocation;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDepartureLocationPlaceId() {
         return this.departurePlaceId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getArrivalLocation() {
         return this.arrivalLocation;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getArrivalLocationPlaceId() {
         return this.arrivalPlaceId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LocalTime getDepartureTime() {
         return this.departureTime;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LocalDate getDepartureDate() {
         return this.departureDate;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ZoneId getDepartureTimeZone() {
         return this.departureTimeZone;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ZonedDateTime getDepartureDateTime() {
         return this.departureDateTime;
