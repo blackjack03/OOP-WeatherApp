@@ -7,6 +7,10 @@ import java.net.URL;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * Implementation of {@link StaticMapApiClient} that generates static maps using Google Maps Static API.
+ * This class handles the creation of map images with custom markers and route polylines.
+ */
 public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements StaticMapApiClient {
 
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/staticmap?";
@@ -16,11 +20,19 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
 
     private final GoogleApiRequestBuilder requestBuilder;
 
+    /**
+     * Constructs a new StaticMapApiClientImpl with the specified API key.
+     *
+     * @param apiKey the Google Maps API key to use for authentication
+     */
     public StaticMapApiClientImpl(final String apiKey) {
         super(BASE_URL, apiKey);
         this.requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Image generateMapImage(final List<CheckpointWithMeteo> checkpoints, final String polyline) {
         try {
@@ -41,6 +53,13 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
         return null;
     }
 
+    /**
+     * Builds the complete URL for the static map request.
+     *
+     * @param checkpoints list of checkpoints to mark on the map
+     * @param polyline    encoded polyline string for the route
+     * @return the complete URL string for the static map request
+     */
     private String buildMapUrl(final List<CheckpointWithMeteo> checkpoints, final String polyline) {
         this.requestBuilder.addParameter("size", DEFAULT_SIZE)
                 .addParameter("scale", DEFAULT_SCALE)
@@ -53,6 +72,12 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
         return this.requestBuilder.build();
     }
 
+    /**
+     * Adds a marker for a checkpoint to the map request.
+     * The marker color is determined by the weather score at the checkpoint.
+     *
+     * @param checkpoint the checkpoint with weather information to add to the map
+     */
     private void addCheckpointMarker(final CheckpointWithMeteo checkpoint) {
         final String color = selectMarkerColor(checkpoint.getWeatherScore());
         if (color != null) {
@@ -64,6 +89,12 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
         }
     }
 
+    /**
+     * Selects the appropriate marker color based on the weather score.
+     *
+     * @param weatherScore the weather score to evaluate
+     * @return the color string to use for the marker, or null if no color is applicable
+     */
     private String selectMarkerColor(int weatherScore) {
         return switch (WeatherScoreCategory.fromScore(weatherScore)) {
             case GOOD -> "yellow";

@@ -4,6 +4,9 @@ import javafx.scene.image.Image;
 
 import java.util.List;
 
+/**
+ * Defines a contract for generating static map images with weather-enhanced route visualization.
+ */
 public interface StaticMapApiClient {
 
     /**
@@ -14,7 +17,7 @@ public interface StaticMapApiClient {
      *
      * @param checkpoints A list of {@link CheckpointWithMeteo} representing the points along the route where weather conditions have been verified
      * @param polyline    An encoded polyline representing the path to be displayed
-     * @return an image representing a map
+     * @return a JavaFX Image object containing the generated map visualization.
      */
     Image generateMapImage(List<CheckpointWithMeteo> checkpoints, String polyline);
 }
