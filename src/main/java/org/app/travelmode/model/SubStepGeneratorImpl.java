@@ -9,10 +9,38 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of the {@link SubStepGenerator} interface that breaks down {@link DirectionsStep}
+ * into smaller, equally-sized segments.
+ *
+ * <p>This generator:
+ * <ul>
+ *     <li>Divides a route step into sub-steps of approximately 1000 meters each</li>
+ *     <li>Calculates proportional duration for each sub-step</li>
+ *     <li>Maintains precise geographic coordinates</li>
+ * </ul>
+ */
 public class SubStepGeneratorImpl implements SubStepGenerator {
 
     private static final BigDecimal SUBSTEP_DISTANCE = BigDecimal.valueOf(1000.0);
 
+    /**
+     * Constructs a new {@link SubStepGeneratorImpl} with default settings.
+     */
+    public SubStepGeneratorImpl() {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation:
+     * <ul>
+     *     <li>Decodes the step's polyline into a sequence of coordinates</li>
+     *     <li>Creates sub-steps of approximately 1000 meters each</li>
+     *     <li>Calculates proportional duration for each sub-step</li>
+     *     <li>Ensures the final point is always included</li>
+     * </ul>
+     */
     @Override
     public List<SimpleDirectionsStep> generateSubSteps(final DirectionsStep step) {
         final List<SimpleDirectionsStep> subSteps = new ArrayList<>();
@@ -40,11 +68,19 @@ public class SubStepGeneratorImpl implements SubStepGenerator {
     }
 
     /**
-     * Calculates the duration of a sub-step based on its length and the original step's duration and distance.
+     * Calculates the duration of a sub-step based on its proportional distance
+     * relative to the original step.
      *
-     * @param directionsStep the original step
-     * @param subStepLength  the length of the sub-step
-     * @return the calculated duration of the sub-step
+     * <p>The calculation:
+     * <ul>
+     *     <li>Uses proportional scaling based on distance</li>
+     *     <li>Maintains temporal consistency with the original step</li>
+     *     <li>Rounds results to one decimal place</li>
+     * </ul>
+     *
+     * @param directionsStep the original step containing duration information
+     * @param subStepLength  the length of the sub-step in meters
+     * @return the calculated duration of the sub-step in seconds
      */
     private double calculateSubStepDuration(final DirectionsStep directionsStep, final BigDecimal subStepLength) {
         BigDecimal stepDuration = BigDecimal.valueOf(directionsStep.getDuration().getValue());
