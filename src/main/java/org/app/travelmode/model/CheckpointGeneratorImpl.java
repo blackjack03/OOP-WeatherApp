@@ -7,11 +7,35 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implements the {@link CheckpointGenerator} interface to create a sequence of checkpoints
+ * based on navigation directions steps.
+ *
+ * <p>This generator creates checkpoints by:
+ * <ul>
+ *     <li>Converting route steps into geographical checkpoints</li>
+ *     <li>Calculating arrival times based on step durations</li>
+ *     <li>Maintaining the chronological sequence of the route</li>
+ * </ul>
+ *
+ * <p>The generation process:
+ * <ol>
+ *     <li>Creates an initial checkpoint from the first step's starting location</li>
+ *     <li>Iteratively creates subsequent checkpoints using each step's end location</li>
+ *     <li>Calculates arrival times by adding step durations progressively</li>
+ * </ol>
+ */
 public class CheckpointGeneratorImpl implements CheckpointGenerator {
 
+    /**
+     * Constructs a new checkpoint generator.
+     */
     public CheckpointGeneratorImpl() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Checkpoint> generateCheckpoints(final List<SimpleDirectionsStep> steps, final ZonedDateTime departureDateTime) {
         final List<Checkpoint> checkpoints = new ArrayList<>();
@@ -25,10 +49,28 @@ public class CheckpointGeneratorImpl implements CheckpointGenerator {
         return List.copyOf(checkpoints);
     }
 
+    /**
+     * Creates a new checkpoint from a geographical position and arrival time.
+     *
+     * @param position        the geographical coordinates of the checkpoint
+     * @param arrivalDateTime the expected arrival time at this position
+     * @return a new checkpoint instance
+     */
     private Checkpoint createCheckpoint(final LatLng position, final ZonedDateTime arrivalDateTime) {
         return new CheckpointImpl(position.getLat(), position.getLng(), arrivalDateTime);
     }
 
+    /**
+     * Creates the next checkpoint in sequence based on the previous checkpoint
+     * and the current navigation step.
+     *
+     * <p>The arrival time for the new checkpoint is calculated by adding
+     * the step's duration to the previous checkpoint's arrival time.
+     *
+     * @param previousCheckpoint the last created checkpoint in the sequence
+     * @param step               the current navigation step containing the next location and duration
+     * @return a new checkpoint with calculated arrival time
+     */
     private Checkpoint createNextCheckpoint(final Checkpoint previousCheckpoint, final SimpleDirectionsStep step) {
         return createCheckpoint(
                 step.getEnd_location(),
