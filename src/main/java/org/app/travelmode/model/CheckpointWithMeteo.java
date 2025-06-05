@@ -1,8 +1,26 @@
 package org.app.travelmode.model;
 
+/**
+ * Extends the {@link Checkpoint} interface to include weather information and analysis
+ * capabilities for a geographical location at a specific time.
+ *
+ * <p>This interface adds meteorological functionality to basic checkpoints by providing:
+ * <ul>
+ *     <li>Access to detailed weather condition reports</li>
+ *     <li>Numerical scoring of weather conditions</li>
+ * </ul>
+ *
+ * <p>The weather information is specific to:
+ * <ul>
+ *     <li>The checkpoint's geographical location (latitude/longitude)</li>
+ *     <li>The expected arrival time at the checkpoint</li>
+ * </ul>
+ */
 public interface CheckpointWithMeteo extends Checkpoint {
 
     /**
+     * Retrieves the weather report associated with this checkpoint.
+     *
      * @return a {@link WeatherReport} for this checkpoint
      */
     WeatherReport getWeatherReport();
