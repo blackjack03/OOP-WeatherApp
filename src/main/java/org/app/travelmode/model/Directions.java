@@ -4,6 +4,24 @@ import org.app.travelmode.directions.DirectionsResponse;
 
 import java.util.List;
 
+/**
+ * Defines the contract for handling route directions and their analysis.
+ *
+ * <p>This interface provides methods to:
+ * <ul>
+ *     <li>Configure and execute travel requests</li>
+ *     <li>Retrieve and analyze route information</li>
+ *     <li>Access alternative routes</li>
+ *     <li>Manage raw API responses</li>
+ * </ul>
+ *
+ * <p>The typical workflow involves:
+ * <ol>
+ *     <li>Setting or providing a travel request</li>
+ *     <li>Requesting directions from the service</li>
+ *     <li>Retrieving and analyzing the results</li>
+ * </ol>
+ */
 public interface Directions {
 
     /**
@@ -15,6 +33,14 @@ public interface Directions {
 
     /**
      * Requests directions based on the current travel request.
+     *
+     * <p>This method uses the previously set travel request to:
+     * <ul>
+     *      <li>Contact the directions service</li>
+     *      <li>Retrieve route information</li>
+     *      <li>Store the response for analysis</li>
+     * </ul>
+     * <p>
      * Throws an exception if no travel request is set.
      */
     void askForDirections();
@@ -29,6 +55,13 @@ public interface Directions {
     /**
      * Returns the main route result after analyzing the API response.
      * If the result is not already computed, it is calculated and stored.
+     *
+     * <p>The main result typically represents:
+     * <ul>
+     *     <li>The fastest route</li>
+     *     <li>Detailed checkpoint information</li>
+     *     <li>Associated weather conditions</li>
+     * </ul>
      *
      * @return the {@link TravelModeResult} for the main route.
      */

@@ -8,6 +8,18 @@ import org.app.travelmode.directions.SimpleDirectionsStep;
 import java.time.Duration;
 import java.util.*;
 
+/**
+ * Implementation of the {@link Directions} interface that handles route calculations
+ * and analysis with weather information integration.
+ *
+ * <p>This class provides functionality to:
+ * <ul>
+ *     <li>Request and process directions from Google Directions API</li>
+ *     <li>Generate route checkpoints with weather information</li>
+ *     <li>Handle multiple route alternatives</li>
+ *     <li>Calculate route durations and intermediate points</li>
+ * </ul>
+ */
 public class DirectionsImpl implements Directions {
 
     private TravelRequest travelRequest;
@@ -16,17 +28,28 @@ public class DirectionsImpl implements Directions {
     private Optional<DirectionsResponse> directionsResponse;
 
 
+    /**
+     * Creates a new DirectionsImpl instance with empty state.
+     */
     public DirectionsImpl() {
         this.mainResult = Optional.empty();
         this.alternativeResult = Optional.empty();
         this.directionsResponse = Optional.empty();
     }
 
+    /**
+     * Creates a new DirectionsImpl instance with a specific travel request.
+     *
+     * @param travelRequest the initial travel request to process
+     */
     public DirectionsImpl(final TravelRequest travelRequest) {
         this();
         this.travelRequest = travelRequest;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setTravelRequest(final TravelRequest travelRequest) {
         this.mainResult = Optional.empty();
@@ -35,6 +58,9 @@ public class DirectionsImpl implements Directions {
         this.travelRequest = travelRequest;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void askForDirections() {
         if (travelRequest == null) {
@@ -43,6 +69,9 @@ public class DirectionsImpl implements Directions {
         askForDirections(this.travelRequest);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void askForDirections(final TravelRequest travelRequest) {
         final GoogleApiClientFactory googleApiClientFactory = new GoogleApiClientFactoryImpl();
@@ -50,6 +79,9 @@ public class DirectionsImpl implements Directions {
         this.directionsResponse = Optional.of(directionApiClient.getDirections(travelRequest));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TravelModeResult getMainResult() {
         if (this.mainResult.isEmpty()) {
@@ -59,6 +91,9 @@ public class DirectionsImpl implements Directions {
         return this.mainResult.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<TravelModeResult> getAlternativeResults() {
         if (this.alternativeResult.isPresent()) {
@@ -79,6 +114,9 @@ public class DirectionsImpl implements Directions {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DirectionsResponse getDirectionsResponse() {
         if (this.directionsResponse.isPresent()) {
@@ -89,10 +127,18 @@ public class DirectionsImpl implements Directions {
     }
 
     /**
-     * Analyzes a specific route and generates a {@link TravelModeResult}.
+     * Analyzes a route to create a detailed travel result with weather information.
      *
-     * @param route the {@link DirectionsRoute} to analyze.
-     * @return the {@link TravelModeResult} for the analyzed route.
+     * <p>The analysis process includes:
+     * <ul>
+     *     <li>Calculating intermediate points along the route</li>
+     *     <li>Generating checkpoints with timing information</li>
+     *     <li>Enriching checkpoints with weather data</li>
+     *     <li>Computing total route duration</li>
+     * </ul>
+     *
+     * @param route the {@link DirectionsRoute} to analyze
+     * @return a complete {@link TravelModeResult} with route and weather information
      */
     private TravelModeResult analyzeRoute(final DirectionsRoute route) {
         final RouteAnalyzer routeAnalyzer = new RouteAnalyzerImpl(new IntermediatePointFinderImpl(), new SubStepGeneratorImpl());
@@ -121,7 +167,7 @@ public class DirectionsImpl implements Directions {
     /**
      * Calculates the total duration of a route.
      *
-     * @param route the {@link DirectionsRoute} to analyze.
+     * @param route the {@link DirectionsRoute} whose duration needs to be calculated.
      * @return a {@link Duration} representing the total route duration.
      */
     private Duration calculateRouteDuration(final DirectionsRoute route) {
