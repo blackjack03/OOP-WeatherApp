@@ -7,13 +7,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implementation of {@link WeatherInformationService} that enriches checkpoints with weather information.
+ * This service retrieves weather data and creates detailed weather reports for specific locations and times.
+ */
 public class WeatherInformationServiceImpl implements WeatherInformationService {
     private final WeatherConditionFactory weatherConditionFactory;
 
+    /**
+     * Constructs a new {@link WeatherInformationServiceImpl} with the specified factory.
+     *
+     * @param weatherConditionFactory factory for creating different types of weather conditions
+     */
     public WeatherInformationServiceImpl(final WeatherConditionFactory weatherConditionFactory) {
         this.weatherConditionFactory = weatherConditionFactory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CheckpointWithMeteo enrichWithWeather(final Checkpoint checkpoint) {
         final Map<String, Number> weatherInformation = getWeatherInfo(checkpoint);
@@ -21,6 +33,12 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
         return new CheckpointWithMeteoImpl(checkpoint, weatherReport);
     }
 
+    /**
+     * Creates a coordinates map for the weather API request.
+     *
+     * @param checkpoint the checkpoint to extract coordinates from
+     * @return a map containing latitude and longitude as strings
+     */
     private Map<String, String> createCoordinatesMap(final Checkpoint checkpoint) {
         return Map.of(
                 "lat", String.valueOf(checkpoint.getLatitude()),
@@ -28,6 +46,12 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
         );
     }
 
+    /**
+     * Retrieves weather information for a specific checkpoint and time.
+     *
+     * @param checkpoint the checkpoint to get weather information for
+     * @return a map containing various weather measurements
+     */
     private Map<String, Number> getWeatherInfo(final Checkpoint checkpoint) {
         final AllWeather weather = new AllWeather(createCoordinatesMap(checkpoint));
         final ZonedDateTime arrivalDateTime = checkpoint.getArrivalDateTime();
@@ -40,6 +64,12 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
                 arrivalHour).orElseThrow(() -> new IllegalStateException("Impossibile ottenere le informazioni meteo"));
     }
 
+    /**
+     * Creates a weather report from raw weather information.
+     *
+     * @param weatherInformation map containing raw weather measurements
+     * @return a {@link WeatherReport} containing processed weather conditions
+     */
     private WeatherReport createWeatherReport(final Map<String, Number> weatherInformation) {
         final WeatherReport weatherReport = new WeatherReportImpl();
         final List<WeatherCondition> weatherConditions = Arrays.asList(

@@ -20,26 +20,41 @@ public class WeatherReportImpl implements WeatherReport {
     private final List<WeatherCondition> weatherConditions;
     private Optional<Integer> weatherScore;
 
+    /**
+     * Constructs a new {@link WeatherReportImpl}
+     */
     public WeatherReportImpl() {
         this.weatherConditions = new ArrayList<>();
         this.weatherScore = Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addCondition(final WeatherCondition condition) {
         this.weatherConditions.add(condition);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addConditions(final List<WeatherCondition> conditions) {
         this.weatherConditions.addAll(conditions);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<WeatherCondition> getConditions() {
         return List.copyOf(this.weatherConditions);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getWeatherScore() {
         if (this.weatherScore.isEmpty()) {
@@ -48,6 +63,9 @@ public class WeatherReportImpl implements WeatherReport {
         return this.weatherScore.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int calculateWeatherScore() {
         if (this.weatherConditions.isEmpty()) {

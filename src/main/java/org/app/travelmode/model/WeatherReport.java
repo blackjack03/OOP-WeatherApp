@@ -2,6 +2,26 @@ package org.app.travelmode.model;
 
 import java.util.List;
 
+/**
+ * Represents a comprehensive weather report that aggregates multiple weather conditions
+ * and provides analysis capabilities. This interface manages weather condition collections
+ * and calculates weather quality scores.
+ *
+ * <p>The report provides functionality for:
+ * <ul>
+ *     <li>Managing multiple weather conditions</li>
+ *     <li>Calculating overall weather quality scores</li>
+ *     <li>Maintaining immutable access to conditions</li>
+ * </ul>
+ *
+ * <p>Weather scoring is based on a 0-100 scale where:
+ * <ul>
+ *     <li>76-100: Excellent weather conditions</li>
+ *     <li>51-75: Good weather conditions</li>
+ *     <li>26-50: Bad weather conditions</li>
+ *     <li>0-25: Terrible weather conditions</li>
+ * </ul>
+ */
 public interface WeatherReport {
 
     /**
