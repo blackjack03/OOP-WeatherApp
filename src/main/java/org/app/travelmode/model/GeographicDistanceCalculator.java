@@ -12,6 +12,9 @@ import java.math.RoundingMode;
 public class GeographicDistanceCalculator {
     private static final double EARTH_RADIUS = 6372.795477598;
 
+    /**
+     * Creates a new instance of {@link GeographicDistanceCalculator}
+     */
     public GeographicDistanceCalculator() {
     }
 
