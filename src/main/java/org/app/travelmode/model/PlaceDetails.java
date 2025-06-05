@@ -2,13 +2,18 @@ package org.app.travelmode.model;
 
 import java.time.ZoneId;
 
+/**
+ * Defines a contract for retrieving detailed information about places,
+ * specifically focusing on timezone data.
+ */
 public interface PlaceDetails {
 
     /**
-     * Allows you to obtain the time zone of a location.
+     * Retrieves the timezone information for a specific place.
      *
      * @param placeId A string representing the PlaceID of the location whose time zone you want to know.
-     * @return A {@link ZoneId} object to represent the time zone.
+     * @return the {@link ZoneId} for the specified place,
+     * or null if the timezone cannot be determined or if an error occurs.
      */
     ZoneId getTimezone(String placeId);
 

@@ -6,17 +6,38 @@ import org.app.travelmode.placeautocomplete.PlaceAutocompleteResponse;
 
 import java.util.List;
 
-public class PlacePredictionsApiClient extends AbstractGoogleApiClient implements PlaceAutocomplete{
+/**
+ * Client implementation for Google Places Autocomplete API that provides place predictions
+ * based on user input.
+ *
+ * <p>This client:
+ * <ul>
+ *     <li>Provides location-based place predictions</li>
+ *     <li>Uses Rome, Italy as the default location center (41.9028,12.4964)</li>
+ *     <li>Prioritizes results within a radius of 500 km</li>
+ *     <li>Returns predictions in Italian language</li>
+ *     <li>Focuses on geocoding results</li>
+ * </ul>
+ */
+public class PlacePredictionsApiClient extends AbstractGoogleApiClient implements PlaceAutocomplete {
 
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/autocomplete/json";
 
     private final GoogleApiRequestBuilder requestBuilder;
 
+    /**
+     * Constructs a new PlacePredictionsApiClient with the specified API key.
+     *
+     * @param apiKey the Google API key to use for requests
+     */
     public PlacePredictionsApiClient(final String apiKey) {
         super(BASE_URL, apiKey);
         this.requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
         this.requestBuilder.reset();
