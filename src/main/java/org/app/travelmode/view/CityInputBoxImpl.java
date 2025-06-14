@@ -6,6 +6,8 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
@@ -33,6 +35,12 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
 
         this.cityTextField = new TextField();
         this.suggestionsMenu = new ContextMenu();
+        this.suggestionsMenu.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.SPACE) {
+                event.consume();
+            }
+        });
+
         this.cityTextField.setMinWidth(TEXT_FIELD_MIN_WIDTH);
         this.cityTextField.setPromptText(INPUT_PROMPT);
         this.cityTextField.getStyleClass().add("city-input-text-field");
