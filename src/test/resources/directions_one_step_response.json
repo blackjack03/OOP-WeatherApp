@@ -1,0 +1,93 @@
+{
+  "geocoded_waypoints": [
+    {
+      "geocoder_status": "OK",
+      "place_id": "ChIJYZFtktykLBMRxB_Rbh6eiF8",
+      "types": [
+        "street_address"
+      ]
+    },
+    {
+      "geocoder_status": "OK",
+      "place_id": "ChIJPUTxV9ukLBMRcfoyTcrwtxE",
+      "types": [
+        "street_address"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "bounds": {
+        "northeast": {
+          "lat": 44.14727329999999,
+          "lng": 12.2377608
+        },
+        "southwest": {
+          "lat": 44.1459731,
+          "lng": 12.2366031
+        }
+      },
+      "copyrights": "Powered by Google, ©2025 Google",
+      "legs": [
+        {
+          "distance": {
+            "text": "0,2 km",
+            "value": 172
+          },
+          "duration": {
+            "text": "1 min",
+            "value": 44
+          },
+          "duration_in_traffic": {
+            "text": "1 min",
+            "value": 44
+          },
+          "end_address": "Via Umberto Saba, 351, 47521 Cesena FC, Italia",
+          "end_location": {
+            "lat": 44.1459731,
+            "lng": 12.2377608
+          },
+          "start_address": "Via Umberto Saba, 541, 47522 Cesena FC, Italia",
+          "start_location": {
+            "lat": 44.14727329999999,
+            "lng": 12.2366031
+          },
+          "steps": [
+            {
+              "distance": {
+                "text": "0,2 km",
+                "value": 172
+              },
+              "duration": {
+                "text": "1 min",
+                "value": 44
+              },
+              "end_location": {
+                "lat": 44.1459731,
+                "lng": 12.2377608
+              },
+              "html_instructions": "Procedi in direzione \u003cb\u003esudest\u003c/b\u003e da \u003cb\u003eVia Umberto Saba\u003c/b\u003e verso \u003cb\u003eVia Natalino Sapegno\u003c/b\u003e\u003cdiv style=\"font-size:0.9em\"\u003eLa tua destinazione è sulla destra\u003c/div\u003e",
+              "polyline": {
+                "points": "momlGw}tiAt@q@p@i@d@a@\\]v@m@POLM"
+              },
+              "start_location": {
+                "lat": 44.14727329999999,
+                "lng": 12.2366031
+              },
+              "travel_mode": "DRIVING"
+            }
+          ],
+          "traffic_speed_entry": [],
+          "via_waypoint": []
+        }
+      ],
+      "overview_polyline": {
+        "points": "momlGw}tiAbGgF"
+      },
+      "summary": "Via Umberto Saba",
+      "warnings": [],
+      "waypoint_order": []
+    }
+  ],
+  "status": "OK"
+}
