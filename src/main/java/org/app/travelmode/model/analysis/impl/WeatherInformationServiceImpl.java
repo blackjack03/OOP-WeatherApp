@@ -1,6 +1,7 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.analysis.impl;
 
 import org.app.model.AllWeather;
+import org.app.travelmode.model.analysis.api.WeatherInformationService;
 import org.app.travelmode.model.checkpoint.api.Checkpoint;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
 import org.app.travelmode.model.checkpoint.impl.CheckpointWithMeteoImpl;

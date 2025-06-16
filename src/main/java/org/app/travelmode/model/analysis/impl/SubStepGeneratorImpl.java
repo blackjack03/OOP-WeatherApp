@@ -1,7 +1,8 @@
-package org.app.travelmode.model.analysis;
+package org.app.travelmode.model.analysis.impl;
 
-import org.app.travelmode.model.GeographicDistanceCalculator;
-import org.app.travelmode.model.PolylineDecoder;
+import org.app.travelmode.model.utility.GeographicDistanceCalculator;
+import org.app.travelmode.model.utility.PolylineDecoder;
+import org.app.travelmode.model.analysis.api.SubStepGenerator;
 import org.app.travelmode.model.google.dto.directions.DirectionsStep;
 import org.app.travelmode.model.google.dto.directions.LatLng;
 import org.app.travelmode.model.google.dto.directions.SimpleDirectionsStep;

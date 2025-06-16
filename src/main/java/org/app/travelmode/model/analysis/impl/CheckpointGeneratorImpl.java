@@ -1,5 +1,6 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.analysis.impl;
 
+import org.app.travelmode.model.analysis.api.CheckpointGenerator;
 import org.app.travelmode.model.google.dto.directions.LatLng;
 import org.app.travelmode.model.google.dto.directions.SimpleDirectionsStep;
 import org.app.travelmode.model.checkpoint.api.Checkpoint;
