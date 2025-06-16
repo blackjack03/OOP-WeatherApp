@@ -1,4 +1,4 @@
-package org.app.travelmode.placeautocomplete;
+package org.app.travelmode.model.google.dto.placeautocomplete;
 
 import java.util.List;
 
