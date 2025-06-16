@@ -1,4 +1,6 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.travel.impl;
+
+import org.app.travelmode.model.travel.api.TravelRequest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,10 +1,11 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.travel.impl;
 
 import javafx.scene.image.Image;
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.impl.GoogleApiClientFactoryImpl;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
 import org.app.travelmode.model.google.api.StaticMapApiClient;
+import org.app.travelmode.model.travel.api.TravelModeResult;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
