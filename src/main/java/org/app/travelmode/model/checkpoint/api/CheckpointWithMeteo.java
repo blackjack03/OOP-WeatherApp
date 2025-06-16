@@ -1,6 +1,6 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.checkpoint.api;
 
-import org.app.travelmode.model.weather.WeatherReport;
+import org.app.travelmode.model.weather.api.WeatherReport;
 
 /**
  * Extends the {@link Checkpoint} interface to include weather information and analysis

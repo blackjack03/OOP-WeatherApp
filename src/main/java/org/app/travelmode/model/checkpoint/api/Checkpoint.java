@@ -1,4 +1,4 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.checkpoint.api;
 
 import java.time.ZonedDateTime;
 
