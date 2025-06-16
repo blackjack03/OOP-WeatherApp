@@ -1,26 +1,31 @@
 package org.app.travelmode.controller;
 
-import javafx.scene.image.Image;
 import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+/**
+ * Interface defining the contract for the Travel Mode application controller.
+ * This controller manages the travel planning functionality, including location
+ * selection, route analysis with weather detection, and travel time calculations.
+ */
 public interface TravelModeController {
 
     /**
-     * Provides a list of {@link PlaceAutocompletePrediction} based on the input text
+     * Retrieves location suggestions based on the user's input text.
+     * This method provides autocomplete functionality for location search.
      *
-     * @param input String representing the characters written by the user
-     * @return a list of predictions based on the input
+     * @param input a {@link String} representing the characters written by the user
+     * @return a list of {@link PlaceAutocompletePrediction} matching the input text
      */
     List<PlaceAutocompletePrediction> getPlacePredictions(final String input);
 
     /**
      * Set the departure location
      *
-     * @param departureLocation the name of the departure location
+     * @param departureLocation the name or address of the departure location
      */
     void setDepartureLocation(final String departureLocation);
 
@@ -34,7 +39,7 @@ public interface TravelModeController {
     /**
      * Set the arrival location
      *
-     * @param arrivalLocation the name of the arrival location
+     * @param arrivalLocation the name or address of the arrival location
      */
     void setArrivalLocation(final String arrivalLocation);
 
