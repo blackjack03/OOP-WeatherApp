@@ -1,4 +1,4 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.travel.api;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
