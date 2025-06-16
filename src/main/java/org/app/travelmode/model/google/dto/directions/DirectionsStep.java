@@ -1,4 +1,4 @@
-package org.app.travelmode.directions;
+package org.app.travelmode.model.google.dto.directions;
 
 /**
  * Each element in the steps of a {@link DirectionsLeg} defines a single step of the calculated directions.

@@ -1,4 +1,4 @@
-package org.app.travelmode.directions;
+package org.app.travelmode.model.google.dto.directions;
 
 import java.util.Objects;
 

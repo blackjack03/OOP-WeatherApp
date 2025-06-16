@@ -1,4 +1,4 @@
-package org.app.travelmode.directions;
+package org.app.travelmode.model.google.dto.directions;
 
 /**
  * It represents a simple step between two points on a journey
