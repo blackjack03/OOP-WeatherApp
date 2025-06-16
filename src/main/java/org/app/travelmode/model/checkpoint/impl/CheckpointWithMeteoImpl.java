@@ -1,6 +1,8 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.checkpoint.impl;
 
-import org.app.travelmode.model.weather.WeatherReport;
+import org.app.travelmode.model.checkpoint.api.Checkpoint;
+import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
+import org.app.travelmode.model.weather.api.WeatherReport;
 
 import java.time.ZonedDateTime;
 
