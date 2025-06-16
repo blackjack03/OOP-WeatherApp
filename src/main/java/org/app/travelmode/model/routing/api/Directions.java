@@ -1,4 +1,4 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.routing.api;
 
 import org.app.travelmode.model.google.dto.directions.DirectionsResponse;
 import org.app.travelmode.model.travel.api.TravelModeResult;
