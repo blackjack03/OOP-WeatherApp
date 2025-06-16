@@ -8,8 +8,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.app.travelmode.model.*;
-import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
+import org.app.travelmode.model.core.TravelModeModel;
+import org.app.travelmode.model.core.TravelModeModelImpl;
+import org.app.travelmode.model.travel.api.TravelModeResult;
+import org.app.travelmode.model.travel.api.TravelRequest;
+import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 import org.app.travelmode.view.TravelModeView;
 import org.app.travelmode.view.TravelModeViewImpl;
 

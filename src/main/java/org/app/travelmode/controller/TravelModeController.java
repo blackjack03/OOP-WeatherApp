@@ -1,6 +1,6 @@
 package org.app.travelmode.controller;
 
-import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
+import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
