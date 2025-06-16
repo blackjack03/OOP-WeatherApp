@@ -1,4 +1,4 @@
-package org.app.travelmode.model.google;
+package org.app.travelmode.model.google.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

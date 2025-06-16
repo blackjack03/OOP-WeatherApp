@@ -1,10 +1,10 @@
-package org.app.travelmode.model.google;
+package org.app.travelmode.model.google.impl;
 
 import com.google.gson.Gson;
 import org.app.travelmode.model.google.api.GoogleApiRequestBuilder;
 import org.app.travelmode.model.google.api.PlaceAutocomplete;
-import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
-import org.app.travelmode.placeautocomplete.PlaceAutocompleteResponse;
+import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
+import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompleteResponse;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
-package org.app.travelmode.model.google;
+package org.app.travelmode.model.google.impl;
 
 import com.google.gson.Gson;
-import org.app.travelmode.directions.DirectionsResponse;
-import org.app.travelmode.model.TravelRequest;
+import org.app.travelmode.model.google.dto.directions.DirectionsResponse;
+import org.app.travelmode.model.travel.api.TravelRequest;
 import org.app.travelmode.model.google.api.DirectionApiClient;
 import org.app.travelmode.model.google.api.GoogleApiRequestBuilder;
 

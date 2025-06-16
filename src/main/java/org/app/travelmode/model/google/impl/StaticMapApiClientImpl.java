@@ -1,4 +1,4 @@
-package org.app.travelmode.model.google;
+package org.app.travelmode.model.google.impl;
 
 import javafx.scene.image.Image;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
