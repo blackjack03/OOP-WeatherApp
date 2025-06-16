@@ -1,4 +1,4 @@
-package org.app.travelmode.model.analysis;
+package org.app.travelmode.model.analysis.api;
 
 import org.app.travelmode.model.google.dto.directions.DirectionsLeg;
 import org.app.travelmode.model.google.dto.directions.SimpleDirectionsStep;

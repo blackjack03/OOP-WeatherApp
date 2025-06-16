@@ -1,4 +1,4 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.analysis.api;
 
 import org.app.travelmode.model.checkpoint.api.Checkpoint;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
