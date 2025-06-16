@@ -1,6 +1,6 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.google.api;
 
-import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
+import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.util.List;
 

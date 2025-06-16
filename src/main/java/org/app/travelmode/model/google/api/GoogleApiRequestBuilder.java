@@ -1,4 +1,4 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.google.api;
 
 /**
  * Builder interface for constructing Google API request URLs.

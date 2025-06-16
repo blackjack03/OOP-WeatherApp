@@ -1,4 +1,8 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.google.api;
+
+import org.app.travelmode.model.google.impl.DirectionApiClientImpl;
+import org.app.travelmode.model.google.impl.PlaceDetailsApiClient;
+import org.app.travelmode.model.google.impl.PlacePredictionsApiClient;
 
 /**
  * Factory interface for creating various Google API clients.
@@ -8,12 +12,12 @@ package org.app.travelmode.model;
 public interface GoogleApiClientFactory {
 
     /**
-     * Creates a new instance of DirectionApiClient configured to interact
+     * Creates a new instance of DirectionApiClientImpl configured to interact
      * with Google Directions API.
      *
-     * @return a new {@link DirectionApiClient} instance
+     * @return a new {@link DirectionApiClientImpl} instance
      */
-    DirectionApiClient createDirectionApiClient();
+    DirectionApiClientImpl createDirectionApiClient();
 
     /**
      * Creates a new instance of PlaceDetailsApiClient configured to interact

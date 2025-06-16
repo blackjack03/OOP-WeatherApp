@@ -1,4 +1,4 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.google.api;
 
 /**
  * Base interface for all clients that interact with Google APIs.
