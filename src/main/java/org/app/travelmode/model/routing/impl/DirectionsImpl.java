@@ -1,5 +1,9 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.routing.impl;
 
+import org.app.travelmode.model.analysis.api.CheckpointGenerator;
+import org.app.travelmode.model.analysis.api.RouteAnalyzer;
+import org.app.travelmode.model.analysis.api.WeatherInformationService;
+import org.app.travelmode.model.analysis.impl.*;
 import org.app.travelmode.model.google.impl.DirectionApiClientImpl;
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.impl.GoogleApiClientFactoryImpl;
@@ -8,6 +12,7 @@ import org.app.travelmode.model.google.dto.directions.*;
 import org.app.travelmode.model.checkpoint.api.Checkpoint;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
 
+import org.app.travelmode.model.routing.api.Directions;
 import org.app.travelmode.model.travel.api.TravelModeResult;
 import org.app.travelmode.model.travel.impl.TravelModeResultImpl;
 import org.app.travelmode.model.travel.api.TravelRequest;
