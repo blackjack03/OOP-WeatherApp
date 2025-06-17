@@ -1,4 +1,6 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.api;
+
+import org.app.travelmode.model.weather.impl.conditions.*;
 
 /**
  * Factory interface for creating various weather condition objects.

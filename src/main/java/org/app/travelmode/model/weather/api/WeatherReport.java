@@ -1,4 +1,4 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.api;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.api;
 
 /**
  * Represents a weather condition with its associated characteristics and scoring system.
