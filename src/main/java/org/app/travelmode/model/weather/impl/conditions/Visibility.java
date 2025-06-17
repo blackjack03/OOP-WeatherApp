@@ -1,4 +1,4 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.impl.conditions;
 
 /**
  * Represents visibility conditions measured in meters, extending the abstract weather condition base class.

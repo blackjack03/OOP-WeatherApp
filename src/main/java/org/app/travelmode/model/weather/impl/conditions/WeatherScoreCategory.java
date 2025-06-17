@@ -1,4 +1,4 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.impl.conditions;
 
 /**
  * Represents weather score categories used to classify weather conditions based on numerical scores.

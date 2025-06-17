@@ -1,4 +1,4 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.impl.conditions;
 
 /**
  * It represents the freezing risk conditions based on the altitude above sea level where 0°C (freezing level) is reached,

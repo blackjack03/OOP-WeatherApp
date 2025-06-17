@@ -1,4 +1,6 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.impl.conditions;
+
+import org.app.travelmode.model.weather.api.WeatherCondition;
 
 /**
  * Abstract base class for weather conditions that provides common functionality for all weather conditions.

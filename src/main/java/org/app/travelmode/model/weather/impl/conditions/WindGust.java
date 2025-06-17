@@ -1,4 +1,4 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.impl.conditions;
 
 /**
  * Represents wind gust conditions measured at 10 meters above ground level,

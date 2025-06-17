@@ -1,4 +1,4 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.impl.conditions;
 
 /**
  * Represents snowfall amounts from the preceding hour, extending the abstract weather condition base class.
