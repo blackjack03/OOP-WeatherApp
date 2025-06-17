@@ -1,4 +1,7 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.impl;
+
+import org.app.travelmode.model.weather.api.WeatherCondition;
+import org.app.travelmode.model.weather.api.WeatherReport;
 
 import java.util.ArrayList;
 import java.util.List;

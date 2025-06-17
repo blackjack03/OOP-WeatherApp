@@ -1,4 +1,7 @@
-package org.app.travelmode.model.weather;
+package org.app.travelmode.model.weather.impl;
+
+import org.app.travelmode.model.weather.api.WeatherConditionFactory;
+import org.app.travelmode.model.weather.impl.conditions.*;
 
 /**
  * Default implementation of the {@link WeatherConditionFactory} interface.
