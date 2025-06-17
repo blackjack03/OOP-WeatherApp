@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
-import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
+import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.util.List;
 import java.util.function.BiConsumer;

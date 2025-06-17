@@ -3,7 +3,7 @@ package org.app.travelmode.view;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
+import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

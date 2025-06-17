@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.app.travelmode.controller.TravelModeController;
-import org.app.travelmode.placeautocomplete.PlaceAutocompletePrediction;
+import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
 import java.util.List;
