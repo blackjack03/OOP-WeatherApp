@@ -1,29 +1,19 @@
 package org.app.model;
 
+import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ApiConfig {
-    private String baseUrl;
     private String apiKey;
 
     @JsonProperty
-    public String getBaseUrl() {
-        return baseUrl;
+    public Optional<String> getApiKey() {
+        return apiKey == null ? Optional.empty() : Optional.of(apiKey);
     }
 
     @JsonProperty
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    @JsonProperty
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    @JsonProperty
-    public void setApiKey(String apiKey) {
+    public void setApiKey(final String apiKey) {
         this.apiKey = apiKey;
     }
-    
+
 }

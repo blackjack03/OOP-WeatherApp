@@ -13,6 +13,9 @@ plugins {
      */
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.danilopianini.gradle-java-qa") version "1.70.0"
+
+    id("application");
+    id("org.openjfx.javafxplugin") version "0.0.14"
 }
 
 repositories { // Where to search for dependencies
@@ -42,6 +45,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.opencsv:opencsv:5.5.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2")
 
     /*
      * Simple Logging Facade for Java (SLF4J) with Apache Log4j
@@ -62,6 +66,12 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClass.set("org.app.Main")
+}
+
+sourceSets {
+    main {
+        resources.srcDir("src/main/resources")
+    }
 }
 
 tasks.test {

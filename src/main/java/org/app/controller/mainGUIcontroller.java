@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.app.model.LocationSelector;
+import org.app.model.LocationSelectorImpl;
 import org.app.model.Pair;
 import org.app.model.AllWeather;
 
@@ -56,7 +57,7 @@ public class mainGUIcontroller {
     @FXML
     private Button settingsButton;
 
-    private final LocationSelector locationSelector = new LocationSelector();
+    private final LocationSelector locationSelector = new LocationSelectorImpl();
     private AllWeather weather;
     private List<Pair<String, Integer>> possibleCities = new ArrayList<>();
 

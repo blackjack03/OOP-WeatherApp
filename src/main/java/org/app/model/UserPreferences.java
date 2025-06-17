@@ -1,39 +1,20 @@
 package org.app.model;
 
+import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserPreferences {
-    private String defaultCity;
-    private String units;
-    private String language;
+    private Integer defaultCity;
 
     @JsonProperty
-    public String getDefaultCity() {
-        return defaultCity;
+    public Optional<Integer> getDefaultCity() {
+        return (this.defaultCity != null) ?
+            Optional.of(defaultCity) : Optional.empty();
     }
 
     @JsonProperty
-    public void setDefaultCity(String defaultCity) {
+    public void setDefaultCity(final Integer defaultCity) {
         this.defaultCity = defaultCity;
     }
 
-    @JsonProperty
-    public String getUnits() {
-        return units;
-    }
-
-    @JsonProperty
-    public void setUnits(String units) {
-        this.units = units;
-    }
-
-    @JsonProperty
-    public String getLanguage() {
-        return language;
-    }
-
-    @JsonProperty
-    public void setLanguage(String language) {
-        this.language = language;
-    }
 }
