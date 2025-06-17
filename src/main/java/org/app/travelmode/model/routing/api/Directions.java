@@ -42,8 +42,6 @@ public interface Directions {
      *      <li>Retrieve route information</li>
      *      <li>Store the response for analysis</li>
      * </ul>
-     * <p>
-     * Throws an exception if no travel request is set.
      */
     void askForDirections();
 
