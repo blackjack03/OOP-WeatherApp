@@ -38,11 +38,13 @@ public class DirectionApiClientImpl extends AbstractGoogleApiClient implements D
      *
      * @param travelRequest the request containing origin, destination, and timing information
      * @return a {@link DirectionsResponse} object containing the route information
+     *
+     * @throws IllegalStateException if there is any problem executing the request to the Directions API.
+     * @throws NullPointerException if the call to the directions API returns null.
      */
     @Override
-    public DirectionsResponse getDirections(final TravelRequest travelRequest) {
+    public DirectionsResponse getDirections(final TravelRequest travelRequest) throws IllegalStateException, NullPointerException {
         final GoogleApiRequestBuilder requestBuilder = new GoogleApiRequestBuilderImpl(this.getBaseUrl(), this.getApiKey());
-        DirectionsResponse directionsResponse = null;
         final String url = requestBuilder.addParameter("destination", "place_id:" + travelRequest.getArrivalLocationPlaceId())
                 .addParameter("origin", "place_id:" + travelRequest.getDepartureLocationPlaceId())
                 .addParameter("departure_time", String.valueOf(travelRequest.getDepartureDateTime().toEpochSecond()))
@@ -50,12 +52,15 @@ public class DirectionApiClientImpl extends AbstractGoogleApiClient implements D
                 .addParameter("language", "it")
                 .addParameter("units", "metric")
                 .build();
-        try {
-            final Gson gson = new Gson();
-            directionsResponse = gson.fromJson(this.requestJson(url), DirectionsResponse.class);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        final Gson gson = new Gson();
+        final DirectionsResponse directionsResponse = gson.fromJson(this.requestJson(url), DirectionsResponse.class);
+
+        if (!directionsResponse.getStatus().equals("OK")) {
+            throw new IllegalStateException(String.format("Errore nella ricerca del percorso: %s\n%s",
+                    directionsResponse.getStatus(), directionsResponse.getErrorMessage()));
         }
+
         Objects.requireNonNull(directionsResponse, "La chiamata all'api directions ha restituito un risultato nullo.");
         return directionsResponse;
     }
