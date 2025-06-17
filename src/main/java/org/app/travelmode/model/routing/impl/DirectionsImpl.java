@@ -74,20 +74,27 @@ public class DirectionsImpl implements Directions {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws IllegalStateException if the routing service returns an error.
+     * @throws IllegalStateException if no travel request is set.
+     * @throws NullPointerException  if the call to the routing service returns null.
      */
     @Override
-    public void askForDirections() {
+    public void askForDirections() throws IllegalStateException, NullPointerException {
         if (travelRequest == null) {
             throw new IllegalStateException("Per ottenere una risposta dall'api Directions è necessario impostare una TravelRequest");
         }
-        askForDirections(this.travelRequest);
+        this.askForDirections(this.travelRequest);
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @throws IllegalStateException if the routing service returns an error.
+     * @throws NullPointerException  if the call to the routing service returns null.
      */
     @Override
-    public void askForDirections(final TravelRequest travelRequest) {
+    public void askForDirections(final TravelRequest travelRequest) throws IllegalStateException, NullPointerException {
         final GoogleApiClientFactory googleApiClientFactory = new GoogleApiClientFactoryImpl();
         final DirectionApiClientImpl directionApiClient = googleApiClientFactory.createDirectionApiClient();
         this.directionsResponse = Optional.of(directionApiClient.getDirections(travelRequest));
