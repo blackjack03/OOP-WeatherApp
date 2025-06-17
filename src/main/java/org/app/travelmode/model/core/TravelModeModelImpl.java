@@ -100,7 +100,11 @@ public class TravelModeModelImpl implements TravelModeModel {
     @Override
     public void startDirectionsAnalysis(final TravelRequest travelRequest) {
         this.directions = new DirectionsImpl(travelRequest);
-        directions.askForDirections();
+        try {
+            directions.askForDirections();
+        } catch (Exception e) {
+            System.out.println("Error in Directions API call: " + e.getMessage()); //TODO: Visualizzare errore nella GUI
+        }
     }
 
     /**
@@ -124,6 +128,11 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public TravelRequest finalizeTheRequest() {
-        return this.requestBuilder.build();
+        try {
+            return this.requestBuilder.build();
+        } catch (final IllegalStateException e){
+            System.out.println(e.getMessage()); //TODO: migliore gestione dell'errore
+        }
+        return null;
     }
 }
