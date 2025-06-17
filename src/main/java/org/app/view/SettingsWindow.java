@@ -3,7 +3,6 @@ package org.app.view;
 import org.app.App;
 import org.app.model.ConfigManager;
 import org.app.model.AppConfig;
-import org.app.view.LocationSelectorGUI;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -15,9 +14,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.Optional;
-
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 
 /**
  * Finestra modale con le impostazioni dell’app.

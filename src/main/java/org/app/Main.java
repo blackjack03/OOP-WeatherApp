@@ -2,7 +2,6 @@
 package org.app;
 
 import org.app.model.ConfigManager;
-import org.app.model.LocationSelectorImpl;
 
 import javafx.application.Application;
 

@@ -3,11 +3,9 @@ package org.app;
 import org.app.model.AppConfig;
 import org.app.model.ConfigManager;
 import org.app.model.LocationSelector;
-import org.app.view.CustomErrorGUI;
 import org.app.view.SettingsWindow;
 
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleExpression;
 import javafx.geometry.*;
 import javafx.scene.Scene;

@@ -2,10 +2,6 @@ package org.app.view;
 
 import java.util.Optional;
 
-import org.app.model.ConfigManager;
-import org.app.model.AppConfig;
-import org.app.travelmode.*;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
