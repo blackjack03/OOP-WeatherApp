@@ -1,6 +1,5 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.weather.impl.conditions;
 
-import org.app.travelmode.model.weather.impl.conditions.WeatherScoreCategory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
