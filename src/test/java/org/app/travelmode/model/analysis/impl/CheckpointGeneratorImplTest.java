@@ -1,4 +1,4 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.analysis.impl;
 
 import org.app.travelmode.model.checkpoint.api.Checkpoint;
 import org.app.travelmode.model.checkpoint.impl.CheckpointImpl;
@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-import org.app.travelmode.directions.LatLng;
-import org.app.travelmode.directions.SimpleDirectionsStep;
+import org.app.travelmode.model.google.dto.directions.LatLng;
+import org.app.travelmode.model.google.dto.directions.SimpleDirectionsStep;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -70,12 +70,12 @@ public class CheckpointGeneratorImplTest {
     @Test
     void testGenerateCheckpointsWithMultipleSteps() {
         // Prima tappa: Roma -> Tivoli -> Frascati
-        LatLng roma = new LatLng(41.9028, 12.4964);
-        LatLng tivoli = new LatLng(41.9633, 12.7958);
-        LatLng frascati = new LatLng(41.8089, 12.6799);
+        final LatLng roma = new LatLng(41.9028, 12.4964);
+        final LatLng tivoli = new LatLng(41.9633, 12.7958);
+        final LatLng frascati = new LatLng(41.8089, 12.6799);
 
-        SimpleDirectionsStep step1 = new SimpleDirectionsStep(1800.0, tivoli, roma, 25000.0);
-        SimpleDirectionsStep step2 = new SimpleDirectionsStep(1200.0, frascati, tivoli, 15000.0);
+        final SimpleDirectionsStep step1 = new SimpleDirectionsStep(1800.0, tivoli, roma, 25000.0);
+        final SimpleDirectionsStep step2 = new SimpleDirectionsStep(1200.0, frascati, tivoli, 15000.0);
 
         final List<SimpleDirectionsStep> steps = List.of(step1, step2);
         final List<Checkpoint> checkpoints = generator.generateCheckpoints(steps, departureTime);

@@ -1,15 +1,13 @@
-package org.app.travelmode.model;
+package org.app.travelmode.model.analysis.impl;
 
 import com.google.gson.Gson;
-import org.app.travelmode.model.analysis.IntermediatePointFinderImpl;
-import org.app.travelmode.model.analysis.SubStepGenerator;
-import org.app.travelmode.model.analysis.SubStepGeneratorImpl;
+import org.app.travelmode.model.analysis.api.SubStepGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.app.travelmode.directions.*;
+import org.app.travelmode.model.google.dto.directions.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
