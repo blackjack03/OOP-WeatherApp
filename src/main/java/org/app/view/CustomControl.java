@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.app.model.LocationSelector;
+import org.app.model.LocationSelectorImpl;
 import org.app.model.Pair;
 
 public class CustomControl extends VBox {
@@ -31,7 +31,7 @@ public class CustomControl extends VBox {
     final private String gui_path_component = "src%Smain%Sjava%Sorg%Sapp%Sview%Scity_selector.fxml"
             .replace("%S", File.separator);
 
-    final private LocationSelector city_selector = new LocationSelector();
+    final private LocationSelectorImpl city_selector = new LocationSelectorImpl();
 
     public CustomControl() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("city_selector.fxml"));

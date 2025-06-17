@@ -2,7 +2,7 @@ package org.app.model;
 
 import java.util.Optional;
 
-public interface IPLookUpInterface {
+public interface LookUp {
 
     Optional<Boolean> lookup();
 

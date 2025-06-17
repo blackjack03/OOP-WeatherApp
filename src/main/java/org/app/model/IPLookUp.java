@@ -2,7 +2,7 @@ package org.app.model;
 
 import java.util.Optional;
 
-public class IPLookUp implements IPLookUpInterface {
+public class IPLookUp implements LookUp {
 
     private final String API_URL = "https://api.codetabs.com/v1/geolocation/json";
     private String ip = "";
@@ -14,7 +14,7 @@ public class IPLookUp implements IPLookUpInterface {
     private String timeZone = "";
     private Pair<Double, Double> coords = null;
 
-    IPLookUp() {
+    public IPLookUp() {
         /* empty body */
     }
 
@@ -68,6 +68,20 @@ public class IPLookUp implements IPLookUpInterface {
     @Override
     public Pair<Double, Double> getCoords() {
         return this.coords;
+    }
+
+    @Override
+    public String toString() {
+        return "IPLookUp{" +
+                "ip='" + ip + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", countryName='" + countryName + '\'' +
+                ", regionName='" + regionName + '\'' +
+                ", city='" + city + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", timeZone='" + timeZone + '\'' +
+                ", coords=" + coords +
+                '}';
     }
 
     private void clear() {
