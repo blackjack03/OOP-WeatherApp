@@ -3,6 +3,7 @@ package org.app;
 import org.app.model.AppConfig;
 import org.app.model.ConfigManager;
 import org.app.model.LocationSelector;
+import org.app.controller.AppController;
 import org.app.view.SettingsWindow;
 
 import javafx.application.Application;
@@ -18,7 +19,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * Weather Dashboard – layout flessibile
+ * Weather Dashboard
  *
  *  • Finestra suddivisa in 4 aree logiche, con altezze 70 % / 30 % (come prima)
  *    ma colonne 50 % / 50 % per la fascia superiore e 75 % / 25 % per quella inferiore.
@@ -127,7 +128,12 @@ public class App extends Application {
         settingsBtn.setGraphic(gearIcon);
         settingsBtn.setPrefSize(60, 60);
         settingsBtn.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        settingsBtn.setOnAction(e -> new SettingsWindow().show());
+
+        final AppController controller = new AppController(
+        lblCity, todayIcon, lblCond, lblTemp, lblFeels, lblMin, lblMax,
+        hourlyEntries, forecastStrip);
+
+        settingsBtn.setOnAction(e -> new SettingsWindow(controller).show());
 
         //---------------- assemblaggio top & bottom ----------------
         topGrid.add(todayBox,  0, 0);
