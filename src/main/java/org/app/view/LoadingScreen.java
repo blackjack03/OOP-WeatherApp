@@ -59,7 +59,7 @@ public class LoadingScreen extends Application {
             try {
                 stage.getIcons().add(new Image(
                     getClass().getResourceAsStream("/error.png")));
-            } catch (Exception ignored) {}
+            } catch (final Exception ignored) {}
             alert.show();
         };
         if (Platform.isFxApplicationThread()) {
