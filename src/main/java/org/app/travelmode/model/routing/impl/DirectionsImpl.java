@@ -4,6 +4,8 @@ import org.app.travelmode.model.analysis.api.CheckpointGenerator;
 import org.app.travelmode.model.analysis.api.RouteAnalyzer;
 import org.app.travelmode.model.analysis.api.WeatherInformationService;
 import org.app.travelmode.model.analysis.impl.*;
+import org.app.travelmode.model.exception.DirectionsApiException;
+import org.app.travelmode.model.exception.WeatherDataException;
 import org.app.travelmode.model.google.impl.DirectionApiClientImpl;
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.impl.GoogleApiClientFactoryImpl;
@@ -74,13 +76,9 @@ public class DirectionsImpl implements Directions {
 
     /**
      * {@inheritDoc}
-     *
-     * @throws IllegalStateException if the routing service returns an error.
-     * @throws IllegalStateException if no travel request is set.
-     * @throws NullPointerException  if the call to the routing service returns null.
      */
     @Override
-    public void askForDirections() throws IllegalStateException, NullPointerException {
+    public void askForDirections() throws DirectionsApiException {
         if (travelRequest == null) {
             throw new IllegalStateException("Per ottenere una risposta dall'api Directions è necessario impostare una TravelRequest");
         }
@@ -89,12 +87,9 @@ public class DirectionsImpl implements Directions {
 
     /**
      * {@inheritDoc}
-     *
-     * @throws IllegalStateException if the routing service returns an error.
-     * @throws NullPointerException  if the call to the routing service returns null.
      */
     @Override
-    public void askForDirections(final TravelRequest travelRequest) throws IllegalStateException, NullPointerException {
+    public void askForDirections(final TravelRequest travelRequest) throws DirectionsApiException {
         final GoogleApiClientFactory googleApiClientFactory = new GoogleApiClientFactoryImpl();
         final DirectionApiClientImpl directionApiClient = googleApiClientFactory.createDirectionApiClient();
         this.directionsResponse = Optional.of(directionApiClient.getDirections(travelRequest));
@@ -104,7 +99,7 @@ public class DirectionsImpl implements Directions {
      * {@inheritDoc}
      */
     @Override
-    public TravelModeResult getMainResult() {
+    public TravelModeResult getMainResult() throws WeatherDataException {
         if (this.mainResult.isEmpty()) {
             final DirectionsResponse directionResult = getDirectionsResponse();
             this.mainResult = Optional.of(analyzeRoute(directionResult.getRoutes().get(0)));
@@ -116,27 +111,24 @@ public class DirectionsImpl implements Directions {
      * {@inheritDoc}
      */
     @Override
-    public List<TravelModeResult> getAlternativeResults() {
-        if (this.alternativeResult.isPresent()) {
-            return List.copyOf(this.alternativeResult.get());
-        } else {
-            final DirectionsResponse directionResult = getDirectionsResponse();
+    public Optional<List<TravelModeResult>> getAlternativeResults() throws WeatherDataException {
+        final DirectionsResponse directionResult = getDirectionsResponse();
+        if (this.alternativeResult.isEmpty() && directionResult.hasAlternatives()) {
             final List<DirectionsRoute> routes = directionResult.getRoutes();
-            if (routes.size() > 1) {
-                final List<TravelModeResult> results = new ArrayList<>();
-                for (int i = 1; i < routes.size(); i++) {
-                    results.add(analyzeRoute(routes.get(i)));
-                }
-                this.alternativeResult = Optional.of(results);
-                return List.copyOf(results);
-            } else {
-                throw new UnsupportedOperationException("Non sono disponibili percorsi alternativi");
+            final List<TravelModeResult> results = new ArrayList<>();
+            for (int i = 1; i < routes.size(); i++) {
+                results.add(analyzeRoute(routes.get(i)));
             }
+            this.alternativeResult = Optional.of(results);
         }
+        return this.alternativeResult;
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @throws IllegalStateException if called before making a successful request
+     *                               to the Directions API or if the response is not present
      */
     @Override
     public DirectionsResponse getDirectionsResponse() {
@@ -160,8 +152,9 @@ public class DirectionsImpl implements Directions {
      *
      * @param route the {@link DirectionsRoute} to analyze
      * @return a complete {@link TravelModeResult} with route and weather information
+     * @throws WeatherDataException if an error occurs while receiving weather information.
      */
-    private TravelModeResult analyzeRoute(final DirectionsRoute route) {
+    private TravelModeResult analyzeRoute(final DirectionsRoute route) throws WeatherDataException {
         final RouteAnalyzer routeAnalyzer = new RouteAnalyzerImpl(new IntermediatePointFinderImpl(), new SubStepGeneratorImpl());
         final CheckpointGenerator checkpointGenerator = new CheckpointGeneratorImpl();
 
@@ -192,10 +185,10 @@ public class DirectionsImpl implements Directions {
      * @return a {@link Duration} representing the total route duration.
      */
     private Duration calculateRouteDuration(final DirectionsRoute route) {
-        double totalDuration = 0;
-        for (final DirectionsLeg leg : route.getLegs()) {
-            totalDuration += leg.getDuration().getValue();
-        }
+        double totalDuration = route.getLegs().stream()
+                .mapToDouble(leg -> leg.getDuration().getValue())
+                .sum();
+
         return Duration.ofSeconds((long) totalDuration);
     }
 
