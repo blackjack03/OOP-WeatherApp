@@ -75,23 +75,15 @@ public class WeatherReportImpl implements WeatherReport {
             return MAX_SCORE;
         }
 
-        double totalImpact = 0;
-
-        System.out.println("\n*****Condizioni meteo:");
-        for (final WeatherCondition condition : this.weatherConditions) {
-            System.out.print("Condizione:" + condition.getConditionName());
-            double impact = condition.getWeightedIntensityScore();
-            System.out.println("\t\tImpatto non pesato:" + condition.getIntensityScore() + "\tImpatto pesato:" + impact);
-            totalImpact += impact;
+        if (this.weatherScore.isEmpty()) {
+            double totalImpact = this.weatherConditions.stream()
+                    .mapToDouble(WeatherCondition::getWeightedIntensityScore)
+                    .sum();
+            long normalizedImpact = Math.round(MULTIPLIER * Math.log(totalImpact + HORIZONTAL_SHIFT) - VERTICAL_SHIFT); //TODO: valutare il moltiplicatore
+            int score = (int) Math.min(MAX_SCORE, Math.max(MIN_SCORE, MAX_SCORE - normalizedImpact));
+            this.weatherScore = Optional.of(score);
         }
-        System.out.println("Impatto totale: " + totalImpact);
 
-        long normalizedImpact = Math.round(MULTIPLIER * Math.log(totalImpact + HORIZONTAL_SHIFT) - VERTICAL_SHIFT); //TODO: valutare il moltiplicatore
-        System.out.println("Normalized impatto: " + normalizedImpact);
-        int score = (int) Math.min(MAX_SCORE, Math.max(MIN_SCORE, MAX_SCORE - normalizedImpact));
-        System.out.println("Punteggio calcolato: " + score);
-
-        this.weatherScore = Optional.of(score);
-        return score;
+        return this.weatherScore.get();
     }
 }
