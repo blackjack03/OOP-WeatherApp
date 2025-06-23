@@ -7,25 +7,30 @@ import org.app.travelmode.model.google.api.StaticMapApiClient;
 
 import java.io.FileReader;
 
+import org.app.model.ApiConfig;
+import org.app.model.AppConfig;
+import org.app.model.ConfigManager;
+
 /**
  * Implementation of {@link GoogleApiClientFactory} that creates various Google API clients
  * using a shared API key.
  */
 public class GoogleApiClientFactoryImpl implements GoogleApiClientFactory {
 
+    private static final String CONFIG_PATH = "src/main/java/org/files/configuration.json";
     private String googleApiKey = null;
 
     /**
      * Constructs a new GoogleApiClientFactoryImpl and loads the API key.
      */
     public GoogleApiClientFactoryImpl() {
-        //TODO: integrare in json reader
-        try (FileReader jsonReader = new FileReader("src/main/resources/API-Keys.json")) {
-            final Gson gson = new Gson();
-            final JsonObject jsonObject = gson.fromJson(jsonReader, JsonObject.class);
-            this.googleApiKey = jsonObject.get("google-api-key").getAsString();
-        } catch (Exception e) {
-            e.printStackTrace();
+        ConfigManager.loadConfig(CONFIG_PATH);
+        final ApiConfig APIConfig = ConfigManager.getConfig().getApi();
+        if (APIConfig.getApiKey().isPresent()) {
+            this.googleApiKey = APIConfig.getApiKey().get();
+        } else {
+            System.err.println("API key not found in configuration. Please set it in the configuration file.");
+            throw new IllegalStateException("API key is required but not found in the configuration.");
         }
     }
 
