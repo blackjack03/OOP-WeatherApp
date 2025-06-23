@@ -4,6 +4,8 @@ import org.app.model.AdvancedJsonReader;
 import org.app.model.AdvancedJsonReaderImpl;
 import org.app.travelmode.model.google.api.GoogleApiClient;
 
+import java.io.IOException;
+
 /**
  * Abstract base class for Google API clients that provides common functionality
  * for making HTTP requests to Google APIs.
@@ -28,22 +30,26 @@ public abstract class AbstractGoogleApiClient implements GoogleApiClient {
     }
 
     /**
-     * Makes a JSON request to the specified URL and returns the raw JSON response.
-     * It uses an {@link AdvancedJsonReader} to process the response.
+     * Makes an HTTP request to fetch JSON data from a specified URL.
      *
-     * @param requestUrl the complete URL to make the request
-     * @return the raw JSON response as a {@link String}, or null if the request fails
+     * <p>This method handles the communication with external APIs by:
+     * <ul>
+     *     <li>Establishing a connection to the provided URL</li>
+     *     <li>Reading the JSON response using an {@link AdvancedJsonReader}</li>
+     *     <li>Processing and returning the raw JSON data</li>
+     * </ul>
+     *
+     * @param requestUrl the complete URL to which the request should be made.
+     *                   This should include any necessary query parameters
+     * @return the raw JSON response as a {@link String}
+     * @throws IOException if there's an error during the HTTP request or while reading
+     *                     the response
      */
-    protected String requestJson(final String requestUrl) {
+    protected String requestJson(final String requestUrl) throws IOException {
         final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl();
-        String rawJSon = null;
-        try {
-            jsonReader.requestJSON(requestUrl);
-            rawJSon = jsonReader.getRawJSON();
-            System.out.println(rawJSon); //TODO: da eliminare
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        jsonReader.requestJSON(requestUrl);
+        final String rawJSon = jsonReader.getRawJSON();
+        System.out.println(rawJSon); //TODO: da eliminare
         return rawJSon;
     }
 
