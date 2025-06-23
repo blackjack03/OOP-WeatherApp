@@ -2,10 +2,12 @@ package org.app.travelmode.model.google.impl;
 
 import javafx.scene.image.Image;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
+import org.app.travelmode.model.exception.MapGenerationException;
 import org.app.travelmode.model.google.api.GoogleApiRequestBuilder;
 import org.app.travelmode.model.google.api.StaticMapApiClient;
 import org.app.travelmode.model.weather.impl.conditions.WeatherScoreCategory;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.InputStream;
@@ -36,25 +38,34 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
 
     /**
      * {@inheritDoc}
+     *
+     * @throws MapGenerationException if any of the following errors occur:
+     *                                <ul>
+     *                                    <li>Error in communication with Google Maps API</li>
+     *                                    <li>Invalid HTTP response from server</li>
+     *                                    <li>Error while reading image data</li>
+     *                                    <li>Any unexpected error during map generation</li>
+     *                                </ul>
      */
     @Override
-    public Image generateMapImage(final List<CheckpointWithMeteo> checkpoints, final String polyline) {
+    public Image generateMapImage(final List<CheckpointWithMeteo> checkpoints, final String polyline) throws MapGenerationException {
         try {
             final String url = buildMapUrl(checkpoints, polyline);
-
             final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("GET");
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new RuntimeException("Errore durante la richiesta della mappa: " + connection.getResponseMessage());
+                throw new MapGenerationException("Errore durante la richiesta della mappa: "
+                        + connection.getResponseMessage());
             }
 
             final InputStream inputStream = connection.getInputStream();
             return new Image(inputStream);
+        } catch (IOException e) {
+            throw new MapGenerationException("Errore I/O durante la generazione della mappa.", e);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new MapGenerationException("Errore inatteso durante la generazione della mappa.", e);
         }
-        return null;
     }
 
     /**
@@ -69,10 +80,8 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
                 .addParameter("scale", DEFAULT_SCALE)
                 .addParameter("language", DEFAULT_LANGUAGE)
                 .addParameter("path", "enc:" + polyline);
-
-        for (final CheckpointWithMeteo checkpoint : checkpoints) {
-            addCheckpointMarker(checkpoint);
-        }
+        
+        checkpoints.forEach(this::addCheckpointMarker);
         return this.requestBuilder.build();
     }
 
