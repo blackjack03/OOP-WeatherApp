@@ -6,6 +6,7 @@ import org.app.travelmode.model.google.api.PlaceAutocomplete;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompleteResponse;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,23 +40,24 @@ public class PlacePredictionsApiClient extends AbstractGoogleApiClient implement
 
     /**
      * {@inheritDoc}
+     *
+     * @throws IOException if there's an error communicating with the Google Places API
+     *                     or parsing the response
      */
     @Override
-    public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
+    public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) throws IOException {
         this.requestBuilder.reset();
-        PlaceAutocompleteResponse placeAutocompleteResponse = null;
         final String url = requestBuilder.addParameter("input", input)
                 .addParameter("language", "it")
                 .addParameter("types", "geocode")
                 .addParameter("location", "41.9028,12.4964")
                 .addParameter("radius", "500000")
                 .build();
-        try {
-            final Gson gson = new Gson();
-            placeAutocompleteResponse = gson.fromJson(this.requestJson(url), PlaceAutocompleteResponse.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        final Gson gson = new Gson();
+        final PlaceAutocompleteResponse placeAutocompleteResponse =
+                gson.fromJson(this.requestJson(url), PlaceAutocompleteResponse.class);
+
         return placeAutocompleteResponse != null ? List.copyOf(placeAutocompleteResponse.getPredictions()) : List.of();
     }
 }
