@@ -5,6 +5,7 @@ import org.app.travelmode.model.analysis.api.WeatherInformationService;
 import org.app.travelmode.model.checkpoint.api.Checkpoint;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
 import org.app.travelmode.model.checkpoint.impl.CheckpointWithMeteoImpl;
+import org.app.travelmode.model.exception.WeatherDataException;
 import org.app.travelmode.model.weather.api.WeatherCondition;
 import org.app.travelmode.model.weather.api.WeatherConditionFactory;
 import org.app.travelmode.model.weather.api.WeatherReport;
@@ -35,10 +36,17 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
      * {@inheritDoc}
      */
     @Override
-    public CheckpointWithMeteo enrichWithWeather(final Checkpoint checkpoint) {
-        final Map<String, Number> weatherInformation = getWeatherInfo(checkpoint);
-        final WeatherReport weatherReport = createWeatherReport(weatherInformation);
-        return new CheckpointWithMeteoImpl(checkpoint, weatherReport);
+    public CheckpointWithMeteo enrichWithWeather(final Checkpoint checkpoint) throws WeatherDataException {
+        try {
+            final Map<String, Number> weatherInformation = getWeatherInfo(checkpoint);
+            final WeatherReport weatherReport = createWeatherReport(weatherInformation);
+            return new CheckpointWithMeteoImpl(checkpoint, weatherReport);
+        } catch (final IllegalArgumentException e) {
+            throw new WeatherDataException(
+                    String.format("Non è stato possibile ottenere tutte le informazioni meteo necessarie " +
+                                    "per il checkpoint %f, %f, o alcune di esse non sono realistiche.",
+                            +checkpoint.getLatitude(), checkpoint.getLongitude()));
+        }
     }
 
     /**
@@ -59,8 +67,9 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
      *
      * @param checkpoint the checkpoint to get weather information for
      * @return a map containing various weather measurements
+     * @throws WeatherDataException if it isn't possible to get weather information for the provided {@link Checkpoint}.
      */
-    private Map<String, Number> getWeatherInfo(final Checkpoint checkpoint) {
+    private Map<String, Number> getWeatherInfo(final Checkpoint checkpoint) throws WeatherDataException {
         final AllWeather weather = new AllWeather(createCoordinatesMap(checkpoint));
         final ZonedDateTime arrivalDateTime = checkpoint.getArrivalDateTime();
         final String arrivalHour = String.format("%d:%d", arrivalDateTime.getHour(), arrivalDateTime.getMinute());
@@ -69,7 +78,9 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
                 arrivalDateTime.getDayOfMonth(),
                 arrivalDateTime.getMonthValue(),
                 arrivalDateTime.getYear(),
-                arrivalHour).orElseThrow(() -> new IllegalStateException("Impossibile ottenere le informazioni meteo"));
+                arrivalHour).orElseThrow(
+                () -> new WeatherDataException("Impossibile ottenere le informazioni meteo per il checkpoint: "
+                        + checkpoint.getLatitude() + "," + checkpoint.getLongitude()));
     }
 
     /**
@@ -77,6 +88,8 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
      *
      * @param weatherInformation map containing raw weather measurements
      * @return a {@link WeatherReport} containing processed weather conditions
+     * @throws IllegalArgumentException if one or more required weather conditions are missing
+     *                                  or if some of them are unrealistic.
      */
     private WeatherReport createWeatherReport(final Map<String, Number> weatherInformation) {
         final WeatherReport weatherReport = new WeatherReportImpl();
