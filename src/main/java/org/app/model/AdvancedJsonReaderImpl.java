@@ -1,6 +1,7 @@
 package org.app.model;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -14,7 +15,7 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
 
     public AdvancedJsonReaderImpl() { /* empty body */ }
 
-    public AdvancedJsonReaderImpl(final String jsonURL) throws Exception {
+    public AdvancedJsonReaderImpl(final String jsonURL) throws IOException {
         requestJSON(jsonURL);
     }
 
@@ -24,7 +25,7 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     }
 
     @Override
-    public void requestJSON(final String jsonURL) throws Exception {
+    public void requestJSON(final String jsonURL) throws IOException {
         assertNotAlreadySet();
         final URL url = new URL(jsonURL);
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();

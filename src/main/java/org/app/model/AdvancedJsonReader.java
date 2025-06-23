@@ -4,9 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.io.IOException;
+
 public interface AdvancedJsonReader {
 
-    void requestJSON(String jsonURL) throws Exception;
+    void requestJSON(String jsonURL) throws IOException;
 
     AdvancedJsonReaderImpl setJSON(String jsonString);
 
