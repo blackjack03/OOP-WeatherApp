@@ -4,16 +4,27 @@ import java.util.List;
 
 public class DirectionsLeg {
 
-    private String end_address;
-    private LatLng end_location;
-    private String start_address;
-    private LatLng start_location;
-    private List<DirectionsStep> steps;
-    private TextValueObject distance;
-    private TextValueObject duration;
-    private TextValueObject duration_in_traffic;
+    private final String end_address;
+    private final LatLng end_location;
+    private final String start_address;
+    private final LatLng start_location;
+    private final List<DirectionsStep> steps;
+    private final TextValueObject distance;
+    private final TextValueObject duration;
+    private final TextValueObject duration_in_traffic;
 
-    public DirectionsLeg() {
+    public DirectionsLeg(final String end_address, final LatLng end_location, final String start_address,
+                         final LatLng start_location, final List<DirectionsStep> steps,
+                         final TextValueObject distance, final TextValueObject duration,
+                         final TextValueObject duration_in_traffic) {
+        this.end_address = end_address;
+        this.end_location = end_location;
+        this.start_address = start_address;
+        this.start_location = start_location;
+        this.steps = steps;
+        this.distance = distance;
+        this.duration = duration;
+        this.duration_in_traffic = duration_in_traffic;
     }
 
     public String getEnd_address() {
@@ -33,7 +44,7 @@ public class DirectionsLeg {
     }
 
     public List<DirectionsStep> getSteps() {
-        return this.steps;
+        return List.copyOf(this.steps);
     }
 
     public TextValueObject getDistance() {
