@@ -4,12 +4,17 @@ import java.util.List;
 
 public class DirectionsRoute {
 
-    private Bounds bounds;
-    private List<DirectionsLeg> legs;
-    private DirectionsPolyline overview_polyline;
-    private String summary;
+    private final Bounds bounds;
+    private final List<DirectionsLeg> legs;
+    private final DirectionsPolyline overview_polyline;
+    private final String summary;
 
-    public DirectionsRoute() {
+    public DirectionsRoute(final Bounds bounds, final List<DirectionsLeg> legs,
+                           final DirectionsPolyline overview_polyline, final String summary) {
+        this.bounds = bounds;
+        this.legs = legs;
+        this.overview_polyline = overview_polyline;
+        this.summary = summary;
     }
 
     public Bounds getBounds() {
@@ -17,7 +22,7 @@ public class DirectionsRoute {
     }
 
     public List<DirectionsLeg> getLegs() {
-        return this.legs;
+        return List.copyOf(this.legs);
     }
 
     public DirectionsPolyline getOverview_polyline() {
@@ -39,10 +44,12 @@ public class DirectionsRoute {
      * The north east and south west points that delineate the outer bounds of a map.
      */
     public static class Bounds {
-        private LatLng northeast;
-        private LatLng southwest;
+        private final LatLng northeast;
+        private final LatLng southwest;
 
-        public Bounds() {
+        public Bounds(final LatLng northeast, final LatLng southwest) {
+            this.northeast = northeast;
+            this.southwest = southwest;
         }
 
         public LatLng getNortheast() {
