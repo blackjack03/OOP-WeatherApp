@@ -1,0 +1,250 @@
+{
+  "bounds": {
+    "northeast": {
+      "lat": 45.5,
+      "lng": 9.2
+    },
+    "southwest": {
+      "lat": 45.4,
+      "lng": 9.1
+    }
+  },
+  "summary": "Test route",
+  "overview_polyline": {
+    "points": "abc123"
+  },
+  "legs": [
+    {
+      "start_address": "Via A, Milano",
+      "end_address": "Via B, Milano",
+      "start_location": {
+        "lat": 45.460,
+        "lng": 9.180
+      },
+      "end_location": {
+        "lat": 45.465,
+        "lng": 9.185
+      },
+      "distance": {
+        "text": "1.2 km",
+        "value": 1200
+      },
+      "duration": {
+        "text": "10 mins",
+        "value": 600
+      },
+      "duration_in_traffic": {
+        "text": "12 mins",
+        "value": 720
+      },
+      "steps": [
+        {
+          "duration": {
+            "text": "2 mins",
+            "value": 120
+          },
+          "distance": {
+            "text": "300 m",
+            "value": 300
+          },
+          "start_location": {
+            "lat": 45.4601,
+            "lng": 9.1801
+          },
+          "end_location": {
+            "lat": 45.4610,
+            "lng": 9.1810
+          },
+          "travel_mode": "DRIVING",
+          "polyline": {
+            "points": "leg1step1"
+          }
+        },
+        {
+          "duration": {
+            "text": "3 mins",
+            "value": 180
+          },
+          "distance": {
+            "text": "500 m",
+            "value": 500
+          },
+          "start_location": {
+            "lat": 45.4611,
+            "lng": 9.1811
+          },
+          "end_location": {
+            "lat": 45.4620,
+            "lng": 9.1820
+          },
+          "travel_mode": "DRIVING",
+          "polyline": {
+            "points": "leg1step2"
+          }
+        }
+      ]
+    },
+    {
+      "start_address": "Via B, Milano",
+      "end_address": "Via C, Milano",
+      "start_location": {
+        "lat": 45.465,
+        "lng": 9.185
+      },
+      "end_location": {
+        "lat": 45.470,
+        "lng": 9.190
+      },
+      "distance": {
+        "text": "2.1 km",
+        "value": 2100
+      },
+      "duration": {
+        "text": "15 mins",
+        "value": 900
+      },
+      "duration_in_traffic": {
+        "text": "17 mins",
+        "value": 1020
+      },
+      "steps": [
+        {
+          "duration": {
+            "text": "4 mins",
+            "value": 240
+          },
+          "distance": {
+            "text": "700 m",
+            "value": 700
+          },
+          "start_location": {
+            "lat": 45.4630,
+            "lng": 9.1830
+          },
+          "end_location": {
+            "lat": 45.4640,
+            "lng": 9.1840
+          },
+          "travel_mode": "DRIVING",
+          "polyline": {
+            "points": "leg2step1"
+          }
+        },
+        {
+          "duration": {
+            "text": "5 mins",
+            "value": 300
+          },
+          "distance": {
+            "text": "900 m",
+            "value": 900
+          },
+          "start_location": {
+            "lat": 45.4641,
+            "lng": 9.1841
+          },
+          "end_location": {
+            "lat": 45.4650,
+            "lng": 9.1850
+          },
+          "travel_mode": "DRIVING",
+          "polyline": {
+            "points": "leg2step2"
+          }
+        },
+        {
+          "duration": {
+            "text": "1 min",
+            "value": 60
+          },
+          "distance": {
+            "text": "100 m",
+            "value": 100
+          },
+          "start_location": {
+            "lat": 45.4651,
+            "lng": 9.1851
+          },
+          "end_location": {
+            "lat": 45.4660,
+            "lng": 9.1860
+          },
+          "travel_mode": "DRIVING",
+          "polyline": {
+            "points": "leg2step3"
+          }
+        }
+      ]
+    },
+    {
+      "start_address": "Via C, Milano",
+      "end_address": "Via D, Milano",
+      "start_location": {
+        "lat": 45.470,
+        "lng": 9.190
+      },
+      "end_location": {
+        "lat": 45.475,
+        "lng": 9.195
+      },
+      "distance": {
+        "text": "1.8 km",
+        "value": 1800
+      },
+      "duration": {
+        "text": "12 mins",
+        "value": 720
+      },
+      "duration_in_traffic": {
+        "text": "13 mins",
+        "value": 780
+      },
+      "steps": [
+        {
+          "duration": {
+            "text": "3 mins",
+            "value": 180
+          },
+          "distance": {
+            "text": "600 m",
+            "value": 600
+          },
+          "start_location": {
+            "lat": 45.4710,
+            "lng": 9.1910
+          },
+          "end_location": {
+            "lat": 45.4720,
+            "lng": 9.1920
+          },
+          "travel_mode": "DRIVING",
+          "polyline": {
+            "points": "leg3step1"
+          }
+        },
+        {
+          "duration": {
+            "text": "2 mins",
+            "value": 120
+          },
+          "distance": {
+            "text": "500 m",
+            "value": 500
+          },
+          "start_location": {
+            "lat": 45.4721,
+            "lng": 9.1921
+          },
+          "end_location": {
+            "lat": 45.4730,
+            "lng": 9.1930
+          },
+          "travel_mode": "DRIVING",
+          "polyline": {
+            "points": "leg3step2"
+          }
+        }
+      ]
+    }
+  ]
+}
