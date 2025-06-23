@@ -5,6 +5,7 @@ import org.app.model.AdvancedJsonReaderImpl;
 import org.app.travelmode.model.google.api.GoogleApiRequestBuilder;
 import org.app.travelmode.model.google.api.PlaceDetails;
 
+import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
@@ -33,21 +34,21 @@ public class PlaceDetailsApiClient extends AbstractGoogleApiClient implements Pl
      *     <li>Requests only the UTC offset field to optimize response size</li>
      *     <li>Converts the UTC offset to a proper ZoneId</li>
      * </ul>
+     *
+     * @throws IOException if there's an error communicating with the Google Places API
+     *                     or parsing the response
      */
     @Override
-    public ZoneId getTimezone(final String placeId) {
+    public ZoneId getTimezone(final String placeId) throws IOException {
         final GoogleApiRequestBuilder requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
-        ZoneId zoneId = null;
         final String url = requestBuilder.addParameter("fields", "utc_offset")
                 .addParameter("place_id", placeId)
                 .build();
-        try {
-            final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl(url);
-            int utcOffset = jsonReader.getInt("result.utc_offset");
-            zoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl(url);
+        int utcOffset = jsonReader.getInt("result.utc_offset");
+        final ZoneId zoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
+
         System.out.println(zoneId);
         return zoneId;
     }
