@@ -2,6 +2,7 @@ package org.app.travelmode.model.travel.api;
 
 import javafx.scene.image.Image;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
+import org.app.travelmode.model.exception.MapGenerationException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -25,8 +26,9 @@ public interface TravelModeResult {
      * The image is cached after the first generation.
      *
      * @return an {@link Image} object representing the trip's map.
+     * @throws MapGenerationException if an error occurs while generating the map
      */
-    Image getMapImage();
+    Image getMapImage() throws MapGenerationException;
 
     /**
      * Calculates and returns the average weather score based on the checkpoints.
