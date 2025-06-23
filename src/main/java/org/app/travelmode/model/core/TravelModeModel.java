@@ -7,6 +7,7 @@ import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePr
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Defines the core functionality for a travel planning and route analysis system
@@ -81,11 +82,18 @@ public interface TravelModeModel {
     TravelModeResult getTravelModeMainResult();
 
     /**
-     * Returns a list of alternative route results after analyzing the navigation service's response.
+     * Retrieves the alternative routes available for the current travel request.
      *
-     * @return a {@link List} of {@link TravelModeResult} for alternative routes.
+     * <p>Alternative routes are additional possible paths to reach the destination,
+     * different from the main route returned by {@link #getTravelModeMainResult()}.
+     *
+     * @return an {@link Optional} containing a {@link List} of {@link TravelModeResult}s
+     * representing the alternative routes. Returns an empty Optional if no
+     * alternative routes are available.
+     * @throws IllegalStateException if called before {@link #startDirectionsAnalysis(TravelRequest)}
+     *                               or if the directions analysis failed
      */
-    List<TravelModeResult> getAlternativesResults();
+    Optional<List<TravelModeResult>> getAlternativesResults();
 
     /**
      * Finalizes and builds the {@link TravelRequest} with all configured parameters.
