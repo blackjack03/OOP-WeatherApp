@@ -79,7 +79,7 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
         }
 
         final LatLng endPoint = directionsLeg.getEnd_location();
-        if (!startPoint.equals(endPoint)) {
+        if (!startPoint.equals(endPoint) || directionsLeg.getSteps().size() == 1) {
             intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), endPoint, startPoint, distanceCounter.doubleValue()));
         }
 
