@@ -34,7 +34,7 @@ public interface TravelModeResult {
      * Calculates and returns the average weather score based on the checkpoints.
      *
      * @return an integer from 0 to 100 representing the average weather score.
-     * @throws IllegalArgumentException if the list of checkpoints is empty.
+     * @throws IllegalStateException if the list of checkpoints is empty.
      */
     int getMeteoScore();
 

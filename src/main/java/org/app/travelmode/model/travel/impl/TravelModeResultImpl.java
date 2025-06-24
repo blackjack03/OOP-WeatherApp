@@ -86,7 +86,7 @@ public class TravelModeResultImpl implements TravelModeResult {
     @Override
     public int getMeteoScore() {
         if (this.checkpoints.isEmpty()) {
-            throw new IllegalArgumentException("La lista di checkpoint non può essere vuota.");
+            throw new IllegalStateException("La lista di checkpoint non può essere vuota.");
         }
         if (this.meteoScore.isEmpty()) {
             this.meteoScore = Optional.of(calculateMeteoScore(this.checkpoints));
