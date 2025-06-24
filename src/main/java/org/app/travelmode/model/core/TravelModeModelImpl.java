@@ -44,7 +44,12 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
-        return this.placePredictionsApiClient.getPlacePredictions(input);
+        try {
+            return this.placePredictionsApiClient.getPlacePredictions(input);
+        } catch (Exception e) {
+            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: MIGLIORARE!!!!
+        }
+        return null;
     }
 
     /**
@@ -60,9 +65,13 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setDeparturePlaceId(final String departurePlaceId) {
-        final PlaceDetailsApiClient placeDetailsApiClient = this.apiClientFactory.createPlaceDetailsApiClient();
-        this.requestBuilder.setDeparturePlaceId(departurePlaceId)
-                .setDepartureZoneId(placeDetailsApiClient.getTimezone(departurePlaceId));
+        try {
+            final PlaceDetailsApiClient placeDetailsApiClient = this.apiClientFactory.createPlaceDetailsApiClient();
+            this.requestBuilder.setDeparturePlaceId(departurePlaceId)
+                    .setDepartureZoneId(placeDetailsApiClient.getTimezone(departurePlaceId));
+        } catch (Exception e) {
+            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: MIGLIORARE!!!!
+        }
     }
 
     /**
@@ -103,7 +112,7 @@ public class TravelModeModelImpl implements TravelModeModel {
         try {
             directions.askForDirections();
         } catch (Exception e) {
-            System.out.println("Error in Directions API call: " + e.getMessage()); //TODO: Visualizzare errore nella GUI
+            System.out.println("TRAVEL MODEL ERROR!!!!: " + e.getMessage()); //TODO: Visualizzare errore nella GUI
         }
     }
 
@@ -112,15 +121,25 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public TravelModeResult getTravelModeMainResult() {
-        return this.directions.getMainResult();
+        try {
+            return this.directions.getMainResult();
+        } catch (Exception e) {
+            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: MIGLIORARE!!!
+        }
+        return null;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<TravelModeResult> getAlternativesResults() {
-        return this.directions.getAlternativeResults();
+    public Optional<List<TravelModeResult>> getAlternativesResults() {
+        try {
+            return this.directions.getAlternativeResults();
+        } catch (Exception e) {
+            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: MIGLIORARE!!!
+        }
+        return null;
     }
 
     /**
@@ -130,8 +149,8 @@ public class TravelModeModelImpl implements TravelModeModel {
     public TravelRequest finalizeTheRequest() {
         try {
             return this.requestBuilder.build();
-        } catch (final IllegalStateException e){
-            System.out.println(e.getMessage()); //TODO: migliore gestione dell'errore
+        } catch (final IllegalStateException e) {
+            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: migliore gestione dell'errore
         }
         return null;
     }
