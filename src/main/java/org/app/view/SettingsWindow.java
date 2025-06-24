@@ -1,6 +1,7 @@
 package org.app.view;
 
 import org.app.App;
+import org.app.controller.AppController;
 import org.app.model.ConfigManager;
 import org.app.model.AppConfig;
 
@@ -21,8 +22,11 @@ import java.util.Optional;
 public class SettingsWindow extends Stage {
 
     private static final String CONFIG_PATH = "src/main/java/org/files/configuration.json";
+    private final AppController controller;
 
-    public SettingsWindow() {
+    public SettingsWindow(final AppController controller) {
+        this.controller = controller;
+
         setTitle("Impostazioni");
         initModality(Modality.APPLICATION_MODAL);
         setResizable(true);
@@ -107,6 +111,7 @@ public class SettingsWindow extends Stage {
                         appConfig.getUserPreferences().setDefaultCity(id);
                         ConfigManager.saveConfig(CONFIG_PATH);
                         System.out.println("City ID = " + id);
+                        this.controller.forceRefresh();
                     }
                 )
             );

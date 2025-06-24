@@ -1,6 +1,6 @@
 package org.app.model;
 
-public class Converter {
+public class UnitConversion {
 
     /**
      * Converte una temperatura da gradi Celsius a Fahrenheit.

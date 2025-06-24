@@ -11,4 +11,5 @@ public class AppConfig {
     public UserPreferences getUserPreferences() {
         return userPreferences;
     }
+
 }

@@ -18,7 +18,7 @@ public interface Weather {
 
     int getForecastDays();
 
-    Optional<Pair<String, Map<String, Number>>> getWeatherNow();
+    Optional<Pair<String, Map<String, Number>>> getWeatherNow(boolean avoid_check);
 
     Optional<Map<String, Number>> getCityInfo();
 

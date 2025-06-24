@@ -26,3 +26,4 @@ build/
 
 # Ignore specific JSON file
 API-Keys.json
+configuration.json
