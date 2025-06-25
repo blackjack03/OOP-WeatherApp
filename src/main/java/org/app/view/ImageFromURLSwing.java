@@ -21,72 +21,81 @@ public class ImageFromURLSwing {
         viewIMG(imageUrl, null, null);
     }
 
+    private static double calcScale(int origW, int origH) {
+        double availableMaxW = MAX_WIDTH - 2 * PADDING;
+        double availableMaxH = MAX_HEIGHT - 2 * PADDING;
+        double availableMin  = MIN_DIMENSION - 2 * PADDING;
+
+        if (origW > availableMaxW || origH > availableMaxH) {
+            return Math.min(availableMaxW / origW, availableMaxH / origH);
+        } else if (origW < availableMin || origH < availableMin) {
+            return Math.max(availableMin / origW, availableMin / origH);
+        } else {
+            return 1.0;
+        }
+    }
+
+
     /**
      * Visualizza immagine da URL con titolo opzionale
      * @param imageUrl URL dell'immagine
      * @param title Titolo da mostrare sopra l'immagine
      */
-    public static void viewIMG(final String imageUrl, final String title, String window_title) {
-        if (window_title == null) {
-            window_title = "Image Viewer";
-        }
-        final JFrame frame = new JFrame(window_title);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+    public static void viewIMG(String imageUrl, String title, String windowTitle) {
+        if (windowTitle == null) windowTitle = "Image Viewer";
+        final String finalImageTitle = windowTitle;
 
-        // Aggiungi titolo se fornito
-        if (title != null && !title.trim().isEmpty()) {
-            final JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
-            titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 20f));
-            titleLabel.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
-            frame.add(titleLabel, BorderLayout.NORTH);
-        }
+        // Tutta la GUI viene preparata sull’EDT
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame(finalImageTitle);
+            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
 
-        try {
-            // Carica immagine originale
-            final URL url = new URL(imageUrl);
-            final Image original = ImageIO.read(url);
-            final int origW = original.getWidth(null);
-            final int origH = original.getHeight(null);
-
-            final double availableMaxW = MAX_WIDTH - 2 * PADDING;
-            final double availableMaxH = MAX_HEIGHT - 2 * PADDING;
-            final double availableMin  = MIN_DIMENSION - 2 * PADDING;
-            final double scale;
-
-            if (origW > availableMaxW || origH > availableMaxH) {
-                // Riduci se supera i limiti
-                scale = Math.min(availableMaxW / origW, availableMaxH / origH);
-            } else if (origW < availableMin || origH < availableMin) {
-                // Ingrandisci se è troppo piccola
-                scale = Math.max(availableMin / origW, availableMin / origH);
-            } else {
-                // Mantieni dimensioni originali
-                scale = 1.0;
+            if (title != null && !title.isBlank()) {
+                JLabel lbl = new JLabel(title, SwingConstants.CENTER);
+                lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 20f));
+                lbl.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
+                frame.add(lbl, BorderLayout.NORTH);
             }
 
-            final int dispW = (int) (origW * scale);
-            final int dispH = (int) (origH * scale);
+            // SwingWorker: carica in background, poi aggiorna l’EDT
+            new SwingWorker<ImageIcon, Void>() {
+                @Override
+                protected ImageIcon doInBackground() throws Exception {
+                    Image original = ImageIO.read(new URL(imageUrl));
+                    int w = original.getWidth(null);
+                    int h = original.getHeight(null);
+                    double scale = calcScale(w, h);           // tuo metodo di calcolo
+                    Image scaled = original.getScaledInstance(
+                            (int)(w*scale), (int)(h*scale), Image.SCALE_SMOOTH);
+                    return new ImageIcon(scaled);
+                }
 
-            // Scaled instance
-            final Image scaled = original.getScaledInstance(dispW, dispH, Image.SCALE_SMOOTH);
-            final JLabel imageLabel = new JLabel(new ImageIcon(scaled));
-            imageLabel.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
-            frame.add(imageLabel, BorderLayout.CENTER);
+                @Override
+                protected void done() {
+                    try {
+                        JLabel img = new JLabel(get());
+                        img.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
+                        frame.add(img, BorderLayout.CENTER);
+                        frame.pack();
+                        frame.setSize(
+                            Math.max(frame.getWidth(),  MIN_DIMENSION),
+                            Math.max(frame.getHeight(), MIN_DIMENSION));
+                        frame.setResizable(false);
+                        frame.setLocationRelativeTo(null);
+                        frame.setVisible(true);
+                    } catch (Exception ex) {
+                        showErrorOnEDT("Errore nel recupero dell'immagine", "Impossibile visualizzare l'immagine");
+                    }
+                }
+            }.execute();
+        });
+    }
 
-            // Adatta finestra
-            frame.pack();
-            // Assicura dimensione minima
-            final int finalW = Math.max(frame.getWidth(), MIN_DIMENSION);
-            final int finalH = Math.max(frame.getHeight(), MIN_DIMENSION);
-            frame.setSize(finalW, finalH);
-            frame.setResizable(false);
-            frame.setLocationRelativeTo(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        frame.setVisible(true);
+    private static void showErrorOnEDT(String msg, String title) {
+        SwingUtilities.invokeLater(() ->
+            CustomErrorGUI.showError(msg, title)
+        );
     }
 
     public static void main(String[] args) {

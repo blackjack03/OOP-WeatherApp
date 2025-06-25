@@ -103,17 +103,17 @@ public class AllWeather implements Weather {
                 final Map<String, Number> info = new HashMap<>();
                 info.put("temperature_C", temperature_2m.get(i).getAsNumber());
                 info.put("temperature_F",
-                        Converter.celsiusToFahrenheit(temperature_2m.get(i).getAsDouble()));
+                        UnitConversion.celsiusToFahrenheit(temperature_2m.get(i).getAsDouble()));
                 info.put("humidity", humidity_2m.get(i).getAsNumber());
                 info.put("apparent_temperature", apparent_temperature.get(i).getAsNumber());
                 info.put("precipitation_probability", precipitation_probability.get(i).getAsNumber());
                 info.put("precipitation_mm", precipitation.get(i).getAsNumber());
                 info.put("precipitation_inch",
-                        Converter.mmToInches(precipitation.get(i).getAsDouble()));
+                        UnitConversion.mmToInches(precipitation.get(i).getAsDouble()));
                 info.put("weather_code", weather_code.get(i).getAsNumber());
                 info.put("wind_speed_kmh", wind_speed_10m.get(i).getAsNumber());
                 info.put("wind_speed_mph",
-                        Converter.kmhToMph(wind_speed_10m.get(i).getAsDouble()));
+                        UnitConversion.kmhToMph(wind_speed_10m.get(i).getAsDouble()));
                 info.put("wind_direction", wind_direction_10m.get(i).getAsNumber());
                 info.put("pressure", pressure_msl.get(i).getAsNumber());
                 try {
@@ -146,10 +146,10 @@ public class AllWeather implements Weather {
                 forecast_info.put("weather_code", day_weather_code.get(i).getAsNumber());
                 forecast_info.put("temperature_max_C", temperature_2m_max.get(i).getAsNumber());
                 forecast_info.put("temperature_max_F",
-                        Converter.celsiusToFahrenheit(temperature_2m_max.get(i).getAsDouble()));
+                        UnitConversion.celsiusToFahrenheit(temperature_2m_max.get(i).getAsDouble()));
                 forecast_info.put("temperature_min_C", temperature_2m_min.get(i).getAsNumber());
                 forecast_info.put("temperature_min_F",
-                        Converter.celsiusToFahrenheit(temperature_2m_min.get(i).getAsDouble()));
+                        UnitConversion.celsiusToFahrenheit(temperature_2m_min.get(i).getAsDouble()));
                 forecast_info.put("daylight_duration", daylight_duration.get(i).getAsNumber());
                 forecast_info.put("sunshine_duration", sunshine_duration.get(i).getAsNumber());
                 forecast_info.put("uv_max", uv_index_max.get(i).getAsNumber());
@@ -256,8 +256,8 @@ public class AllWeather implements Weather {
     }
 
     @Override
-    public Optional<Pair<String, Map<String, Number>>> getWeatherNow() {
-        if (this.last_update == 0 ||
+    public Optional<Pair<String, Map<String, Number>>> getWeatherNow(final boolean avoid_check) {
+        if (this.last_update == 0 || avoid_check ||
             this.checkMinutesPassed(this.last_update, 20)) {
             try {
                 final var reader = new AdvancedJsonReaderImpl(this.NOW_API_URL
@@ -323,23 +323,23 @@ public class AllWeather implements Weather {
             this.NOW.put("temperature_C",
                     reader.getFromJson("current.temperature_2m", Number.class));
             this.NOW.put("temperature_F",
-                    Converter.celsiusToFahrenheit(reader.getDouble("current.temperature_2m")));
+                    UnitConversion.celsiusToFahrenheit(reader.getDouble("current.temperature_2m")));
             this.NOW.put("apparent_temperature_C",
                     reader.getFromJson("current.apparent_temperature", Number.class));
             this.NOW.put("apparent_temperature_F",
-                    Converter.celsiusToFahrenheit(reader.getDouble("current.apparent_temperature")));
+                    UnitConversion.celsiusToFahrenheit(reader.getDouble("current.apparent_temperature")));
             this.NOW.put("humidity",
                     reader.getFromJson("current.relative_humidity_2m", Number.class));
             this.NOW.put("wind_speed_kmh",
                     reader.getFromJson("current.wind_speed_10m", Number.class));
             this.NOW.put("wind_speed_mph",
-                    Converter.kmhToMph(reader.getDouble("current.wind_speed_10m")));
+                    UnitConversion.kmhToMph(reader.getDouble("current.wind_speed_10m")));
             this.NOW.put("wind_direction",
                     reader.getFromJson("current.wind_direction_10m", Number.class));
             this.NOW.put("precipitation_mm",
                     reader.getFromJson("current.precipitation", Number.class));
             this.NOW.put("precipitation_inch",
-                    Converter.mmToInches(reader.getDouble("current.precipitation")));
+                    UnitConversion.mmToInches(reader.getDouble("current.precipitation")));
             this.NOW.put("cloud_cover",
                     reader.getFromJson("current.cloud_cover", Number.class));
             return true;

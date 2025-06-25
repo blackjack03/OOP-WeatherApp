@@ -63,6 +63,10 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
 }
 
+tasks.withType<Copy> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 application {
     // Define the main class for the application.
     mainClass.set("org.app.Main")
