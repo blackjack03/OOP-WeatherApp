@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 /**
  * Weather Dashboard
  *
- *  • Finestra suddivisa in 4 aree logiche, con altezze 70 % / 30 % (come prima)
+ *  • Finestra suddivisa in 4 aree logiche, con altezze 70 % / 30 %
  *    ma colonne 50 % / 50 % per la fascia superiore e 75 % / 25 % per quella inferiore.
  */
 public class App extends Application {
@@ -46,20 +46,20 @@ public class App extends Application {
         root.setHgap(20);
         root.setVgap(20);
 
-        // Righe: 70 % + 30 %
+        // --------------------------- root (2 righe) ---------------------------
         final RowConstraints topRow = new RowConstraints();
         topRow.setPercentHeight(65);
         final RowConstraints bottomRow = new RowConstraints();
         bottomRow.setPercentHeight(35);
         root.getRowConstraints().addAll(topRow, bottomRow);
 
-        //--------------------------- contenitore TOP (50 / 50) ---------------------------
+        //--------------------------- contenitore TOP ---------------------------
         final GridPane topGrid = new GridPane();
         topGrid.setHgap(20);
         topGrid.setVgap(20);
-        ColumnConstraints topLeft  = new ColumnConstraints();
+        final ColumnConstraints topLeft  = new ColumnConstraints();
         topLeft.setPercentWidth(60);
-        ColumnConstraints topRight = new ColumnConstraints();
+        final ColumnConstraints topRight = new ColumnConstraints();
         topRight.setPercentWidth(40);
         topGrid.getColumnConstraints().addAll(topLeft, topRight);
 
@@ -67,10 +67,10 @@ public class App extends Application {
         final GridPane bottomGrid = new GridPane();
         bottomGrid.setHgap(20);
         bottomGrid.setVgap(20);
-        ColumnConstraints bottomLeft  = new ColumnConstraints();
-        bottomLeft.setPercentWidth(80);
-        ColumnConstraints bottomRight = new ColumnConstraints();
-        bottomRight.setPercentWidth(20);
+        final ColumnConstraints bottomLeft  = new ColumnConstraints();
+        bottomLeft.setPercentWidth(85);
+        final ColumnConstraints bottomRight = new ColumnConstraints();
+        bottomRight.setPercentWidth(15);
         bottomGrid.getColumnConstraints().addAll(bottomLeft, bottomRight);
 
         //---------------- TODAY card ----------------
@@ -86,7 +86,7 @@ public class App extends Application {
         final Label lblMin   = new Label("Min: xx°");
         final Label lblMax   = new Label("Max: xx°");
         todayBox.getChildren().addAll(lblCity, todayIcon, lblOggi, lblCond, lblTemp, lblFeels,
-                                       new HBox(20, lblMin, lblMax));
+                new HBox(20, lblMin, lblMax));
 
         //---------------- HOURLY panel ----------------
         final VBox hourlyBox = createCardVBox();
@@ -109,6 +109,12 @@ public class App extends Application {
         final ScrollPane forecastScroller = new ScrollPane(forecastStrip);
         forecastScroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         forecastScroller.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        // fa si che occupi tutta l’area disponibile
+        GridPane.setHgrow(forecastScroller, Priority.ALWAYS);
+        GridPane.setVgrow(forecastScroller, Priority.ALWAYS);
+
+        GridPane.setHalignment(forecastScroller, HPos.CENTER);
+        GridPane.setValignment(forecastScroller, VPos.CENTER); 
         forecastScroller.setFitToHeight(true);
         forecastScroller.setPannable(true);
         forecastStrip.getChildren().addAll(
@@ -123,11 +129,14 @@ public class App extends Application {
         HBox.setHgrow(forecastStrip, Priority.ALWAYS);
 
         //---------------- SETTINGS button ----------------
+        // ---------------- SETTINGS button ----------------
         final Button settingsBtn = new Button();
-        final ImageView gearIcon = makeIcon("/gear.png", root.widthProperty().multiply(0.08));
+        final ImageView gearIcon = makeIcon("/gear.png",
+                                            root.widthProperty().multiply(0.06));   // era 0.08
         settingsBtn.setGraphic(gearIcon);
-        settingsBtn.setPrefSize(60, 60);
+        settingsBtn.setPrefSize(48, 48);               // era 60 × 60
         settingsBtn.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+
 
         final AppController controller = new AppController(
         lblCity, todayIcon, lblCond, lblTemp, lblFeels, lblMin, lblMax,
@@ -227,8 +236,8 @@ public class App extends Application {
         return mini;
     }
 
-    public static void main(final String[] args) {
+    /*public static void main(final String[] args) {
         launch(args);
-    }
+    }*/
 
 }

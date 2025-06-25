@@ -30,6 +30,7 @@ import org.app.model.Pair;
 import org.app.model.AppConfig;
 import org.app.model.ConfigManager;
 import org.app.model.UserPreferences;
+import org.app.view.CustomErrorGUI;
 
 /**
  * Controller responsabile dellʼaggiornamento dinamico della GUI
@@ -43,7 +44,7 @@ public class AppController {
 
     /* ============================ modello ========================= */
     private final AllWeather model;
-    private final Map<String, String> cityInfo;
+    private Map<String, String> cityInfo;
 
     /* ============================ vista =========================== */
     private final Label lblCity;
@@ -58,6 +59,7 @@ public class AppController {
 
     /** === ID citta' attuale === */
     private int CITY_ID;
+    private final LocationSelector selector;
     private boolean city_changed = false;
 
     /* ============================ timer =========================== */
@@ -74,20 +76,20 @@ public class AppController {
                          final VBox hourlyEntries,
                          final HBox forecastStrip) {
 
-        this.setCity();
-
         /* ---- Recupera info città ---- */
-        final LocationSelector selector = (App.getLocationSelector() != null)
+        this.selector = (App.getLocationSelector() != null)
                 ? App.getLocationSelector()
                 : new LocationSelectorImpl();
 
-        this.cityInfo = selector.getByID(CITY_ID)
-                                .orElseThrow(() -> new IllegalStateException("ID città non valido"));
+        this.setCity();
+
+        this.cityInfo = selector.getByID(this.CITY_ID)
+                .orElseThrow(() -> new IllegalStateException("ID città non valido"));
 
         /* ---- Inizializza modello ---- */
         final Map<String, String> coords = Map.of("lat", this.cityInfo.get("lat"),
                 "lng", this.cityInfo.get("lng"));
-        this.model = new AllWeather(coords);
+        this.model = new AllWeather(this.cityInfo);
         if (!this.model.reqestsAllForecast()) {
             throw new IllegalStateException("Impossibile scaricare i dati meteo iniziali");
         }
@@ -135,8 +137,13 @@ public class AppController {
             System.out.println("City: " + city.get());
             if (this.CITY_ID != city.get()) {
                 this.city_changed = true;
+                this.CITY_ID = city.get();
+                this.cityInfo = selector.getByID(this.CITY_ID)
+                .orElseThrow(() -> new IllegalStateException("ID città non valido"));
+                if (this.model != null) {
+                    this.model.setLocation(this.cityInfo);
+                }
             }
-            this.CITY_ID = city.get();
         } else {
             System.out.println("CITTA' NON PRESENTE");
             System.out.println(city);
@@ -146,6 +153,22 @@ public class AppController {
     /* ================== logica principale refresh ================= */
 
     private void refresh() {
+        final int MAX_ATTEMPTS = 3;
+        boolean err_flag = true;
+        for (int i = 0; i < MAX_ATTEMPTS; i++) {
+            if (this.model.reqestsAllForecast()) {
+                err_flag = false;
+                break;
+            }
+        }
+        if (err_flag) {
+            System.out.println("ERRORE RICHIESTA DATI METEO");
+            CustomErrorGUI.showError(
+                    "Errore di rete",
+                    "Impossibile recuperare i dati meteo. Controlla la tua connessione internet e riprova."
+            );
+            return;
+        }
         final Optional<Pair<String, Map<String, Number>>> nowOpt = model.getWeatherNow(this.city_changed);
         if (this.city_changed) {
             this.city_changed = false;
@@ -155,7 +178,7 @@ public class AppController {
 
         if (nowOpt.isEmpty() || dailyOpt.isEmpty() || hourlyOpt.isEmpty()) {
             System.out.println("EMPTY!");
-            return; // TODO gestione errore utente
+            return;
         }
 
         final Map<String, Number> now = nowOpt.get().getY();
@@ -295,7 +318,7 @@ public class AppController {
         final String path = "/WMOIcons/%d.png".formatted(code);
         try {
             return new Image(getClass().getResourceAsStream(path));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return new Image(getClass().getResourceAsStream("/logo.png"));
         }
     }

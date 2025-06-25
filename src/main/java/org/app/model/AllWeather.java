@@ -265,6 +265,7 @@ public class AllWeather implements Weather {
                     .replace("%LNG", this.coords.getY()));
                 if (!this.setCurrentWeather(reader)) {
                     this.last_update = 0;
+                    System.out.println("Error while fetching current weather data.");
                     return Optional.empty();
                 }
             } catch (final Exception err) {

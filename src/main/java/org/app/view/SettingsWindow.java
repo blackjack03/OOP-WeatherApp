@@ -3,6 +3,8 @@ package org.app.view;
 import org.app.App;
 import org.app.controller.AppController;
 import org.app.model.ConfigManager;
+import org.app.model.MoonPhases;
+import org.app.model.MoonPhasesImpl;
 import org.app.model.AppConfig;
 
 import javafx.application.Platform;
@@ -14,6 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -90,10 +94,24 @@ public class SettingsWindow extends Stage {
     /** Lancia il frame Swing che mostra le fasi lunari di oggi. */
     private void openMoon() {
         final Thread t = new Thread(() -> {
+            final LocalDate now = LocalDate.now();
+            /*final int year = now.getYear();
+            final int month = now.getMonthValue();
+            final int day = now.getDayOfMonth();*/
+            final MoonPhases moon = new MoonPhasesImpl();
+            final Optional<Map<String, String>> moonInfo = moon.getMoonInfo();
+            if (moonInfo.isEmpty()) {
+                System.err.println("Errore nel recupero delle informazioni lunari.");
+                CustomErrorGUI.showError(
+                    "Errore nel recupero delle informazioni lunari.",
+                    "Errore!"
+                );
+                return;
+            }
             ImageFromURLSwing.viewIMG(
-                "https://www.moongiant.com/images/today_phase/moon_day_WanC_5.jpg",
-                "Luna di Oggi",
-                "MOON Info"
+                moon.getImageURL(moonInfo.get().get("image_name")),
+                moonInfo.get().get("state"),
+                "Today MOON Info"
             );
         }, "MoonInfoSwing");
         t.setDaemon(true);

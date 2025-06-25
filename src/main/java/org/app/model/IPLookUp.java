@@ -109,7 +109,7 @@ public class IPLookUp implements LookUp {
                 (ipinfo.getDouble("latitude"),
                 ipinfo.getDouble("longitude"));
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return false;
         }
     }
