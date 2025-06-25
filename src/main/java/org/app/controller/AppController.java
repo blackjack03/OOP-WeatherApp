@@ -164,8 +164,8 @@ public class AppController {
         if (err_flag) {
             System.out.println("ERRORE RICHIESTA DATI METEO");
             CustomErrorGUI.showError(
-                    "Errore di rete",
-                    "Impossibile recuperare i dati meteo. Controlla la tua connessione internet e riprova."
+                    "Impossibile recuperare i dati meteo. Controlla la tua connessione internet e riprova.",
+                    "Errore di rete!"
             );
             return;
         }
