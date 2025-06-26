@@ -19,6 +19,12 @@ public class AppCore extends Application {
         primaryStage.setMinHeight(600);
         primaryStage.setTitle("App Meteo & Viaggio");
 
+        primaryStage.setOnShown(e -> {
+            scene.getRoot().applyCss();
+            scene.getRoot().layout();
+            primaryStage.sizeToScene();
+        });
+
         final LoadingScreen loadingScreen = new LoadingScreen();
         loadingScreen.start(primaryStage, mainController.getAppController());
     }

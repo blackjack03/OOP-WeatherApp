@@ -1,5 +1,6 @@
 package org.app.weathermode.controller;
 
+import java.nio.Buffer;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +13,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,6 +32,7 @@ import org.app.weathermode.model.UnitConversion;
 import org.app.weathermode.model.UserPreferences;
 import org.app.weathermode.view.App;
 import org.app.weathermode.view.CustomErrorGUI;
+import org.app.weathermode.view.SettingsWindow;
 
 /**
  * Controller responsabile dellʼaggiornamento dinamico della GUI

@@ -10,7 +10,6 @@ public class Main {
 
     private static final String CONFIG_PATH = "src/main/java/org/files/configuration.json";
 
-
     public static void main(final String[] args) {
         // 0) controllo che la configurazione esista
         // ed eventualmente la creo
