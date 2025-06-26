@@ -67,31 +67,6 @@ public class LoadingScreen {
                 .orElse(ButtonType.NO) == ButtonType.YES;
     }
 
-    public void showError(final String message, final String title) {
-        final Runnable dialogTask = () -> {
-            final Alert alert = new Alert(AlertType.ERROR);
-            alert.setHeaderText(null);
-            alert.setTitle(title == null || title.isBlank() ? "Errore" : title);
-            alert.initModality(Modality.NONE);
-            final Label content = new Label(message);
-            content.setWrapText(true);
-            content.setStyle("-fx-font-size: 20px;");
-            alert.getDialogPane().setContent(content);
-            final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            try {
-                stage.getIcons().add(new Image(
-                        getClass().getResourceAsStream("/error.png")));
-            } catch (final Exception ignored) {
-            }
-            alert.show();
-        };
-        if (Platform.isFxApplicationThread()) {
-            dialogTask.run();
-        } else {
-            Platform.runLater(dialogTask);
-        }
-    }
-
     public void start(final Stage primaryStage, final AppController appController) {
 
         splashStage.show();
@@ -119,7 +94,7 @@ public class LoadingScreen {
                             useIP = true;
                             final LookUp lookUp = new IPLookUp();
                             if (!lookUp.lookup().isPresent()) {
-                                this.showError("Impossibile determinare la posizione tramite IP!", "Errore di localizzazione");
+                                CustomErrorGUI.showErrorJFX("Impossibile determinare la posizione tramite IP!", "Errore di localizzazione");
                                 useIP = false;
                             } else {
                                 final Optional<Integer> cityID = LS.searchByLookUp(lookUp);
@@ -128,12 +103,12 @@ public class LoadingScreen {
                                     appConfig.getUserPreferences().setDefaultCity(cityID.get());
                                     ConfigManager.saveConfig(CONFIG_PATH);
                                 } else {
-                                    this.showError("Impossibile trovare la città corrispondente all'IP!", "Errore di localizzazione");
+                                    CustomErrorGUI.showErrorJFX("Impossibile trovare la città corrispondente all'IP!", "Errore di localizzazione");
                                     useIP = false;
                                 }
                             }
                         }
-                        // this.showError("Errore di Prova", "Error Test");
+                        // CustomErrorGUI.showErrorJFX("Errore di Prova", "Error Test");
                         boolean flagClose = false;
                         if (!useIP) {
                             final LocationSelectorGUI gui = new LocationSelectorGUI();
