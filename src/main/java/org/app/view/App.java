@@ -45,20 +45,20 @@ public class App {
         root.setVgap(20);
         root.setPrefSize(1000, 600);
 
-        // Righe: 70 % + 30 %
+        // --------------------------- root (2 righe) ---------------------------
         final RowConstraints topRow = new RowConstraints();
         topRow.setPercentHeight(65);
         final RowConstraints bottomRow = new RowConstraints();
         bottomRow.setPercentHeight(35);
         root.getRowConstraints().addAll(topRow, bottomRow);
 
-        //--------------------------- contenitore TOP (50 / 50) ---------------------------
+        //--------------------------- contenitore TOP ---------------------------
         final GridPane topGrid = new GridPane();
         topGrid.setHgap(20);
         topGrid.setVgap(20);
-        ColumnConstraints topLeft = new ColumnConstraints();
+        final ColumnConstraints topLeft  = new ColumnConstraints();
         topLeft.setPercentWidth(60);
-        ColumnConstraints topRight = new ColumnConstraints();
+        final ColumnConstraints topRight = new ColumnConstraints();
         topRight.setPercentWidth(40);
         topGrid.getColumnConstraints().addAll(topLeft, topRight);
 
@@ -66,10 +66,10 @@ public class App {
         final GridPane bottomGrid = new GridPane();
         bottomGrid.setHgap(20);
         bottomGrid.setVgap(20);
-        ColumnConstraints bottomLeft = new ColumnConstraints();
-        bottomLeft.setPercentWidth(80);
-        ColumnConstraints bottomRight = new ColumnConstraints();
-        bottomRight.setPercentWidth(20);
+        final ColumnConstraints bottomLeft  = new ColumnConstraints();
+        bottomLeft.setPercentWidth(85);
+        final ColumnConstraints bottomRight = new ColumnConstraints();
+        bottomRight.setPercentWidth(15);
         bottomGrid.getColumnConstraints().addAll(bottomLeft, bottomRight);
 
         //---------------- TODAY card ----------------
@@ -108,6 +108,12 @@ public class App {
         final ScrollPane forecastScroller = new ScrollPane(forecastStrip);
         forecastScroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         forecastScroller.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        // fa si che occupi tutta l’area disponibile
+        GridPane.setHgrow(forecastScroller, Priority.ALWAYS);
+        GridPane.setVgrow(forecastScroller, Priority.ALWAYS);
+
+        GridPane.setHalignment(forecastScroller, HPos.CENTER);
+        GridPane.setValignment(forecastScroller, VPos.CENTER);
         forecastScroller.setFitToHeight(true);
         forecastScroller.setPannable(true);
         forecastStrip.getChildren().addAll(
@@ -123,10 +129,12 @@ public class App {
 
         //---------------- SETTINGS button ----------------
         final Button settingsBtn = new Button();
-        final ImageView gearIcon = makeIcon("/gear.png", root.widthProperty().multiply(0.08));
+        final ImageView gearIcon = makeIcon("/gear.png",
+                                            root.widthProperty().multiply(0.06));   // era 0.08
         settingsBtn.setGraphic(gearIcon);
-        settingsBtn.setPrefSize(60, 60);
+        settingsBtn.setPrefSize(48, 48);               // era 60 × 60
         settingsBtn.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+
 
         final AppController controller = new AppController(
                 lblCity, todayIcon, lblCond, lblTemp, lblFeels, lblMin, lblMax,

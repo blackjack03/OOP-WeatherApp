@@ -22,9 +22,9 @@ public class ImageFromURLSwing {
     }
 
     private static double calcScale(int origW, int origH) {
-        double availableMaxW = MAX_WIDTH - 2 * PADDING;
-        double availableMaxH = MAX_HEIGHT - 2 * PADDING;
-        double availableMin  = MIN_DIMENSION - 2 * PADDING;
+        final double availableMaxW = MAX_WIDTH - 2 * PADDING;
+        final double availableMaxH = MAX_HEIGHT - 2 * PADDING;
+        final double availableMin  = MIN_DIMENSION - 2 * PADDING;
 
         if (origW > availableMaxW || origH > availableMaxH) {
             return Math.min(availableMaxW / origW, availableMaxH / origH);
