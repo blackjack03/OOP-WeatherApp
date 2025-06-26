@@ -43,9 +43,19 @@ public class CustomErrorGUI {
         return result == JOptionPane.YES_OPTION;
     }
 
+    public static void showWarningJFX(final String message, final String title) {
+        Platform.runLater(() -> {
+            final Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
+    }
+
     public static void showErrorJFX(final String message, final String title) {
         Platform.runLater(() -> {
-            final Alert alert = new Alert(Alert.AlertType.ERROR);
+            final Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle(title);
             alert.setHeaderText(null);
             alert.setContentText(message);
