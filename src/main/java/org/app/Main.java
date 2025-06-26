@@ -1,8 +1,8 @@
 // Main.java
 package org.app;
 
-import org.app.model.ConfigBuilder;
-import org.app.model.ConfigManager;
+import org.app.weathermode.model.ConfigBuilder;
+import org.app.weathermode.model.ConfigManager;
 
 import javafx.application.Application;
 

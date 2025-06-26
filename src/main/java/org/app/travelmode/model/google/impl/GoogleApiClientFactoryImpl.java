@@ -2,9 +2,8 @@ package org.app.travelmode.model.google.impl;
 
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.api.StaticMapApiClient;
-
-import org.app.model.ApiConfig;
-import org.app.model.ConfigManager;
+import org.app.weathermode.model.ApiConfig;
+import org.app.weathermode.model.ConfigManager;
 
 /**
  * Implementation of {@link GoogleApiClientFactory} that creates various Google API clients

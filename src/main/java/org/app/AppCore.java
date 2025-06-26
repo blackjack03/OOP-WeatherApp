@@ -5,8 +5,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.app.appcore.MainController;
 import org.app.appcore.MainControllerImpl;
-import org.app.controller.AppController;
-import org.app.view.LoadingScreen;
+import org.app.weathermode.controller.AppController;
+import org.app.weathermode.view.LoadingScreen;
 
 public class AppCore extends Application {
 

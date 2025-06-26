@@ -1,8 +1,8 @@
 package org.app.travelmode.model.google.impl;
 
-import org.app.model.AdvancedJsonReader;
-import org.app.model.AdvancedJsonReaderImpl;
 import org.app.travelmode.model.google.api.GoogleApiClient;
+import org.app.weathermode.model.AdvancedJsonReader;
+import org.app.weathermode.model.AdvancedJsonReaderImpl;
 
 import java.io.IOException;
 

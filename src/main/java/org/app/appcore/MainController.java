@@ -1,8 +1,8 @@
 package org.app.appcore;
 
-import javafx.scene.Parent;
+import org.app.weathermode.controller.AppController;
 
-import org.app.controller.AppController;
+import javafx.scene.Parent;
 
 public interface MainController {
 

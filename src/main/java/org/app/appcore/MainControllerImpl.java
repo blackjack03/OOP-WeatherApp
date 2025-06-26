@@ -6,10 +6,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 
-import org.app.controller.AppController;
 import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.controller.TravelModeControllerImpl;
-import org.app.view.App;
+import org.app.weathermode.controller.AppController;
+import org.app.weathermode.view.App;
 
 public class MainControllerImpl implements MainController {
 
