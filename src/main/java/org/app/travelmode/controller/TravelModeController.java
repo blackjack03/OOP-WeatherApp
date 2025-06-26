@@ -1,5 +1,6 @@
 package org.app.travelmode.controller;
 
+import javafx.scene.Parent;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 
 import java.time.LocalDate;
@@ -77,4 +78,8 @@ public interface TravelModeController {
     void showErrorOnGUI(final String title, final String message);
 
     void showWarningOnGUI(final String title, final String message);
+
+    Parent gatTraveleModeView();
+
+    Parent requestAppViewRootNode();
 }
