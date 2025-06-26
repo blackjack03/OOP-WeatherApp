@@ -22,10 +22,6 @@ public class AppCore extends Application {
 
         final LoadingScreen loadingScreen = new LoadingScreen();
         loadingScreen.start(primaryStage, mainController.getAppController());
-
-        /*final AppController controller = new AppController(
-                lblCity, todayIcon, lblCond, lblTemp, lblFeels, lblMin, lblMax,
-                hourlyEntries, forecastStrip);*/
-        }
+    }
 
 }

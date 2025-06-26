@@ -92,7 +92,6 @@ public class LoadingScreen {
         }
     }
 
-
     public void start(final Stage primaryStage, final AppController appController) {
 
         splashStage.show();

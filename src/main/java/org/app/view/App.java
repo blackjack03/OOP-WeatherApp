@@ -61,7 +61,7 @@ public class App {
         return todayIcon;
     }
 
-    public App() {
+    public App(final AppController controller) {
         final AppConfig appConfig = ConfigManager.getConfig();
 
         //--------------------------- root (2 righe) ---------------------------
@@ -173,7 +173,7 @@ public class App {
         this.labels.put("lblMin", lblMin);
         this.labels.put("lblMax", lblMax);
 
-        // settingsBtn.setOnAction(e -> new SettingsWindow(controller).show());
+        settingsBtn.setOnAction(e -> new SettingsWindow(controller).show());
 
         //---------------- assemblaggio top & bottom ----------------
         topGrid.add(todayBox, 0, 0);

@@ -43,7 +43,7 @@ public class CustomErrorGUI {
         return result == JOptionPane.YES_OPTION;
     }
 
-    public static void showError2(final String message, final String title) {
+    public static void showErrorJFX(final String message, final String title) {
         final Runnable dialogTask = () -> {
             final Alert alert = new Alert(AlertType.ERROR);
             alert.setHeaderText(null);

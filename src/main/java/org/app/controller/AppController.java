@@ -68,7 +68,7 @@ public class AppController {
 
     /* ========================== costruttore ======================= */
     public AppController() {
-        this.APP = new App();
+        this.APP = new App(this);
         final Map<String, Label> labels = this.APP.getLabels();
         this.lblCity = labels.get("lblCity");
         this.lblCond = labels.get("lblCond");
@@ -195,7 +195,7 @@ public class AppController {
             }
         }
         if (err_flag) {
-            System.out.println("ERRORE RICHIESTA DATI METEO");
+            System.out.println("ERRORE RICHIESTA DATI METEO!");
             CustomErrorGUI.showError(
                     "Impossibile recuperare i dati meteo. Controlla la tua connessione internet e riprova.",
                     "Errore di rete!"

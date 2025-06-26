@@ -35,10 +35,10 @@ public class SettingsWindow extends Stage {
         setResizable(true);
 
         /* ---------- pulsanti ---------- */
-        final Button travelModeBtn = new Button("Apri modalità Travel Mode");
+        /* final Button travelModeBtn = new Button("Apri modalità Travel Mode");
         travelModeBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
         travelModeBtn.setMaxWidth(Double.MAX_VALUE);
-        travelModeBtn.setOnAction(e -> openTravelMode());
+        travelModeBtn.setOnAction(e -> openTravelMode()); */
 
         final Button moonBtn = new Button("Visualizza Luna di Oggi");
         moonBtn.setStyle("-fx-font-size: 18px;");
@@ -51,7 +51,7 @@ public class SettingsWindow extends Stage {
         changeCityBtn.setOnAction(e -> openChangeCity());
 
         /* ---------- layout ---------- */
-        final VBox root = new VBox(15, travelModeBtn, moonBtn, changeCityBtn);
+        final VBox root = new VBox(15, moonBtn, changeCityBtn);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(20));
 
@@ -93,10 +93,6 @@ public class SettingsWindow extends Stage {
     /** Lancia il frame Swing che mostra le fasi lunari di oggi. */
     private void openMoon() {
         final Thread t = new Thread(() -> {
-            final LocalDate now = LocalDate.now();
-            /*final int year = now.getYear();
-            final int month = now.getMonthValue();
-            final int day = now.getDayOfMonth();*/
             final MoonPhases moon = new MoonPhasesImpl();
             final Optional<Map<String, String>> moonInfo = moon.getMoonInfo();
             if (moonInfo.isEmpty()) {
