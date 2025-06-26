@@ -46,15 +46,15 @@ public class AppController {
     private Map<String, String> cityInfo;
 
     /* ============================ vista =========================== */
-    private Label lblCity;
-    private Label lblCond;
-    private Label lblTemp;
-    private Label lblFeels;
-    private Label lblMin;
-    private Label lblMax;
-    private ImageView todayIcon;
-    private VBox hourlyEntries;
-    private HBox forecastStrip;
+    private final Label lblCity;
+    private final Label lblCond;
+    private final Label lblTemp;
+    private final Label lblFeels;
+    private final Label lblMin;
+    private final Label lblMax;
+    private final ImageView todayIcon;
+    private final VBox hourlyEntries;
+    private final HBox forecastStrip;
 
     /** === ID citta' attuale === */
     private int CITY_ID;
@@ -69,7 +69,7 @@ public class AppController {
     /* ========================== costruttore ======================= */
     public AppController() {
         this.APP = new App();
-        final var labels = this.APP.getLabels();
+        final Map<String, Label> labels = this.APP.getLabels();
         this.lblCity = labels.get("lblCity");
         this.lblCond = labels.get("lblCond");
         this.lblTemp = labels.get("lblTemp");
