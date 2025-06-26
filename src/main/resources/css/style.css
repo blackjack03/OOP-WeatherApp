@@ -1,6 +1,28 @@
+/********* Stile di  *********/
+.app-root-view {
+    -fx-background-color: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+    -fx-padding: 10px, 20px;
+}
+/*
+.control-bar {
+    -fx-padding: 5px, 10px;
+}*/
+
+.app-root-view .mode-selector-button {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: #873eff;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 2, 2);
+}
+
 /********* Stile di TravelModeViewImpl *********/
 .root-pane {
-    -fx-background-color: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+    /*-fx-background-color: linear-gradient(to bottom, #e3f2fd, #bbdefb);*/
+    -fx-background-color: transparent;
     -fx-padding: 20px;
 }
 
