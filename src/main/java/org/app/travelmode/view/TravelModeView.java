@@ -1,5 +1,6 @@
 package org.app.travelmode.view;
 
+import javafx.scene.Parent;
 import javafx.scene.image.Image;
 
 public interface TravelModeView {
@@ -27,4 +28,6 @@ public interface TravelModeView {
      * @param mapImage    An image of a map representing the route.
      */
     void displayResult(int meteoScore, String description, String duration, String arrivalDate, String arrivalTime, Image mapImage);
+
+    Parent getRootView();
 }

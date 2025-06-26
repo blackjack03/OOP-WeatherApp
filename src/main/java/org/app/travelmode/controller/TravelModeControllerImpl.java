@@ -1,15 +1,19 @@
 package org.app.travelmode.controller;
 
 import javafx.application.Application;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
+import org.app.appcore.MainController;
 import org.app.travelmode.model.core.TravelModeModel;
 import org.app.travelmode.model.core.TravelModeModelImpl;
+import org.app.travelmode.model.exception.MapGenerationException;
 import org.app.travelmode.model.travel.api.TravelModeResult;
 import org.app.travelmode.model.travel.api.TravelRequest;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
@@ -21,17 +25,22 @@ import org.app.travelmode.view.TravelModeViewImpl;
  * the view and model components of the application. This class handles user inputs,
  * processes travel requests, and updates the view with results.
  */
-public class TravelModeControllerImpl extends Application implements TravelModeController {
+public class TravelModeControllerImpl implements TravelModeController {
 
-    private final TravelModeView view = new TravelModeViewImpl(this);
-    private final TravelModeModel model = new TravelModeModelImpl();
+    private final TravelModeView view;
+    private final TravelModeModel model;
+    private final MainController mainController;
 
-    /**
-     * {@inheritDoc}
-     */
+    /*
     @Override
     public void start(final Stage primaryStage) {
         this.view.start();
+    }*/
+
+    public TravelModeControllerImpl(final MainController mainController) {
+        this.view = new TravelModeViewImpl(this);
+        this.model = new TravelModeModelImpl();
+        this.mainController = mainController;
     }
 
     /**
@@ -106,10 +115,35 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
      */
     @Override
     public void computeAlternativeResults() {
-        final List<TravelModeResult> travelModeResults = this.model.getAlternativesResults();
-        for (final TravelModeResult travelModeResult : travelModeResults) {
-            displayResult(travelModeResult);
-        }
+        final Optional<List<TravelModeResult>> travelModeResults = this.model.getAlternativesResults();
+        travelModeResults.ifPresentOrElse(results -> results.forEach(this::displayResult),
+                () -> this.showWarningOnGUI("No alternatives", "Non sono presenti percorsi alternativi")); //TODO: migliorare gestione
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showErrorOnGUI(final String title, final String message) {  //TODO: migliorare gestione
+        System.out.println(title + ": " + message);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showWarningOnGUI(final String title, final String message) {    //TODO: migliorare gestione
+        System.out.println(title + ": " + message);
+    }
+
+    @Override
+    public Parent gatTraveleModeView() {
+        return this.view.getRootView();
+    }
+
+    @Override
+    public Parent requestAppViewRootNode() {
+        return this.mainController.getRootView();
     }
 
     /**
@@ -119,11 +153,17 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
      *                         such as duration, arrival time, meteo score, and route summary
      */
     private void displayResult(final TravelModeResult travelModeResult) {
-        final String durationString = travelModeResult.getDurationString();
-        final LocalDateTime arrivalDateTime = travelModeResult.getArrivalTime();
-        final String arrivalTime = arrivalDateTime.toLocalTime().getHour() + ":" + arrivalDateTime.toLocalTime().getMinute();
-        final String arrivalDate = arrivalDateTime.toLocalDate().toString();
-        this.view.displayResult(travelModeResult.getMeteoScore(), travelModeResult.getSummary(), durationString,
-                arrivalDate, arrivalTime, travelModeResult.getMapImage());
+        try {
+            final String durationString = travelModeResult.getDurationString();
+            final LocalDateTime arrivalDateTime = travelModeResult.getArrivalTime();
+            final String arrivalTime = arrivalDateTime.toLocalTime().getHour() + ":" + arrivalDateTime.toLocalTime().getMinute();
+            final String arrivalDate = arrivalDateTime.toLocalDate().toString();
+            this.view.displayResult(travelModeResult.getMeteoScore(), travelModeResult.getSummary(), durationString,
+                    arrivalDate, arrivalTime, travelModeResult.getMapImage());
+        } catch (final IllegalStateException e) {
+            this.showErrorOnGUI("Errore nel calcolo del punteggio meteo", e.getMessage()); //TODO: migliorare gestione
+        } catch (final MapGenerationException e) {
+            this.showErrorOnGUI("Errore nella creazione della mappa", e.getMessage()); //TODO: migliorare gestione
+        }
     }
 }

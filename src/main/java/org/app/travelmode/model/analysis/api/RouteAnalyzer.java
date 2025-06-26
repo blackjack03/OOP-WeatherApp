@@ -25,6 +25,7 @@ public interface RouteAnalyzer {
      *
      * @param directionsRoute the route to analyze
      * @return a list of intermediate points along the route, represented as {@link SimpleDirectionsStep} objects
+     * @throws IllegalStateException if this {@link RouteAnalyzer} instance has already been used.
      */
     List<SimpleDirectionsStep> calculateIntermediatePoints(DirectionsRoute directionsRoute);
 

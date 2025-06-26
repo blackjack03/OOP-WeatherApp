@@ -14,6 +14,8 @@ public interface WeatherConditionFactory {
      *
      * @param freezingHeightMetres the altitude above sea level where 0°C (freezing level) is reached.
      * @return a new {@link FreezingRisk} instance
+     * @throws IllegalArgumentException if the freezing height is less than -500.0 meters,
+     *                                  or if the value is NaN or infinite
      */
     FreezingRisk createFreezingRisk(double freezingHeightMetres);
 
@@ -22,6 +24,8 @@ public interface WeatherConditionFactory {
      *
      * @param precipitationMm the amount of precipitation in millimeters
      * @return a new {@link Precipitation} instance
+     * @throws IllegalArgumentException if the precipitation amount is negative,
+     *                                  or if the value is NaN or infinite
      */
     Precipitation createPrecipitation(double precipitationMm);
 
@@ -30,6 +34,8 @@ public interface WeatherConditionFactory {
      *
      * @param snowfallCm the amount of snowfall in centimeters from the preceding hour
      * @return a new {@link Snowfall} instance
+     * @throws IllegalArgumentException if the snowfall amount is negative,
+     *                                  or if the value is NaN or infinite
      */
     Snowfall createSnowfall(double snowfallCm);
 
@@ -38,6 +44,8 @@ public interface WeatherConditionFactory {
      *
      * @param visibilityMeter the viewing distance in meters
      * @return a new {@link Visibility} instance
+     * @throws IllegalArgumentException if the visibility is negative,
+     *                                  or if the value is NaN or infinite
      */
     Visibility createVisibility(double visibilityMeter);
 
@@ -46,6 +54,8 @@ public interface WeatherConditionFactory {
      *
      * @param windGustSpeed the maximum wind gust speed in kilometers per hour measured at 10 m above ground
      * @return a new {@link WindGust} instance
+     * @throws IllegalArgumentException if the wind speed is negative,
+     *                                  or if the value is NaN or infinite
      */
     WindGust createWindGust(double windGustSpeed);
 

@@ -1,15 +1,9 @@
 package org.app.travelmode.model.google.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.api.StaticMapApiClient;
-
-import java.io.FileReader;
-
-import org.app.model.ApiConfig;
-import org.app.model.AppConfig;
-import org.app.model.ConfigManager;
+import org.app.weathermode.model.ApiConfig;
+import org.app.weathermode.model.ConfigManager;
 
 /**
  * Implementation of {@link GoogleApiClientFactory} that creates various Google API clients

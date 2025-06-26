@@ -2,6 +2,7 @@ package org.app.travelmode.view;
 
 import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -25,24 +26,19 @@ public class TravelModeViewImpl implements TravelModeView {
     private static final String ALTERNATIVES_BUTTON_TEXT = "OTTIENI PERCORSI ALTERNATIVI";
 
     private final TravelModeController controller;
-    private final Stage stage;
-    private final Scene scene;
+    //private final Stage stage;
+    //private final Scene scene;
     private final VBox root;
     private VBox resultsVBox;
 
 
     public TravelModeViewImpl(final TravelModeController controller) {
         this.controller = controller;
-        this.stage = new Stage();
-        this.stage.setTitle(STAGE_NAME);
+        //this.stage = new Stage();
+        //this.stage.setTitle(STAGE_NAME);
         this.root = new VBox(20);
-        this.scene = new Scene(root, 900, 650);
-        this.scene.getStylesheets().add(ClassLoader.getSystemResource("css/style.css").toExternalForm());
-    }
-
-    @Override
-    public void start() {
-
+        //this.scene = new Scene(root, 900, 650);
+        //this.scene.getStylesheets().add(ClassLoader.getSystemResource("css/style.css").toExternalForm());
         final BiConsumer<String, String> onDepartureCitySelected = (desc, pID) -> {
             this.controller.setDepartureLocation(desc);
             this.controller.setDeparturePlaceId(pID);
@@ -103,9 +99,13 @@ public class TravelModeViewImpl implements TravelModeView {
         root.getChildren().addAll(topPane, scrollPane);
         root.getStyleClass().add("root-pane");
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
+    }
 
-        this.stage.setScene(scene);
-        this.stage.show();
+    @Override
+    public void start() {
+
+        //this.stage.setScene(scene);
+        //this.stage.show();
     }
 
     @Override
@@ -117,8 +117,14 @@ public class TravelModeViewImpl implements TravelModeView {
     @Override
     public void displayResult(int meteoScore, final String description, final String duration, final String arrivalDate, final String arrivalTime, final Image mapImage) {
         Platform.runLater(() -> {
-            final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalDate, arrivalTime, mapImage, this.scene.getWindow());
+            final Scene mainScene = this.controller.requestAppViewRootNode().getScene();
+            final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalDate, arrivalTime, mapImage, mainScene.getWindow());
             this.resultsVBox.getChildren().add(resultBox);
         });
+    }
+
+    @Override
+    public Parent getRootView() {
+        return this.root;
     }
 }

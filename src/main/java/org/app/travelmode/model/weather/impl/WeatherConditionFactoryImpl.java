@@ -72,6 +72,7 @@ public class WeatherConditionFactoryImpl implements WeatherConditionFactory {
      * @param paramName the name of the parameter being validated
      * @param value     the value to validate
      * @param min       the minimum acceptable value
+     * @throws IllegalArgumentException if any validation check fails
      */
     private void validateRange(final String paramName, double value, double min) {
         if (Double.isNaN(value)) {

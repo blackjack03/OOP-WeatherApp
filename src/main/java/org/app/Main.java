@@ -1,8 +1,8 @@
 // Main.java
 package org.app;
 
-import org.app.model.ConfigBuilder;
-import org.app.model.ConfigManager;
+import org.app.weathermode.model.ConfigBuilder;
+import org.app.weathermode.model.ConfigManager;
 
 import javafx.application.Application;
 
@@ -19,7 +19,7 @@ public class Main {
         ConfigManager.loadConfig(CONFIG_PATH);
 
         // 2) lancio la splash (LoadingScreen.start)
-        Application.launch(org.app.view.LoadingScreen.class, args);
+        Application.launch(AppCore.class, args);
     }
 
 }

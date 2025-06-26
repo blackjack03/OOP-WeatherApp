@@ -27,6 +27,10 @@ public class DirectionsResponse {
         return this.status;
     }
 
+    public boolean hasAlternatives() {
+        return this.routes.size() > 1;
+    }
+
     public String getErrorMessage() {
         return Objects.requireNonNullElse(this.error_message, "");
     }

@@ -1,6 +1,7 @@
 package org.app.travelmode.model.travel.impl;
 
 import javafx.scene.image.Image;
+import org.app.travelmode.model.exception.MapGenerationException;
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.impl.GoogleApiClientFactoryImpl;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
@@ -68,9 +69,11 @@ public class TravelModeResultImpl implements TravelModeResult {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws MapGenerationException if an error occurs while generating the map
      */
     @Override
-    public Image getMapImage() {
+    public Image getMapImage() throws MapGenerationException {
         if (this.mapImage.isEmpty()) {
             this.mapImage = Optional.of(mapImageGenerator.generateMapImage(checkpoints, polyline));
         }
@@ -83,7 +86,7 @@ public class TravelModeResultImpl implements TravelModeResult {
     @Override
     public int getMeteoScore() {
         if (this.checkpoints.isEmpty()) {
-            throw new IllegalArgumentException("La lista di checkpoint non può essere vuota.");
+            throw new IllegalStateException("La lista di checkpoint non può essere vuota.");
         }
         if (this.meteoScore.isEmpty()) {
             this.meteoScore = Optional.of(calculateMeteoScore(this.checkpoints));
@@ -146,10 +149,7 @@ public class TravelModeResultImpl implements TravelModeResult {
      * @return an integer representing the average weather score.
      */
     private Integer calculateMeteoScore(final List<CheckpointWithMeteo> checkpoints) {
-        int totalScore = 0;
-        for (final CheckpointWithMeteo checkpoint : checkpoints) {
-            totalScore += checkpoint.getWeatherScore();
-        }
+        int totalScore = checkpoints.stream().mapToInt(CheckpointWithMeteo::getWeatherScore).sum();
         return (int) Math.round((double) totalScore / checkpoints.size());
     }
 }

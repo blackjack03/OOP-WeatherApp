@@ -25,7 +25,8 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
     private final TextField cityTextField;
     private final ContextMenu suggestionsMenu;
 
-    public CityInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected, final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, boolean resize) {
+    public CityInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected,
+                            final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, boolean resize) {
         super();
 
         this.label = new Label(title);

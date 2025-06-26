@@ -5,7 +5,6 @@ import org.app.travelmode.model.analysis.api.RouteAnalyzer;
 import org.app.travelmode.model.analysis.api.SubStepGenerator;
 import org.app.travelmode.model.google.dto.directions.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,19 +54,18 @@ public class RouteAnalyzerImpl implements RouteAnalyzer {
      */
     @Override
     public List<SimpleDirectionsStep> calculateIntermediatePoints(final DirectionsRoute directionsRoute) {
-        if (consumed) {
+        if (this.isConsumed()) {
             throw new IllegalStateException("Questo RouteAnalyzer è già stato consumato");
         }
 
-        final List<SimpleDirectionsStep> intermediatePoints = new ArrayList<>();
         final List<DirectionsLeg> legs = directionsRoute.getLegs();
-
-        for (final DirectionsLeg leg : legs) {
-            intermediatePoints.addAll(intermediatePointFinder.findIntermediatePoints(leg, subStepGenerator));
-        }
+        final List<SimpleDirectionsStep> intermediatePoints = legs.stream()
+                .map(leg -> intermediatePointFinder.findIntermediatePoints(leg, subStepGenerator))
+                .flatMap(List::stream)
+                .toList();
 
         this.consumed = true;
-        return intermediatePoints;
+        return List.copyOf(intermediatePoints);
     }
 
     /**
