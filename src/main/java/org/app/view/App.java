@@ -4,6 +4,10 @@ import javafx.scene.Parent;
 import org.app.model.AppConfig;
 import org.app.model.ConfigManager;
 import org.app.model.LocationSelector;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.app.controller.AppController;
 
 import javafx.beans.binding.DoubleExpression;
@@ -25,6 +29,8 @@ public class App {
 
     private static LocationSelector locationSelector;
 
+    private final Map<String, Label> labels = new HashMap<>();
+
     private final GridPane root;
 
     public void setLocationSelector(final LocationSelector LS) {
@@ -33,6 +39,26 @@ public class App {
 
     public static LocationSelector getLocationSelector() {
         return locationSelector;
+    }
+
+    public Map<String, Label> getLabels() {
+        return this.labels;
+    }
+
+    final ImageView todayIcon;
+    final private VBox hourlyEntries;
+    final private HBox forecastStrip;
+
+    public VBox getHourlyEntries() {
+        return hourlyEntries;
+    }
+
+    public HBox getForecastStrip() {
+        return forecastStrip;
+    }
+
+    public ImageView getTodayIcon() {
+        return todayIcon;
     }
 
     public App() {
@@ -77,7 +103,7 @@ public class App {
         todayBox.setSpacing(10);
         final String city = "PLACEHOLDER";
         final Label lblCity = makeTitle(city);
-        final ImageView todayIcon = makeIcon("/logo.png", root.widthProperty().multiply(0.10));
+        this.todayIcon = makeIcon("/logo.png", root.widthProperty().multiply(0.10));
         final Label lblOggi = makeTitle("OGGI");
         final Label lblCond = makeSubtitle("SOLE");
         final Label lblTemp = new Label("Temperatura: xx °C");
@@ -90,9 +116,9 @@ public class App {
         //---------------- HOURLY panel ----------------
         final VBox hourlyBox = createCardVBox();
         hourlyBox.setSpacing(10);
-        final VBox hourlyEntries = new VBox(15);
+        hourlyEntries = new VBox(15);
         final String[] hourLabels = {"15:30", "16:30", "17:30", "18:30"};
-        for (String hourLbl : hourLabels) {
+        for (final String hourLbl : hourLabels) {
             hourlyEntries.getChildren().add(createHourlyRow(root, hourLbl));
         }
         final Label hourlyDetails = new Label("Dettagli aggiuntivi…");
@@ -102,7 +128,7 @@ public class App {
         VBox.setVgrow(hourlyEntries, Priority.ALWAYS);
 
         //---------------- DAILY forecast strip ----------------
-        final HBox forecastStrip = createCardHBox();
+        this.forecastStrip = createCardHBox();
         forecastStrip.setSpacing(20);
         forecastStrip.setAlignment(Pos.CENTER_LEFT);
         final ScrollPane forecastScroller = new ScrollPane(forecastStrip);
@@ -136,11 +162,18 @@ public class App {
         settingsBtn.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
 
-        final AppController controller = new AppController(
+        /* final AppController controller = new AppController(
                 lblCity, todayIcon, lblCond, lblTemp, lblFeels, lblMin, lblMax,
-                hourlyEntries, forecastStrip);
+                hourlyEntries, forecastStrip); */
 
-        settingsBtn.setOnAction(e -> new SettingsWindow(controller).show());
+        this.labels.put("lblCity", lblCity);
+        this.labels.put("lblCond", lblCond);
+        this.labels.put("lblTemp", lblTemp);
+        this.labels.put("lblFeels", lblFeels);
+        this.labels.put("lblMin", lblMin);
+        this.labels.put("lblMax", lblMax);
+
+        // settingsBtn.setOnAction(e -> new SettingsWindow(controller).show());
 
         //---------------- assemblaggio top & bottom ----------------
         topGrid.add(todayBox, 0, 0);

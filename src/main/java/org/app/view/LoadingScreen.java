@@ -3,6 +3,7 @@ package org.app.view;
 
 import java.util.Optional;
 
+import org.app.controller.AppController;
 import org.app.model.AppConfig;
 import org.app.model.ConfigManager;
 import org.app.model.LocationSelectorImpl;
@@ -92,7 +93,7 @@ public class LoadingScreen {
     }
 
 
-    public void start(final Stage primaryStage) {
+    public void start(final Stage primaryStage, final AppController appController) {
 
         splashStage.show();
 
@@ -109,9 +110,9 @@ public class LoadingScreen {
             splashStage.close();
             Platform.runLater(() -> {
                 try {
-                    ConfigManager.loadConfig(CONFIG_PATH); //TODO da eliminare
+                    // ConfigManager.loadConfig(CONFIG_PATH); //TODO da eliminare
                     final AppConfig appConfig = ConfigManager.getConfig();
-                    final App app = new App();
+                    // final App app = new App();
                     if (appConfig.getUserPreferences().getDefaultCity().isEmpty()) {
                         boolean useIP = false;
                         if (showConfirmIP("Vuoi usare la tua posizione (IP)?", "Usa posizione IP")) {
@@ -148,13 +149,15 @@ public class LoadingScreen {
                             }
                         }
                         if (!flagClose) {
-                            app.setLocationSelector(LS);
+                            appController.getApp().setLocationSelector(LS);
+                            appController.start();
                             primaryStage.show();
                         } else {
                             Platform.exit();
                         }
                     } else {
-                        app.setLocationSelector(LS);
+                        appController.getApp().setLocationSelector(LS);
+                        appController.start();
                         primaryStage.show();
                     }
                 } catch (final Exception e) {

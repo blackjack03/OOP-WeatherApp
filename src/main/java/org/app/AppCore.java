@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.app.appcore.MainController;
 import org.app.appcore.MainControllerImpl;
+import org.app.controller.AppController;
 import org.app.view.LoadingScreen;
 
 public class AppCore extends Application {
@@ -20,7 +21,11 @@ public class AppCore extends Application {
         primaryStage.setTitle("App Meteo & Viaggio");
 
         final LoadingScreen loadingScreen = new LoadingScreen();
-        loadingScreen.start(primaryStage);
-    }
+        loadingScreen.start(primaryStage, mainController.getAppController());
+
+        /*final AppController controller = new AppController(
+                lblCity, todayIcon, lblCond, lblTemp, lblFeels, lblMin, lblMax,
+                hourlyEntries, forecastStrip);*/
+        }
 
 }

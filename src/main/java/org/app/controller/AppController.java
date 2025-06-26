@@ -42,40 +42,46 @@ public class AppController {
     private static final DateTimeFormatter HOUR_FMT = DateTimeFormatter.ofPattern("HH:mm");
 
     /* ============================ modello ========================= */
-    private final AllWeather model;
+    private AllWeather model;
     private Map<String, String> cityInfo;
 
     /* ============================ vista =========================== */
-    private final Label lblCity;
-    private final Label lblCond;
-    private final Label lblTemp;
-    private final Label lblFeels;
-    private final Label lblMin;
-    private final Label lblMax;
-    private final ImageView todayIcon;
-    private final VBox hourlyEntries;
-    private final HBox forecastStrip;
+    private Label lblCity;
+    private Label lblCond;
+    private Label lblTemp;
+    private Label lblFeels;
+    private Label lblMin;
+    private Label lblMax;
+    private ImageView todayIcon;
+    private VBox hourlyEntries;
+    private HBox forecastStrip;
 
     /** === ID citta' attuale === */
     private int CITY_ID;
-    private final LocationSelector selector;
+    private LocationSelector selector;
     private boolean city_changed = false;
 
     /* ============================ timer =========================== */
-    private final Timeline autoRefresh;
+    private Timeline autoRefresh;
+
+    private App APP;
 
     /* ========================== costruttore ======================= */
-    public AppController(final Label lblCity,
-                         final ImageView todayIcon,
-                         final Label lblCond,
-                         final Label lblTemp,
-                         final Label lblFeels,
-                         final Label lblMin,
-                         final Label lblMax,
-                         final VBox hourlyEntries,
-                         final HBox forecastStrip) {
+    public AppController() {
+        this.APP = new App();
+        final var labels = this.APP.getLabels();
+        this.lblCity = labels.get("lblCity");
+        this.lblCond = labels.get("lblCond");
+        this.lblTemp = labels.get("lblTemp");
+        this.lblFeels = labels.get("lblFeels");
+        this.lblMin = labels.get("lblMin");
+        this.lblMax = labels.get("lblMax");
+        this.hourlyEntries = this.APP.getHourlyEntries();
+        this.forecastStrip = this.APP.getForecastStrip();
+        this.todayIcon = this.APP.getTodayIcon();
+    }
 
-        /* ---- Recupera info città ---- */
+    public void start() {
         this.selector = (App.getLocationSelector() != null)
                 ? App.getLocationSelector()
                 : new LocationSelectorImpl();
@@ -85,15 +91,44 @@ public class AppController {
         this.cityInfo = selector.getByID(this.CITY_ID)
                 .orElseThrow(() -> new IllegalStateException("ID città non valido"));
 
-        /* ---- Inizializza modello ---- */
-        final Map<String, String> coords = Map.of("lat", this.cityInfo.get("lat"),
-                "lng", this.cityInfo.get("lng"));
         this.model = new AllWeather(this.cityInfo);
         if (!this.model.reqestsAllForecast()) {
             throw new IllegalStateException("Impossibile scaricare i dati meteo iniziali");
         }
 
-        /* ---- Associa componenti vista ---- */
+        this.refresh();
+        this.autoRefresh = new Timeline(new KeyFrame(Duration.minutes(REFRESH_TIME), e -> refresh()));
+        this.autoRefresh.setCycleCount(Animation.INDEFINITE);
+        this.autoRefresh.play();
+    }
+
+    public App getApp() {
+        return this.APP;
+    }
+
+    /*public AppController(final Label lblCity,
+                         final ImageView todayIcon,
+                         final Label lblCond,
+                         final Label lblTemp,
+                         final Label lblFeels,
+                         final Label lblMin,
+                         final Label lblMax,
+                         final VBox hourlyEntries,
+                         final HBox forecastStrip) {
+        this.selector = (App.getLocationSelector() != null)
+                ? App.getLocationSelector()
+                : new LocationSelectorImpl();
+
+        this.setCity();
+
+        this.cityInfo = selector.getByID(this.CITY_ID)
+                .orElseThrow(() -> new IllegalStateException("ID città non valido"));
+
+        this.model = new AllWeather(this.cityInfo);
+        if (!this.model.reqestsAllForecast()) {
+            throw new IllegalStateException("Impossibile scaricare i dati meteo iniziali");
+        }
+
         this.lblCity = lblCity;
         this.lblCond = lblCond;
         this.lblTemp = lblTemp;
@@ -104,12 +139,11 @@ public class AppController {
         this.hourlyEntries = hourlyEntries;
         this.forecastStrip = forecastStrip;
 
-        /* ---- Primo update + timer ---- */
         this.refresh();
         this.autoRefresh = new Timeline(new KeyFrame(Duration.minutes(REFRESH_TIME), e -> refresh()));
         this.autoRefresh.setCycleCount(Animation.INDEFINITE);
         this.autoRefresh.play();
-    }
+    }*/
 
     /* ==================== API pubbliche ==================== */
 

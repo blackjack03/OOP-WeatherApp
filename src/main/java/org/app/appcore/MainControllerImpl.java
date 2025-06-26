@@ -5,6 +5,8 @@ import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+
+import org.app.controller.AppController;
 import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.controller.TravelModeControllerImpl;
 import org.app.view.App;
@@ -19,10 +21,14 @@ public class MainControllerImpl implements MainController {
     private final Parent travelModeView;
     private final TravelModeController travelModeController;
 
+    private final AppController appController;
+
     public MainControllerImpl() {
         this.rootView = new BorderPane();
 
-        this.weatherView = new App().getRoot();
+        this.appController = new AppController();
+
+        this.weatherView = this.appController.getApp().getRoot();
         this.travelModeController = new TravelModeControllerImpl(this);
         this.travelModeView = this.travelModeController.gatTraveleModeView();
 
@@ -52,6 +58,11 @@ public class MainControllerImpl implements MainController {
         this.rootView.setTop(topBar);
         this.rootView.setCenter(this.weatherView);
         this.rootView.getStyleClass().add("app-root-view");
+    }
+
+    @Override
+    public AppController getAppController() {
+        return this.appController;
     }
 
     @Override
