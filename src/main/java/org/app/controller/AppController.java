@@ -21,13 +21,12 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-import org.app.App;
+import org.app.view.App;
 import org.app.model.UnitConversion;
 import org.app.model.AllWeather;
 import org.app.model.LocationSelector;
 import org.app.model.LocationSelectorImpl;
 import org.app.model.Pair;
-import org.app.model.AppConfig;
 import org.app.model.ConfigManager;
 import org.app.model.UserPreferences;
 

@@ -1,6 +1,7 @@
 package org.app.travelmode.controller;
 
 import javafx.application.Application;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.app.appcore.MainController;
 import org.app.travelmode.model.core.TravelModeModel;
 import org.app.travelmode.model.core.TravelModeModelImpl;
 import org.app.travelmode.model.exception.MapGenerationException;
@@ -23,17 +25,22 @@ import org.app.travelmode.view.TravelModeViewImpl;
  * the view and model components of the application. This class handles user inputs,
  * processes travel requests, and updates the view with results.
  */
-public class TravelModeControllerImpl extends Application implements TravelModeController {
+public class TravelModeControllerImpl implements TravelModeController {
 
-    private final TravelModeView view = new TravelModeViewImpl(this);
-    private final TravelModeModel model = new TravelModeModelImpl();
+    private final TravelModeView view;
+    private final TravelModeModel model;
+    private final MainController mainController;
 
-    /**
-     * {@inheritDoc}
-     */
+    /*
     @Override
     public void start(final Stage primaryStage) {
         this.view.start();
+    }*/
+
+    public TravelModeControllerImpl(final MainController mainController) {
+        this.view = new TravelModeViewImpl(this);
+        this.model = new TravelModeModelImpl();
+        this.mainController = mainController;
     }
 
     /**
@@ -127,6 +134,16 @@ public class TravelModeControllerImpl extends Application implements TravelModeC
     @Override
     public void showWarningOnGUI(final String title, final String message) {    //TODO: migliorare gestione
         System.out.println(title + ": " + message);
+    }
+
+    @Override
+    public Parent gatTraveleModeView() {
+        return this.view.getRootView();
+    }
+
+    @Override
+    public Parent requestAppViewRootNode() {
+        return this.mainController.getRootView();
     }
 
     /**

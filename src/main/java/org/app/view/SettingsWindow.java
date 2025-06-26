@@ -1,6 +1,5 @@
 package org.app.view;
 
-import org.app.App;
 import org.app.controller.AppController;
 import org.app.model.ConfigManager;
 import org.app.model.AppConfig;

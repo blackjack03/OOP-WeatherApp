@@ -3,7 +3,6 @@ package org.app.view;
 
 import java.util.Optional;
 
-import org.app.App;
 import org.app.model.AppConfig;
 import org.app.model.ConfigManager;
 import org.app.model.LocationSelectorImpl;
@@ -11,7 +10,6 @@ import org.app.model.LookUp;
 import org.app.model.IPLookUp;
 import org.app.model.LocationSelector;
 
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
@@ -28,9 +26,32 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class LoadingScreen extends Application {
+public class LoadingScreen {
 
     private static final String CONFIG_PATH = "src/main/java/org/files/configuration.json";
+
+    private final Stage splashStage;
+
+    public LoadingScreen() {
+        splashStage = new Stage();
+        // UI di splash
+        final ImageView imageView = new ImageView(
+                new Image(getClass().getResourceAsStream("/logo.png"))
+        );
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(150);
+
+        final Label loadingLabel = new Label("Loading...");
+        loadingLabel.setFont(Font.font("System", FontWeight.BOLD, 20));
+
+        final VBox root = new VBox(10, imageView, loadingLabel);
+        root.setAlignment(Pos.CENTER);
+
+        splashStage.setScene(new Scene(root, 325, 225));
+        splashStage.setTitle("Weather App - Loading...");
+        splashStage.setResizable(false);
+        splashStage.centerOnScreen();
+    }
 
     private boolean showConfirmIP(final String message, final String title) {
         final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -58,8 +79,9 @@ public class LoadingScreen extends Application {
             final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
             try {
                 stage.getIcons().add(new Image(
-                    getClass().getResourceAsStream("/error.png")));
-            } catch (final Exception ignored) {}
+                        getClass().getResourceAsStream("/error.png")));
+            } catch (final Exception ignored) {
+            }
             alert.show();
         };
         if (Platform.isFxApplicationThread()) {
@@ -69,25 +91,9 @@ public class LoadingScreen extends Application {
         }
     }
 
-    @Override
-    public void start(final Stage splashStage) {
-        // UI di splash
-        final ImageView imageView = new ImageView(
-            new Image(getClass().getResourceAsStream("/logo.png"))
-        );
-        imageView.setPreserveRatio(true);
-        imageView.setFitWidth(150);
 
-        final Label loadingLabel = new Label("Loading...");
-        loadingLabel.setFont(Font.font("System", FontWeight.BOLD, 20));
+    public void start(final Stage primaryStage) {
 
-        final VBox root = new VBox(10, imageView, loadingLabel);
-        root.setAlignment(Pos.CENTER);
-
-        splashStage.setScene(new Scene(root, 325, 225));
-        splashStage.setTitle("Weather App - Loading...");
-        splashStage.setResizable(false);
-        splashStage.centerOnScreen();
         splashStage.show();
 
         // Task di background per LocationSelector
@@ -103,7 +109,7 @@ public class LoadingScreen extends Application {
             splashStage.close();
             Platform.runLater(() -> {
                 try {
-                    ConfigManager.loadConfig(CONFIG_PATH);
+                    ConfigManager.loadConfig(CONFIG_PATH); //TODO da eliminare
                     final AppConfig appConfig = ConfigManager.getConfig();
                     final App app = new App();
                     if (appConfig.getUserPreferences().getDefaultCity().isEmpty()) {
@@ -143,15 +149,13 @@ public class LoadingScreen extends Application {
                         }
                         if (!flagClose) {
                             app.setLocationSelector(LS);
-                            final Stage mainStage = new Stage();
-                            app.start(mainStage);
+                            primaryStage.show();
                         } else {
                             Platform.exit();
                         }
                     } else {
                         app.setLocationSelector(LS);
-                        final Stage mainStage = new Stage();
-                        app.start(mainStage);
+                        primaryStage.show();
                     }
                 } catch (final Exception e) {
                     e.printStackTrace();
