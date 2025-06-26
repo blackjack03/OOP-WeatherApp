@@ -3,7 +3,6 @@ package org.app.weathermode.view;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
 

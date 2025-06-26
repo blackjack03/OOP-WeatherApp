@@ -10,11 +10,9 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.app.weathermode.model.LocationSelectorImpl;
 import org.app.weathermode.model.Pair;
 
 public class CustomControl extends VBox {
@@ -27,11 +25,6 @@ public class CustomControl extends VBox {
 
     @FXML
     private VBox buttonContainer;
-
-    final private String gui_path_component = "src%Smain%Sjava%Sorg%Sapp%Sview%Scity_selector.fxml"
-            .replace("%S", File.separator);
-
-    final private LocationSelectorImpl city_selector = new LocationSelectorImpl();
 
     public CustomControl() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("city_selector.fxml"));

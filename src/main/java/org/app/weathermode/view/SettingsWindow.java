@@ -15,7 +15,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 
@@ -70,25 +69,6 @@ public class SettingsWindow extends Stage {
     }
 
     /* ---------- handler ---------- */
-
-    private void openTravelMode() {
-        // Retrieve existing config and API key
-        final AppConfig appConfig = ConfigManager.getConfig();
-        final Optional<String> apiKey = appConfig.getApi().getApiKey();
-
-        if (!apiKey.isPresent()) {
-            final Optional<String> enteredKey = ApiKeyForm.showAndWait();
-            if (enteredKey.isPresent()) {
-                appConfig.getApi().setApiKey(enteredKey.get());
-                ConfigManager.saveConfig(CONFIG_PATH);
-                System.out.println("TRAVEL MODE STARTED");
-                //new TravelMode().start();
-            }
-        } else {
-            System.out.println("TRAVEL MODE STARTED");
-            // new TravelMode().start();
-        }
-    }
 
     /** Lancia il frame Swing che mostra le fasi lunari di oggi. */
     private void openMoon() {

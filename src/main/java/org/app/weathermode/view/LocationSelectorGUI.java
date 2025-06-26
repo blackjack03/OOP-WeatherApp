@@ -23,15 +23,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class LocationSelectorGUI {
 
     /**
-     * Mostra un semplice messaggio di conferma. Puoi rimuoverlo o modificarlo
-     * secondo le tue necessità.
-     */
-    private static void onButtonPressed(final int value) {
-        JOptionPane.showMessageDialog(null, "Location ID: " + value,
-                "Selezione Confermata", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    /**
      * Avvia la GUI in modalità bloccante e restituisce l'ID della località
      * selezionata oppure Optional.empty() se la finestra viene chiusa.
      *

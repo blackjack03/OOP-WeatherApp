@@ -3,8 +3,6 @@ package org.app.weathermode.view;
 import javafx.scene.Parent;
 
 import org.app.weathermode.controller.AppController;
-import org.app.weathermode.model.AppConfig;
-import org.app.weathermode.model.ConfigManager;
 import org.app.weathermode.model.LocationSelector;
 
 import java.util.HashMap;
@@ -22,7 +20,7 @@ import javafx.scene.text.Font;
 /**
  * Weather Dashboard
  * <p>
- * • Finestra suddivisa in 4 aree logiche, con altezze 70 % / 30 % (come prima)
+ * • Finestra suddivisa in 4 aree logiche, con altezze 70 % / 30 %
  * ma colonne 50 % / 50 % per la fascia superiore e 75 % / 25 % per quella inferiore.
  */
 public class App {
@@ -62,8 +60,6 @@ public class App {
     }
 
     public App(final AppController controller) {
-        final AppConfig appConfig = ConfigManager.getConfig();
-
         //--------------------------- root (2 righe) ---------------------------
         this.root = new GridPane();
         root.setPadding(new Insets(20));
