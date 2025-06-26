@@ -64,7 +64,7 @@ public class AppController {
     /* ============================ timer =========================== */
     private Timeline autoRefresh;
 
-    private App APP;
+    private final App APP;
 
     /* ========================== costruttore ======================= */
     public AppController() {
