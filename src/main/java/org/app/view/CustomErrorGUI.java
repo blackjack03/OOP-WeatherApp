@@ -44,27 +44,11 @@ public class CustomErrorGUI {
     }
 
     public static void showErrorJFX(final String message, final String title) {
-        final Runnable dialogTask = () -> {
-            final Alert alert = new Alert(AlertType.ERROR);
-            alert.setHeaderText(null);
-            alert.setTitle(title == null || title.isBlank() ? "Errore" : title);
-            alert.initModality(Modality.NONE);
-            final Label content = new Label(message);
-            content.setWrapText(true);
-            content.setStyle("-fx-font-size: 20px;");
-            alert.getDialogPane().setContent(content);
-            final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            try {
-                stage.getIcons().add(new Image(
-                    CustomErrorGUI.class.getResourceAsStream("/error.png")));
-            } catch (final Exception ignored) {}
-            alert.show();
-        };
-        if (Platform.isFxApplicationThread()) {
-            dialogTask.run();
-        } else {
-            Platform.runLater(dialogTask);
-        }
+        final Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Errore");
+        alert.setHeaderText(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 }
