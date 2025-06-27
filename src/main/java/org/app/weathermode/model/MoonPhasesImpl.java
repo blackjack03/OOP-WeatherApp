@@ -1,7 +1,6 @@
 package org.app.weathermode.model;
 
 import org.jsoup.*;
-import org.jsoup.select.*;
 import org.jsoup.nodes.*;
 
 import java.util.*;

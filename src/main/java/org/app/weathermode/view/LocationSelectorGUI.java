@@ -5,7 +5,6 @@ import javax.swing.border.EmptyBorder;
 
 import org.app.weathermode.model.AbstractPair;
 import org.app.weathermode.model.LocationSelector;
-import org.app.weathermode.model.LocationSelectorImpl;
 import org.app.weathermode.model.Pair;
 
 import java.awt.*;

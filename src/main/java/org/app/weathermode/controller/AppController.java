@@ -53,8 +53,6 @@ public class AppController implements Controller {
 
     /** Intervallo tra due refresh automatici (minuti). */
     private static final int REFRESH_TIME = 20;
-    /** Formatter per le ore nel formato “HH:mm”. */
-    private static final DateTimeFormatter HOUR_FMT = DateTimeFormatter.ofPattern("HH:mm");
 
     /** Wrapper per tutte le previsioni/meteo corrente. */
     private AllWeather weatherObj;

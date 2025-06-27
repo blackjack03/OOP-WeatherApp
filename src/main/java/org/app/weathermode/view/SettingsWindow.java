@@ -76,6 +76,7 @@ public class SettingsWindow extends Stage {
 
     /* ---------- handler ---------- */
 
+    @SuppressWarnings({"unchecked","varargs"})
     private void openChart() {
         final Optional<Map<String, Map<String, Number>>> hourlyOpt =
                 controller.getWeatherObj().getDailyGeneralForecast();
