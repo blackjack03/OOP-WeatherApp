@@ -103,7 +103,7 @@ public class SettingsWindow extends Stage {
         final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
         lineChart.setTitle("Temperature Massime e Minime");
         lineChart.setCreateSymbols(true);
-        lineChart.setAnimated(false);
+        lineChart.setAnimated(true);
         final XYChart.Series<String, Number> minSeries = new XYChart.Series<>();
         minSeries.setName("Minime");
 

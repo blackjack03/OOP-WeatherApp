@@ -167,13 +167,4 @@ public class LocationSelectorGUI {
         return Optional.ofNullable(selectedId.get());
     }
 
-    /**
-     * Esempio d'uso.
-     */
-    public static void main(String[] args) {
-        final LocationSelectorGUI gui = new LocationSelectorGUI();
-        final LocationSelectorImpl ls = new LocationSelectorImpl();
-        Optional<Integer> result = gui.start(ls);
-        System.out.println("Risultato: " + result);
-    }
 }
