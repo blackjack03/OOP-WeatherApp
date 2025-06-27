@@ -1,12 +1,12 @@
 package org.app.appcore;
 
-import org.app.weathermode.controller.AppController;
+import org.app.weathermode.controller.Controller;
 
 import javafx.scene.Parent;
 
 public interface MainController {
 
-    AppController getAppController();
+    Controller getAppController();
 
     Parent getRootView();
 

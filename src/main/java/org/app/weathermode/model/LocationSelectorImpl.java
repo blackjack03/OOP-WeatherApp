@@ -5,7 +5,7 @@ import java.io.*;
 
 public class LocationSelectorImpl implements LocationSelector {
 
-    private final String CSV_PATH =
+    private final static String CSV_PATH =
             "src%Smain%Sjava%Sorg%Sfiles%Sworldcities.csv"
             .replace("%S", File.separator);
 

@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.controller.TravelModeControllerImpl;
 import org.app.weathermode.controller.AppController;
+import org.app.weathermode.controller.Controller;
 import org.app.weathermode.view.App;
 
 public class MainControllerImpl implements MainController {
@@ -21,7 +22,7 @@ public class MainControllerImpl implements MainController {
     private final Parent travelModeView;
     private final TravelModeController travelModeController;
 
-    private final AppController appController;
+    private final Controller appController;
 
     public MainControllerImpl() {
         this.rootView = new BorderPane();
@@ -61,7 +62,7 @@ public class MainControllerImpl implements MainController {
     }
 
     @Override
-    public AppController getAppController() {
+    public Controller getAppController() {
         return this.appController;
     }
 

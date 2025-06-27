@@ -3,7 +3,7 @@ package org.app.weathermode.view;
 
 import java.util.Optional;
 
-import org.app.weathermode.controller.AppController;
+import org.app.weathermode.controller.Controller;
 import org.app.weathermode.model.AppConfig;
 import org.app.weathermode.model.ConfigManager;
 import org.app.weathermode.model.IPLookUp;
@@ -66,7 +66,7 @@ public class LoadingScreen {
                 .orElse(ButtonType.NO) == ButtonType.YES;
     }
 
-    public void start(final Stage primaryStage, final AppController appController) {
+    public void start(final Stage primaryStage, final Controller appController) {
 
         splashStage.show();
 

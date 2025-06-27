@@ -2,7 +2,7 @@ package org.app.weathermode.view;
 
 import javafx.scene.Parent;
 
-import org.app.weathermode.controller.AppController;
+import org.app.weathermode.controller.Controller;
 import org.app.weathermode.model.LocationSelector;
 
 import java.util.HashMap;
@@ -59,7 +59,7 @@ public class App {
         return this.todayIcon;
     }
 
-    public App(final AppController appController) {
+    public App(final Controller appController) {
         //--------------------------- root (2 righe) ---------------------------
         this.root = new GridPane();
         root.setPadding(new Insets(20));
