@@ -61,6 +61,7 @@ dependencies {
     // when dependencies share the same version, grouping in a val helps to keep them in sync
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
 }
 
 tasks.withType<Copy> {
