@@ -24,12 +24,13 @@ import javafx.scene.text.Font;
  *   ma colonne 50 % / 50 % per la fascia superiore e 75 % / 25 % per quella inferiore.
  *   Le card interne ora si adattano fin dal primo layout.
  */
-public class App {
+public class App implements AbstractApp {
 
     private static LocationSelector locationSelector;
 
     private final GridPane root;
 
+    @Override
     public void setLocationSelector(final LocationSelector LS) {
         locationSelector = LS;
     }
@@ -43,18 +44,22 @@ public class App {
     private final VBox hourlyEntries;
     private final HBox forecastStrip;
 
+    @Override
     public Map<String, Label> getLabels() {
         return this.labels;
     }
 
+    @Override
     public VBox getHourlyEntries() {
         return this.hourlyEntries;
     }
 
+    @Override
     public HBox getForecastStrip() {
         return this.forecastStrip;
     }
 
+    @Override
     public ImageView getTodayIcon() {
         return this.todayIcon;
     }
@@ -188,6 +193,7 @@ public class App {
         root.add(bottomGrid, 0, 1);
     }
 
+    @Override
     public Parent getRoot() {
         return this.root;
     }

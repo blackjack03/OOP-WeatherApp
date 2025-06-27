@@ -5,7 +5,6 @@ import org.app.weathermode.model.AppConfig;
 import org.app.weathermode.model.ConfigManager;
 import org.app.weathermode.model.MoonPhases;
 import org.app.weathermode.model.MoonPhasesImpl;
-import org.app.weathermode.model.UnitConversion;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -40,10 +39,6 @@ public class SettingsWindow extends Stage {
         setResizable(true);
 
         /* ---------- pulsanti ---------- */
-        /* final Button travelModeBtn = new Button("Apri modalità Travel Mode");
-        travelModeBtn.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        travelModeBtn.setMaxWidth(Double.MAX_VALUE);
-        travelModeBtn.setOnAction(e -> openTravelMode()); */
 
         final Button chartBtn = new Button("Visualizza Grafico Temperature");
         chartBtn.setStyle("-fx-font-size: 18px;");

@@ -28,24 +28,39 @@ import org.app.weathermode.model.LocationSelectorImpl;
 import org.app.weathermode.model.Pair;
 import org.app.weathermode.model.UnitConversion;
 import org.app.weathermode.model.UserPreferences;
+import org.app.weathermode.view.AbstractApp;
 import org.app.weathermode.view.App;
 import org.app.weathermode.view.CustomErrorGUI;
 
 /**
- * Controller responsabile dellʼaggiornamento dinamico della GUI
- * in base ai dati meteo.
+ * <p>Controller responsabile dellʼaggiornamento dinamico della GUI in base ai dati
+ * meteorologici.</p>
+ * <p>
+ * Il controller incapsula la logica necessaria per
+ * <ul>
+ *   <li>recuperare la località scelta dall’utente (o una di default),</li>
+ *   <li>scaricare i dati meteo correnti, orari e giornalieri tramite {@link AllWeather},</li>
+ *   <li>popolare e mantenere aggiornati i vari widget della vista JavaFX,</li>
+ *   <li>gestire un <em>timer</em> che esegue un refresh automatico alla frequenza indicata da
+ *       {@link #REFRESH_TIME}.</li>
+ * </ul>
+ * Tutte le operazioni che modificano la UI vengono eseguite sul <em>JavaFX
+ * Application Thread</em> tramite {@link Platform#runLater(Runnable)} per garantire
+ * la thread‑safety.
+ * </p>
  */
 public class AppController implements Controller {
 
-    /* ===================== costanti e formati ===================== */
+    /** Intervallo tra due refresh automatici (minuti). */
     private static final int REFRESH_TIME = 20;
+    /** Formatter per le ore nel formato “HH:mm”. */
     private static final DateTimeFormatter HOUR_FMT = DateTimeFormatter.ofPattern("HH:mm");
 
-    /* ============================ modello ========================= */
+    /** Wrapper per tutte le previsioni/meteo corrente. */
     private AllWeather weatherObj;
+    /** Informazioni della città corrente (nome, latitudine, longitudine, …). */
     private Map<String, String> cityInfo;
 
-    /* ============================ vista =========================== */
     private final Label lblCity;
     private final Label lblCond;
     private final Label lblTemp;
@@ -57,17 +72,24 @@ public class AppController implements Controller {
     private final VBox hourlyEntries;
     private final HBox forecastStrip;
 
-    /** === ID citta' attuale === */
+    /** Identificativo della città scelta. */
     private int CITY_ID;
     private LocationSelector selector;
     private boolean city_changed = false;
 
-    /* ============================ timer =========================== */
     private Timeline autoRefresh;
 
-    private final App APP;
+    private final AbstractApp APP;
 
-    /* ========================== costruttore ======================= */
+    /**
+     * Crea il controller istanziando la vista {@link App} e memorizzando i
+     * riferimenti a tutti i nodi JavaFX che dovranno essere aggiornati.
+     * <p>
+     * In questa fase non viene ancora eseguito alcun accesso alla rete né
+     * scaricato alcun dato meteo: tali operazioni verranno effettuate in
+     * {@link #start()}.
+     * </p>
+     */
     public AppController() {
         this.APP = new App(this);
         final Map<String, Label> labels = this.APP.getLabels();
@@ -83,6 +105,26 @@ public class AppController implements Controller {
         this.todayIcon = this.APP.getTodayIcon();
     }
 
+    /**
+     * <p>Inizializza la logica del controller:</p>
+     * <ol>
+     *   <li>Determina il {@link LocationSelector} da utilizzare (quello
+     *       precedentemente impostato dall’utente o un nuovo {@link LocationSelectorImpl}).</li>
+     *   <li>Carica l’ID città dalle preferenze via {@link #setCity()}.</li>
+     *   <li>Istanzia {@link #weatherObj} con l’oggetto città ottenuto e scarica
+     *       tutti i dati meteo correnti/futuri. Se il download fallisce viene
+     *       sollevata un’eccezione che interrompe l’avvio.</li>
+     *   <li>Esegue un primo {@link #refresh()} per popolare la GUI.</li>
+     *   <li>Avvia un {@link Timeline} che richiama periodicamente
+     *       {@code refresh()} ogni {@value #REFRESH_TIME} minuti.</li>
+     * </ol>
+     * Tutte le eccezioni cruciali vengono propagate per fermare l’avvio del
+     * programma e notificare l’utente.
+     *
+     * @throws IllegalStateException se l’ID della città non è valido o se i
+     *                               dati meteo iniziali non possono essere
+     *                               scaricati.
+     */
     @Override
     public void start() {
         this.selector = (App.getLocationSelector() != null)
@@ -105,11 +147,13 @@ public class AppController implements Controller {
         this.autoRefresh.play();
     }
 
+    /** @return il riferimento alla vista principale {@link App}. */
     @Override
-    public App getApp() {
+    public AbstractApp getApp() {
         return this.APP;
     }
 
+    /** @return il wrapper con tutti i dati meteo correnti. */
     @Override
     public AllWeather getWeatherObj() {
         return this.weatherObj;
@@ -117,14 +161,23 @@ public class AppController implements Controller {
 
     /* ==================== API pubbliche ==================== */
 
-    /** Forza un aggiornamento immediato senza toccare il timer. */
+    /**
+     * Forza un <strong>refresh immediato</strong> della GUI e dei dati meteo
+     * senza modificare o riavviare il timer automatico.
+     * <p>Viene prima verificato se l’utente ha cambiato città nelle
+     * preferenze; in tal caso {@link #setCity()} aggiorna la destinazione.</p>
+     */
     @Override
     public void forceRefresh() {
         this.setCity();
         this.refresh();
     }
 
-    /** Ferma il timer; da richiamare quando si chiude la finestra principale. */
+    /**
+     * Arresta in modo sicuro il {@link Timeline} di aggiornamento automatico.
+     * Deve essere invocato quando la finestra principale viene chiusa per
+     * evitare <em>memory leak</em> o richieste di rete superflue.
+     */
     @Override
     public void stop() {
         if (this.autoRefresh != null) {
@@ -132,7 +185,20 @@ public class AppController implements Controller {
         }
     }
 
-    /** Prende la citta' dalla configurazione */
+    /* ==================== gestione città =================== */
+
+    /**
+     * Recupera la città di default dalle preferenze utente e aggiorna i
+     * campi {@link #CITY_ID} e {@link #cityInfo} se l’utente ne ha scelta una
+     * diversa rispetto alla precedente.
+     * <p>
+     * In caso di cambio città viene inoltre aggiornato l’oggetto
+     * {@link #weatherObj} (se già inizializzato) affinché punti alla nuova
+     * località. Il flag {@link #city_changed} viene impostato per far sì che la
+     * successiva chiamata a {@link #refresh()} possa richiedere dati meteo con
+     * eventuali parametri (es. “&amp;timezone=auto”) corretti.
+     * </p>
+     */
     private void setCity() {
         final UserPreferences user_config =
                 ConfigManager.getConfig().getUserPreferences();
@@ -156,6 +222,23 @@ public class AppController implements Controller {
 
     /* ================== logica principale refresh ================= */
 
+    /**
+     * Raccoglie e compone i dati meteo (corrente, orario, giornaliero)
+     * aggiornando tutti i widget della vista.
+     * <p>
+     * Durante il refresh:
+     * <ul>
+     *   <li>viene tentato il download dei dati fino a {@code MAX_ATTEMPTS}
+     *       volte prima di mostrare un messaggio d’errore;</li>
+     *   <li>se la città è stata cambiata si forza un refresh anche lato API
+     *       per ottenere i campi calcolati nella corretta timezone;</li>
+     *   <li>i metodi {@link #updateToday(Map)}, {@link #updateHourly(Map)} e
+     *       {@link #updateDaily(Map)} si occupano di popolare le varie sezioni
+     *       della GUI;</li>
+     *   <li>le operazioni di manipolazione dei nodi JavaFX sono delegate a
+     *       {@link Platform#runLater(Runnable)}.</li>
+     * </ul>
+     */
     private void refresh() {
         final int MAX_ATTEMPTS = 3;
         boolean err_flag = true;
@@ -201,6 +284,14 @@ public class AppController implements Controller {
     }
 
     /* ====================== updater sezioni ====================== */
+
+    /**
+     * Aggiorna il riquadro “OGGI” con temperatura, condizione atmosferica,
+     * percepita, icona meteo e range min/max del giorno corrente.
+     *
+     * @param now mappa dei valori meteorologici correnti restituita da
+     *            {@link AllWeather#getWeatherNow(boolean)}.
+     */
     private void updateToday(final Map<String, Number> now) {
         lblCity.setText(cityInfo.get("city"));
         lblCond.setText(codeToDescription(now.get("weather_code").intValue()));
@@ -215,7 +306,7 @@ public class AppController implements Controller {
 
         todayIcon.setImage(loadIcon(now.get("weather_code").intValue()));
 
-        /* min-max di oggi */
+        /* min‑max di oggi */
         final String todayKey = LocalDate.now().toString();
         weatherObj.getDailyGeneralForecast().ifPresent(map -> {
             if (map.containsKey(todayKey)) {
@@ -226,6 +317,10 @@ public class AppController implements Controller {
         });
     }
 
+    /**
+     * Aggiorna il riquadro “Altri dettagli” con informazioni su alba, tramonto,
+     * popolazione, altitudine e massimi UV.
+     */
     private void updateOtherDetails() {
         final StringBuilder details = new StringBuilder();
         final Optional<Map<String, Map<String, String>>> daily_info =
@@ -265,6 +360,14 @@ public class AppController implements Controller {
         this.otherDetails.setText(details.toString());
     }
 
+    /**
+     * Popola la sezione oraria con le <strong>prossime quattro ore</strong> di
+     * previsioni a partire dall’ora corrente; se il giorno in corso ha meno di
+     * quattro slot rimanenti, recupera i restanti dal giorno successivo.
+     *
+     * @param hourly mappa di previsioni orarie indicizzate per data (ISO‑8601)
+     *               e ora ("HH:mm").
+     */
     private void updateHourly(final Map<String, Map<String, Map<String, Number>>> hourly) {
         final String todayKey = LocalDate.now().toString();
         if (!hourly.containsKey(todayKey)) return;
@@ -296,6 +399,14 @@ public class AppController implements Controller {
         }
     }
 
+    /**
+     * Aggiorna la <em>strip</em> dei prossimi sette giorni sostituendo i nodi
+     * precedenti con nuovi <em>mini‑forecast</em> generati da
+     * {@link #createMiniForecast(String, Map)}.
+     *
+     * @param daily mappa delle previsioni giornaliere restituita da
+     *              {@link AllWeather#getDailyGeneralForecast()}.
+     */
     private void updateDaily(final Map<String, Map<String, Number>> daily) {
         forecastStrip.getChildren().clear();
         daily.keySet().stream().sorted().limit(7).forEach(day -> {
@@ -304,6 +415,15 @@ public class AppController implements Controller {
     }
 
     /* ==================== builders helper ==================== */
+
+    /**
+     * Costruisce una riga di previsioni orarie (icona, ora, descrizione, temp &amp;
+     * percepita) pronta per essere aggiunta al {@link #hourlyEntries}.
+     *
+     * @param hour  ora nel formato "HH:mm".
+     * @param info  mappa con i dati meteo dell’ora specificata.
+     * @return nodo JavaFX rappresentante la riga.
+     */
     private Node createHourlyRow(final String hour, final Map<String, Number> info) {
         final HBox row = new HBox(20);
         row.setPadding(new Insets(5));
@@ -334,6 +454,14 @@ public class AppController implements Controller {
         return row;
     }
 
+    /**
+     * Crea un piccolo riquadro riassuntivo (icona + min/max) per il giorno
+     * indicato, utilizzato nella <em>forecast strip</em> settimanale.
+     *
+     * @param dayKey stringa ISO‑8601 della data (es. "2025-06-27").
+     * @param info   mappa con temperatura minima/massima e codice meteo.
+     * @return nodo JavaFX pronto per essere inserito in {@link #forecastStrip}.
+     */
     private Node createMiniForecast(final String dayKey, final Map<String, Number> info) {
         final VBox mini = new VBox(5);
         mini.setPadding(new Insets(10));
@@ -364,6 +492,14 @@ public class AppController implements Controller {
     }
 
     /* ===================== utility interne ===================== */
+
+    /**
+     * Carica l’icona corrispondente al codice WMO; se il file non esiste o non
+     * è leggibile, ritorna il logo dell’applicazione come <em>fallback</em>.
+     *
+     * @param code codice WMO.
+     * @return immagine JavaFX.
+     */
     private Image loadIcon(final int code) {
         final String path = "/WMOIcons/%d.png".formatted(code);
         try {
@@ -373,6 +509,11 @@ public class AppController implements Controller {
         }
     }
 
+    /**
+     * Converte un codice WMO in descrizione testuale (in italiano).
+     * @param code codice WMO.
+     * @return descrizione leggibile (es. "Sereno", "Pioggia", …).
+     */
     private String codeToDescription(final int code) {
         return switch (code) {
             case 0 -> "Sereno";

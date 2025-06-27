@@ -8,22 +8,68 @@ import java.net.URL;
 
 import com.google.gson.*;
 
+/**
+ * <p>Implementazione concreta di {@link AdvancedJsonReader} in grado di:
+ * <ul>
+ *   <li>scaricare un documento JSON da una URL remota (HTTP GET);</li>
+ *   <li>accettare una stringa o un {@link JsonObject} già disponibile in memoria;</li>
+ *   <li>navigare il JSON attraverso un <em>path</em> stile <code>a.b.c</code>
+ *       restituendo oggetti, array o primiti tipizzate;</li>
+ *   <li>eseguire conversioni di tipo <em>safe</em> gestendo errori di
+ *       formattazione o di accesso a chiavi inesistenti.</li>
+ * </ul>
+ * Prima di invocare qualsiasi metodo di lettura è necessario inizializzare
+ * l'istanza con una delle varianti di <em>setter</em> (<code>requestJSON</code>,
+ * <code>setJSON</code> ecc.). Una volta impostato, l'oggetto diventa <em>read‑
+ * only</em> e non può essere re‑inizializzato (vedi {@link #assertNotAlreadySet()}).
+ * </p>
+ */
 public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
+
+    /* ===================== stato interno ===================== */
+    /** Rappresentazione testuale (non formattata) del JSON sorgente. */
     private String json_raw_text;
+    /** Radice dell'albero JSON in forma di {@link JsonObject}. */
     private JsonObject JSON_BODY;
+    /** Flag che indica se il JSON è già stato impostato. */
     private boolean isSet = false;
 
+    /* ========================= ctor ========================== */
+    /** Costruttore vuoto; il JSON verrà impostato successivamente. */
     public AdvancedJsonReaderImpl() { /* empty body */ }
 
+    /**
+     * Costruttore che scarica immediatamente il JSON da una URL.
+     *
+     * @param jsonURL URL da cui effettuare la richiesta HTTP GET.
+     * @throws IOException in caso di problemi di rete o risposta non valida.
+     */
     public AdvancedJsonReaderImpl(final String jsonURL) throws IOException {
         requestJSON(jsonURL);
     }
 
+    /**
+     * Costruttore che inizializza direttamente con un {@link JsonObject} già
+     * disponibile.
+     *
+     * @param jsonObj oggetto JSON radice.
+     */
     public AdvancedJsonReaderImpl(final JsonObject jsonObj) {
         this.json_raw_text = jsonObj.toString();
         parseAndSetJson();
     }
 
+    /* ==================== caricamento JSON =================== */
+
+    /**
+     * Scarica il JSON via HTTP, lo memorizza come stringa e ne effettua il
+     * parsing in {@link #JSON_BODY}.
+     * <p>Può essere invocato una sola volta per istanza – in caso contrario
+     * viene sollevata {@link IllegalStateException}.</p>
+     *
+     * @param jsonURL URL della risorsa JSON.
+     * @throws IOException problemi di I/O o rete.
+     */
     @Override
     public void requestJSON(final String jsonURL) throws IOException {
         assertNotAlreadySet();
@@ -44,6 +90,13 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         parseAndSetJson();
     }
 
+    /**
+     * Imposta il JSON a partire da una stringa già disponibile.
+     *
+     * @param jsonString testo JSON.
+     * @return <code>this</code> per <em>method chaining</em>.
+     * @throws IllegalStateException se l'oggetto era già stato inizializzato.
+     */
     @Override
     public AdvancedJsonReaderImpl setJSON(final String jsonString) {
         assertNotAlreadySet();
@@ -52,6 +105,13 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         return this;
     }
 
+    /**
+     * Versione di {@link #setJSON(String)} che accetta direttamente un
+     * {@link JsonObject} radice.
+     *
+     * @param jsonObj radice JSON.
+     * @throws IllegalStateException se l'oggetto era già stato inizializzato.
+     */
     @Override
     public void setJSON(final JsonObject jsonObj) {
         assertNotAlreadySet();
@@ -59,12 +119,31 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         parseAndSetJson();
     }
 
+    /* ========================== getter ========================= */
+
+    /**
+     * @return la stringa JSON originale (così com'è stata scaricata o passata).
+     * @throws UnsupportedOperationException se il JSON non è stato ancora
+     *                                       impostato.
+     */
     @Override
     public String getRawJSON() {
         assertIsSet();
         return this.json_raw_text;
     }
 
+    /* =================== navigazione struttura ================== */
+
+    /**
+     * Naviga l'albero JSON seguendo un <em>path</em> puntato a un oggetto e ne
+     * restituisce la {@link JsonObject} corrispondente.
+     *
+     * @param path stringa con livelli separati da ".", es. "coord.latlng".
+     * @return l'oggetto individuato.
+     * @throws IllegalArgumentException se uno dei nodi del path non esiste.
+     * @throws Exception                propagata da {@link #walkthroughBody} annidata
+     *                                  in metodi che la richiedono.
+     */
     @Override
     public JsonObject walkthroughBody(final String path) throws Exception {
         this.assertIsSet();
@@ -85,6 +164,13 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         return OUTPUT;
     }
 
+    /**
+     * Estrae un {@link JsonArray} localizzato dal <em>path</em> indicato.
+     *
+     * @param path livelli separati da punto, con l'ultimo che dev'essere un array.
+     * @return l'array JSON corrispondente.
+     * @throws Exception se il path è errato o non punta ad un array.
+     */
     @Override
     public JsonArray getJsonArray(final String path) throws Exception {
         assertIsSet();
@@ -102,6 +188,21 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         return jsonArray;
     }
 
+    /**
+     * Recupera e converte l'elemento individuato dal <em>path</em> nel tipo
+     * specificato.
+     * <p>Supporta le classi wrapper di primitive, {@link String},
+     * {@link JsonObject}, {@link JsonArray}, {@link JsonPrimitive} e
+     * {@link Number} generico.</p>
+     *
+     * @param path path verso l'elemento.
+     * @param type classe di destinazione.
+     * @param <T>  tipo di ritorno.
+     * @return elemento convertito.
+     * @throws IllegalArgumentException se il tipo non è supportato o l'elemento
+     *                                  non esiste.
+     * @throws Exception propagata da metodi interni.
+     */
     @Override
     public <T> T getFromJson(final String path, final Class<T> type) throws Exception {
         assertIsSet();
@@ -153,6 +254,10 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         return outElem;
     }
 
+    /**
+     * Versione non tipizzata di {@link #getFromJson(String, Class)} che
+     * restituisce direttamente il {@link JsonElement} grezzo.
+     */
     @Override
     public JsonElement getFromJson(final String path) throws Exception {
         assertIsSet();
@@ -176,6 +281,13 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         return ELEMENT;
     }
 
+    /* ========================== helper ========================= */
+
+    /**
+     * Controlla l'esistenza di un elemento evitando di sollevare eccezioni.
+     * @param path path dell'elemento.
+     * @return <code>true</code> se trovato, <code>false</code> altrimenti.
+     */
     @Override
     public boolean elementExists(final String path) {
         try {
@@ -185,6 +297,8 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
             return false;
         }
     }
+
+    /* ================== shortcut primitive ================== */
 
     @Override
     public String getString(final String path) {
@@ -240,25 +354,35 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         }
     }
 
-    /* Private Methods */
+    /* ====================== metodi privati ===================== */
 
+    /**
+     * Garantisce che il JSON non sia già stato impostato; altrimenti lancia
+     * {@link IllegalStateException} per evitare stati incoerenti.
+     */
     private void assertNotAlreadySet() throws IllegalStateException {
         if (this.isSet) {
-            throw new IllegalStateException("This AdvancedJsonReader Object was alreday set!");
+            throw new IllegalStateException("This AdvancedJsonReader Object was already set!");
         }
     }
 
+    /** Verifica che il JSON sia stato impostato prima di leggerlo. */
     private void assertIsSet() throws UnsupportedOperationException {
         if (!this.isSet) {
             throw new UnsupportedOperationException("No JSON was set!");
         }
     }
 
+    /** Effettua il parsing della stringa JSON e marca l'istanza come pronta. */
     private void parseAndSetJson() {
         this.JSON_BODY = JsonParser.parseString(this.json_raw_text).getAsJsonObject();
         this.isSet = true;
     }
 
+    /**
+     * Costruisce il path al livello immediatamente superiore rispetto
+     * all'ultimo componente (utility interna a diversi metodi).
+     */
     private static String getLevelUpPath(final String[] parts) {
         final StringBuilder newPath = new StringBuilder();
         for (int i = 0; i < parts.length - 1; i++) {

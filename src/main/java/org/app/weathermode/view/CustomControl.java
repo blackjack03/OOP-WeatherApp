@@ -74,8 +74,8 @@ public class CustomControl extends VBox {
     public static class TestApp extends Application {
         @Override
         public void start(Stage primaryStage) throws Exception {
-            CustomControl customControl = new CustomControl();
-            Scene scene = new Scene(customControl);
+            final CustomControl customControl = new CustomControl();
+            final Scene scene = new Scene(customControl);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Test Custom Control");
             primaryStage.setWidth(400);
@@ -83,11 +83,6 @@ public class CustomControl extends VBox {
             primaryStage.show();
         }
 
-        public static void main(String[] args) {
-            String currentDir = System.getProperty("user.dir");
-            System.out.println("Current dir using System:" + currentDir);
-            launch(args);
-        }
     }
 
 }
