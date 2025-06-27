@@ -83,9 +83,7 @@ public class LoadingScreen {
             splashStage.close();
             Platform.runLater(() -> {
                 try {
-                    // ConfigManager.loadConfig(CONFIG_PATH); //TODO da eliminare
                     final AppConfig appConfig = ConfigManager.getConfig();
-                    // final App app = new App();
                     if (appConfig.getUserPreferences().getDefaultCity().isEmpty()) {
                         boolean useIP = false;
                         if (showConfirmIP("Vuoi usare la tua posizione (IP)?", "Usa posizione IP")) {

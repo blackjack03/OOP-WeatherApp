@@ -25,13 +25,16 @@ public class AllWeather implements Weather {
     private final String URL_CITY_INFO = "https://www.ilmeteo.it/meteo/";
 
     // 8-days forecast info hour-by-hour
-    private final Map<String, Map<String, Map<String, Number>>> FORECAST_HOURS = new HashMap<>();
+    private final Map<String, Map<String, Map<String, Number>>> FORECAST_HOURS =
+            new LinkedHashMap<>();
 
     // 8-days general forecast info (day weather icon, min/max temperature)
-    private final Map<String, Map<String, Number>> DAILY_GENERAL_FORECAST = new HashMap<>();
+    private final Map<String, Map<String, Number>> DAILY_GENERAL_FORECAST =
+            new LinkedHashMap<>();
 
     // Sunset, Sunrise
-    private final Map<String, Map<String, String>> SUN_DAILY_INFO = new HashMap<>();
+    private final Map<String, Map<String, String>> SUN_DAILY_INFO =
+            new LinkedHashMap<>();
 
     // City Info
     private final Map<String, Number> CITY_INFO = new HashMap<>();

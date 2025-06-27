@@ -12,11 +12,11 @@ public class AppCore extends Application {
     @Override
     public void start(final Stage primaryStage) {
         final MainController mainController = new MainControllerImpl();
-        final Scene scene = new Scene(mainController.getRootView(), 1000, 600);
+        final Scene scene = new Scene(mainController.getRootView(), 1100, 700);
         scene.getStylesheets().add(ClassLoader.getSystemResource("css/style.css").toExternalForm());
         primaryStage.setScene(scene);
-        primaryStage.setMinWidth(1000);
-        primaryStage.setMinHeight(600);
+        primaryStage.setMinWidth(1100);
+        primaryStage.setMinHeight(700);
         primaryStage.setTitle("App Meteo & Viaggio");
 
         primaryStage.setOnShown(e -> {

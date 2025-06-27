@@ -1,6 +1,5 @@
 package org.app.weathermode.controller;
 
-import java.nio.Buffer;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +12,6 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,7 +30,6 @@ import org.app.weathermode.model.UnitConversion;
 import org.app.weathermode.model.UserPreferences;
 import org.app.weathermode.view.App;
 import org.app.weathermode.view.CustomErrorGUI;
-import org.app.weathermode.view.SettingsWindow;
 
 /**
  * Controller responsabile dellʼaggiornamento dinamico della GUI
@@ -55,6 +52,7 @@ public class AppController {
     private final Label lblFeels;
     private final Label lblMin;
     private final Label lblMax;
+    private final Label otherDetails;
     private final ImageView todayIcon;
     private final VBox hourlyEntries;
     private final HBox forecastStrip;
@@ -79,6 +77,7 @@ public class AppController {
         this.lblFeels = labels.get("lblFeels");
         this.lblMin = labels.get("lblMin");
         this.lblMax = labels.get("lblMax");
+        this.otherDetails = labels.get("otherDetails");
         this.hourlyEntries = this.APP.getHourlyEntries();
         this.forecastStrip = this.APP.getForecastStrip();
         this.todayIcon = this.APP.getTodayIcon();
@@ -108,45 +107,6 @@ public class AppController {
     public App getApp() {
         return this.APP;
     }
-
-    /*public AppController(final Label lblCity,
-                         final ImageView todayIcon,
-                         final Label lblCond,
-                         final Label lblTemp,
-                         final Label lblFeels,
-                         final Label lblMin,
-                         final Label lblMax,
-                         final VBox hourlyEntries,
-                         final HBox forecastStrip) {
-        this.selector = (App.getLocationSelector() != null)
-                ? App.getLocationSelector()
-                : new LocationSelectorImpl();
-
-        this.setCity();
-
-        this.cityInfo = selector.getByID(this.CITY_ID)
-                .orElseThrow(() -> new IllegalStateException("ID città non valido"));
-
-        this.model = new AllWeather(this.cityInfo);
-        if (!this.model.reqestsAllForecast()) {
-            throw new IllegalStateException("Impossibile scaricare i dati meteo iniziali");
-        }
-
-        this.lblCity = lblCity;
-        this.lblCond = lblCond;
-        this.lblTemp = lblTemp;
-        this.lblFeels = lblFeels;
-        this.lblMin = lblMin;
-        this.lblMax = lblMax;
-        this.todayIcon = todayIcon;
-        this.hourlyEntries = hourlyEntries;
-        this.forecastStrip = forecastStrip;
-
-        this.refresh();
-        this.autoRefresh = new Timeline(new KeyFrame(Duration.minutes(REFRESH_TIME), e -> refresh()));
-        this.autoRefresh.setCycleCount(Animation.INDEFINITE);
-        this.autoRefresh.play();
-    }*/
 
     /* ==================== API pubbliche ==================== */
 
@@ -205,12 +165,12 @@ public class AppController {
             );
             return;
         }
-        final Optional<Pair<String, Map<String, Number>>> nowOpt = model.getWeatherNow(this.city_changed);
+        final Optional<Pair<String, Map<String, Number>>> nowOpt = this.model.getWeatherNow(this.city_changed);
         if (this.city_changed) {
             this.city_changed = false;
         }
-        final Optional<Map<String, Map<String, Number>>> dailyOpt = model.getDailyGeneralForecast();
-        final Optional<Map<String, Map<String, Map<String, Number>>>> hourlyOpt = model.getAllForecast();
+        final Optional<Map<String, Map<String, Number>>> dailyOpt = this.model.getDailyGeneralForecast();
+        final Optional<Map<String, Map<String, Map<String, Number>>>> hourlyOpt = this.model.getAllForecast();
 
         if (nowOpt.isEmpty() || dailyOpt.isEmpty() || hourlyOpt.isEmpty()) {
             System.out.println("EMPTY!");
@@ -225,6 +185,7 @@ public class AppController {
             updateToday(now);
             updateHourly(hourly);
             updateDaily(daily);
+            updateOtherDetails();
         });
     }
 
@@ -247,11 +208,50 @@ public class AppController {
         final String todayKey = LocalDate.now().toString();
         model.getDailyGeneralForecast().ifPresent(map -> {
             if (map.containsKey(todayKey)) {
-                Map<String, Number> today = map.get(todayKey);
+                final Map<String, Number> today = map.get(todayKey);
                 lblMin.setText(String.format("Min: %.0f°C | %.0f°F", today.get("temperature_min_C").doubleValue(), today.get("temperature_min_F").doubleValue()));
                 lblMax.setText(String.format("Max: %.0f°C | %.0f°F", today.get("temperature_max_C").doubleValue(), today.get("temperature_max_F").doubleValue()));
             }
         });
+    }
+
+    private void updateOtherDetails() {
+        final StringBuilder details = new StringBuilder();
+        final Optional<Map<String, Map<String, String>>> daily_info =
+                this.model.getDailyInfo();
+        if (daily_info.isPresent()) {
+            final Map.Entry<String, Map<String, String>> entry =
+                daily_info.get().entrySet().iterator().next();
+            final Map<String, String> sunInfo = entry.getValue();
+            final String sunrise = sunInfo.get("sunrise");
+            final String sunset = sunInfo.get("sunset");
+            if (sunrise != null && sunset != null) {
+                details.append("Alba: ").append(sunrise);
+                details.append(" | Tramonto: ").append(sunset);
+            }
+        }
+        final Optional<Map<String, Number>> cityInfo = this.model.getCityInfo();
+        if (cityInfo.isPresent()) {
+            details.append("\n");
+            final Number population = cityInfo.get().get("inhabitants");
+            if (population != null) {
+                details.append("Popolazione: ").append(population);
+                details.append("\n");
+            }
+            details.append("Metri sul livello del mare: ");
+            details.append(cityInfo.get().get("meters_above_sea"));
+        }
+        final Optional<Map<String, Map<String, Number>>> dailyGeneral =
+                this.model.getDailyGeneralForecast();
+        if (dailyGeneral.isPresent()) {
+            final Map.Entry<String, Map<String, Number>> entry =
+                dailyGeneral.get().entrySet().iterator().next();
+            final Number uv_max = entry.getValue().get("uv_max");
+            if (uv_max != null) {
+                details.append("\nUV massimo: ").append(uv_max);
+            }
+        }
+        this.otherDetails.setText(details.toString());
     }
 
     private void updateHourly(final Map<String, Map<String, Map<String, Number>>> hourly) {
