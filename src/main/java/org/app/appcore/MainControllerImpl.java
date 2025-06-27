@@ -10,7 +10,6 @@ import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.controller.TravelModeControllerImpl;
 import org.app.weathermode.controller.AppController;
 import org.app.weathermode.controller.Controller;
-import org.app.weathermode.view.App;
 
 public class MainControllerImpl implements MainController {
 
