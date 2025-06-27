@@ -289,6 +289,7 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
      * @return <code>true</code> se trovato, <code>false</code> altrimenti.
      */
     @Override
+    @SuppressWarnings("unused")
     public boolean elementExists(final String path) {
         try {
             final var elem = this.getFromJson(path);
