@@ -1,8 +1,6 @@
 package org.app.travelmode.controller;
 
-import javafx.application.Application;
 import javafx.scene.Parent;
-import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,16 +29,30 @@ public class TravelModeControllerImpl implements TravelModeController {
     private final TravelModeModel model;
     private final MainController mainController;
 
-    /*
-    @Override
-    public void start(final Stage primaryStage) {
-        this.view.start();
-    }*/
-
+    /**
+     * Creates a new instance of the TravelModeControllerImpl.
+     *
+     * <p>Initializes the controller with the necessary components:
+     * <ul>
+     *     <li>Creates a new view instance</li>
+     *     <li>Initializes the travel mode model</li>
+     *     <li>Stores the reference to the main controller</li>
+     * </ul>
+     *
+     * @param mainController the main application controller that manages the overall application state
+     */
     public TravelModeControllerImpl(final MainController mainController) {
         this.view = new TravelModeViewImpl(this);
         this.model = new TravelModeModelImpl();
         this.mainController = mainController;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void startTravelMode() {
+        this.model.start();
     }
 
     /**
@@ -136,11 +148,17 @@ public class TravelModeControllerImpl implements TravelModeController {
         System.out.println(title + ": " + message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Parent gatTraveleModeView() {
         return this.view.getRootView();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Parent requestAppViewRootNode() {
         return this.mainController.getRootView();

@@ -2,7 +2,7 @@ package org.app.weathermode.view;
 
 import javafx.scene.Parent;
 
-import org.app.weathermode.controller.AppController;
+import org.app.weathermode.controller.Controller;
 import org.app.weathermode.model.LocationSelector;
 
 import java.util.HashMap;
@@ -20,16 +20,17 @@ import javafx.scene.text.Font;
 /**
  * Weather Dashboard
  * <p>
- * • Finestra suddivisa in 4 aree logiche, con altezze 70 % / 30 % (come prima)
+ * • Finestra suddivisa in 4 aree logiche, con altezze 70 % / 30 %
  *   ma colonne 50 % / 50 % per la fascia superiore e 75 % / 25 % per quella inferiore.
  *   Le card interne ora si adattano fin dal primo layout.
  */
-public class App {
+public class App implements AbstractApp {
 
     private static LocationSelector locationSelector;
 
     private final GridPane root;
 
+    @Override
     public void setLocationSelector(final LocationSelector LS) {
         locationSelector = LS;
     }
@@ -43,25 +44,27 @@ public class App {
     private final VBox hourlyEntries;
     private final HBox forecastStrip;
 
+    @Override
     public Map<String, Label> getLabels() {
         return this.labels;
     }
 
+    @Override
     public VBox getHourlyEntries() {
-        return hourlyEntries;
+        return this.hourlyEntries;
     }
 
+    @Override
     public HBox getForecastStrip() {
-        return forecastStrip;
+        return this.forecastStrip;
     }
 
+    @Override
     public ImageView getTodayIcon() {
-        return todayIcon;
+        return this.todayIcon;
     }
 
-    public App(final AppController appController) {
-        // final AppConfig appConfig = ConfigManager.getConfig();
-
+    public App(final Controller appController) {
         //--------------------------- root (2 righe) ---------------------------
         this.root = new GridPane();
         root.setPadding(new Insets(20));
@@ -128,11 +131,11 @@ public class App {
         for (final String hourLbl : hourLabels) {
             hourlyEntries.getChildren().add(createHourlyRow(root, hourLbl));
         }
-        final Label hourlyDetails = new Label("Dettagli aggiuntivi…");
-        hourlyDetails.setWrapText(true);
-        hourlyDetails.setMaxWidth(Double.MAX_VALUE);
-        hourlyDetails.setPrefHeight(100);
-        hourlyBox.getChildren().addAll(hourlyEntries, hourlyDetails);
+        final Label otherDetails = new Label("Dettagli aggiuntivi…");
+        otherDetails.setWrapText(true);
+        otherDetails.setMaxWidth(Double.MAX_VALUE);
+        otherDetails.setPrefHeight(100);
+        hourlyBox.getChildren().addAll(hourlyEntries, otherDetails);
         VBox.setVgrow(hourlyEntries, Priority.ALWAYS);
 
         //---------------- DAILY forecast strip -------------------------------
@@ -169,12 +172,13 @@ public class App {
         GridPane.setValignment(settingsBtn, VPos.BOTTOM);
 
         //---------------- label registry -------------------------------------
-        this.labels.put("lblCity",  lblCity);
-        this.labels.put("lblCond",  lblCond);
-        this.labels.put("lblTemp",  lblTemp);
+        this.labels.put("lblCity", lblCity);
+        this.labels.put("lblCond", lblCond);
+        this.labels.put("lblTemp", lblTemp);
         this.labels.put("lblFeels", lblFeels);
-        this.labels.put("lblMin",   lblMin);
-        this.labels.put("lblMax",   lblMax);
+        this.labels.put("lblMin", lblMin);
+        this.labels.put("lblMax", lblMax);
+        this.labels.put("otherDetails", otherDetails);
 
         settingsBtn.setOnAction(e -> new SettingsWindow(appController).show());
 
@@ -189,6 +193,7 @@ public class App {
         root.add(bottomGrid, 0, 1);
     }
 
+    @Override
     public Parent getRoot() {
         return this.root;
     }

@@ -16,11 +16,11 @@ public class ImageFromURLSwing {
     /**
      * Visualizza immagine da URL senza titolo
      */
-    public static void viewIMG(String imageUrl) {
+    public static void viewIMG(final String imageUrl) {
         viewIMG(imageUrl, null, null);
     }
 
-    private static double calcScale(int origW, int origH) {
+    private static double calcScale(final int origW, final int origH) {
         final double availableMaxW = MAX_WIDTH - 2 * PADDING;
         final double availableMaxH = MAX_HEIGHT - 2 * PADDING;
         final double availableMin  = MIN_DIMENSION - 2 * PADDING;
@@ -40,18 +40,18 @@ public class ImageFromURLSwing {
      * @param imageUrl URL dell'immagine
      * @param title Titolo da mostrare sopra l'immagine
      */
-    public static void viewIMG(String imageUrl, String title, String windowTitle) {
+    public static void viewIMG(final String imageUrl, final String title, String windowTitle) {
         if (windowTitle == null) windowTitle = "Image Viewer";
         final String finalImageTitle = windowTitle;
 
         // Tutta la GUI viene preparata sull’EDT
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame(finalImageTitle);
+            final JFrame frame = new JFrame(finalImageTitle);
             frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             frame.setLayout(new BorderLayout());
 
             if (title != null && !title.isBlank()) {
-                JLabel lbl = new JLabel(title, SwingConstants.CENTER);
+                final JLabel lbl = new JLabel(title, SwingConstants.CENTER);
                 lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 20f));
                 lbl.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
                 frame.add(lbl, BorderLayout.NORTH);
@@ -61,11 +61,11 @@ public class ImageFromURLSwing {
             new SwingWorker<ImageIcon, Void>() {
                 @Override
                 protected ImageIcon doInBackground() throws Exception {
-                    Image original = ImageIO.read(new URL(imageUrl));
-                    int w = original.getWidth(null);
-                    int h = original.getHeight(null);
-                    double scale = calcScale(w, h);           // tuo metodo di calcolo
-                    Image scaled = original.getScaledInstance(
+                    final Image original = ImageIO.read(new URL(imageUrl));
+                    final int w = original.getWidth(null);
+                    final int h = original.getHeight(null);
+                    final double scale = calcScale(w, h);           // tuo metodo di calcolo
+                    final Image scaled = original.getScaledInstance(
                             (int)(w*scale), (int)(h*scale), Image.SCALE_SMOOTH);
                     return new ImageIcon(scaled);
                 }
@@ -73,7 +73,7 @@ public class ImageFromURLSwing {
                 @Override
                 protected void done() {
                     try {
-                        JLabel img = new JLabel(get());
+                        final JLabel img = new JLabel(get());
                         img.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
                         frame.add(img, BorderLayout.CENTER);
                         frame.pack();
@@ -91,15 +91,10 @@ public class ImageFromURLSwing {
         });
     }
 
-    private static void showErrorOnEDT(String msg, String title) {
+    private static void showErrorOnEDT(final String msg, final String title) {
         SwingUtilities.invokeLater(() ->
             CustomErrorGUI.showError(msg, title)
         );
-    }
-
-    public static void main(String[] args) {
-        final String imageUrl = "https://www.moongiant.com/images/today_phase/moon_day_WanC_5.jpg";
-        SwingUtilities.invokeLater(() -> viewIMG(imageUrl, "Luna di Oggi", "MOON Info"));
     }
 
 }

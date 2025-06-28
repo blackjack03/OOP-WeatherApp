@@ -2,8 +2,8 @@ package org.app.travelmode.model.google.impl;
 
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.api.StaticMapApiClient;
-import org.app.weathermode.model.ApiConfig;
-import org.app.weathermode.model.ConfigManager;
+import org.app.config.ApiConfig;
+import org.app.config.ConfigManager;
 
 /**
  * Implementation of {@link GoogleApiClientFactory} that creates various Google API clients
@@ -11,21 +11,16 @@ import org.app.weathermode.model.ConfigManager;
  */
 public class GoogleApiClientFactoryImpl implements GoogleApiClientFactory {
 
-    private static final String CONFIG_PATH = "src/main/java/org/files/configuration.json";
-    private String googleApiKey = null;
+    private final ApiConfig googleApiConfig;
 
     /**
      * Constructs a new GoogleApiClientFactoryImpl and loads the API key.
+     *
+     * @throws IllegalStateException if the configuration file has not been previously loaded
+     *                               with the {@code ConfigManager.loadConfig} method.
      */
-    public GoogleApiClientFactoryImpl() {
-        ConfigManager.loadConfig(CONFIG_PATH);
-        final ApiConfig APIConfig = ConfigManager.getConfig().getApi();
-        if (APIConfig.getApiKey().isPresent()) {
-            this.googleApiKey = APIConfig.getApiKey().get();
-        } else {
-            System.err.println("API key not found in configuration. Please set it in the configuration file.");
-            throw new IllegalStateException("API key is required but not found in the configuration.");
-        }
+    public GoogleApiClientFactoryImpl() throws IllegalStateException {
+        this.googleApiConfig = ConfigManager.getConfig().getApi();
     }
 
     /**
@@ -33,7 +28,7 @@ public class GoogleApiClientFactoryImpl implements GoogleApiClientFactory {
      */
     @Override
     public DirectionApiClientImpl createDirectionApiClient() {
-        return new DirectionApiClientImpl(this.googleApiKey);
+        return new DirectionApiClientImpl(this.getGoogleApiKey());
     }
 
     /**
@@ -41,7 +36,7 @@ public class GoogleApiClientFactoryImpl implements GoogleApiClientFactory {
      */
     @Override
     public PlaceDetailsApiClient createPlaceDetailsApiClient() {
-        return new PlaceDetailsApiClient(this.googleApiKey);
+        return new PlaceDetailsApiClient(this.getGoogleApiKey());
     }
 
     /**
@@ -49,7 +44,7 @@ public class GoogleApiClientFactoryImpl implements GoogleApiClientFactory {
      */
     @Override
     public PlacePredictionsApiClient createPlacePredictionsApiClient() {
-        return new PlacePredictionsApiClient(this.googleApiKey);
+        return new PlacePredictionsApiClient(this.getGoogleApiKey());
     }
 
     /**
@@ -57,6 +52,24 @@ public class GoogleApiClientFactoryImpl implements GoogleApiClientFactory {
      */
     @Override
     public StaticMapApiClient createStaticMapApiClient() {
-        return new StaticMapApiClientImpl(this.googleApiKey);
+        return new StaticMapApiClientImpl(this.getGoogleApiKey());
+    }
+
+    /**
+     * Retrieves the Google API key from the configuration.
+     *
+     * <p>This private method attempts to access the Google API key stored in the configuration.
+     * If the API key is not present in the configuration, it throws an exception since the key
+     * is required for all Google API operations.
+     *
+     * @return the Google API key as a String
+     * @throws IllegalStateException if the API key is not found in the configuration
+     */
+    private String getGoogleApiKey() {
+        if (this.googleApiConfig.getApiKey().isPresent()) {
+            return this.googleApiConfig.getApiKey().get();
+        } else {
+            throw new IllegalStateException("La chiave API è richiesta ma non è stata trovata nella configurazione.");
+        }
     }
 }

@@ -18,6 +18,23 @@ import java.util.Optional;
 public interface TravelModeModel {
 
     /**
+     * Initializes the model and prepares it for handling travel-related operations.
+     *
+     * <p>This method must be called before any other operations can be performed.
+     * It sets up:
+     * <ul>
+     *     <li>API clients for location services</li>
+     *     <li>Place prediction services</li>
+     *     <li>Other necessary resources for route analysis</li>
+     * </ul>
+     *
+     * <p>The model will not be fully functional until this method has been called.
+     *
+     * @throws IllegalStateException if the initialization of any required services fails
+     */
+    void start();
+
+    /**
      * Retrieves place predictions based on user input.
      *
      * @param input a {@link String} representing the characters written by the user
