@@ -23,7 +23,7 @@ public class ConfigBuilder {
      */
     private static final String DEFAULT_CONFIG = """
 {
-  "api" : {
+  "api": {
     "apiKey": null
   },
   "userPreferences": {
