@@ -4,8 +4,8 @@ package org.app.weathermode.view;
 import java.util.Optional;
 
 import org.app.weathermode.controller.AppController;
-import org.app.weathermode.model.AppConfig;
-import org.app.weathermode.model.ConfigManager;
+import org.app.config.AppConfig;
+import org.app.config.ConfigManager;
 import org.app.weathermode.model.IPLookUp;
 import org.app.weathermode.model.LocationSelector;
 import org.app.weathermode.model.LocationSelectorImpl;
