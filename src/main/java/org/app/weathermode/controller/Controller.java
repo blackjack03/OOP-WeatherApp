@@ -47,4 +47,5 @@ public interface Controller {
      */
     void stop();
 
+    void requestGoogleApiKey();
 }
