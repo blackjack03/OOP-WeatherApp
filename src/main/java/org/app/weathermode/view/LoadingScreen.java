@@ -2,7 +2,7 @@ package org.app.weathermode.view;
 
 import java.util.Optional;
 
-import org.app.weathermode.controller.AppController;
+import org.app.weathermode.controller.Controller;
 import org.app.config.AppConfig;
 import org.app.config.ConfigManager;
 import org.app.weathermode.model.IPLookUp;
