@@ -15,6 +15,14 @@ import java.util.List;
 public interface TravelModeController {
 
     /**
+     * Initializes and starts the travel mode functionality.
+     *
+     * <p>This method should be called when switching to travel mode to ensure
+     * all necessary resources and services are properly initialized.
+     */
+    void startTravelMode();
+
+    /**
      * Retrieves location suggestions based on the user's input text.
      * This method provides autocomplete functionality for location search.
      *
@@ -75,11 +83,47 @@ public interface TravelModeController {
      */
     void computeAlternativeResults();
 
+    /**
+     * Displays an error message to the user through the GUI.
+     *
+     * <p>This method should be used to show critical errors that prevent
+     * normal operation of the travel mode functionality.
+     *
+     * @param title   the title of the error message dialog
+     * @param message the detailed error message to be displayed
+     */
     void showErrorOnGUI(final String title, final String message);
 
+    /**
+     * Displays a warning message to the user through the GUI.
+     *
+     * <p>This method should be used to show non-critical warnings that
+     * don't prevent the main functionality but require user attention.
+     *
+     * @param title   the title of the warning message dialog
+     * @param message the detailed warning message to be displayed
+     */
     void showWarningOnGUI(final String title, final String message);
 
+    /**
+     * Retrieves the root view node for the travel mode interface.
+     *
+     * <p>This method provides access to the main visual component that contains
+     * all travel mode UI elements. It should be used when the travel mode
+     * view needs to be displayed or manipulated.
+     *
+     * @return the root Parent node containing all travel mode UI components
+     */
     Parent gatTraveleModeView();
 
+    /**
+     * Retrieves the root view node of the main application.
+     *
+     * <p>This method provides access to the application's main view hierarchy.
+     * It should be used when travel mode components need to interact with
+     * or modify the main application view.
+     *
+     * @return the root Parent node of the main application
+     */
     Parent requestAppViewRootNode();
 }
