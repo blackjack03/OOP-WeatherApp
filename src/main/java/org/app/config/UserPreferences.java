@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.config;
 
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonProperty;

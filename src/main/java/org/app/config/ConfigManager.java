@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.config;
 
 import java.io.File;
 import java.io.IOException;

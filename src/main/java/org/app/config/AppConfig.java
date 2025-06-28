@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.config;
 
 public class AppConfig {
     private ApiConfig api;
