@@ -33,4 +33,15 @@ public class AppCore extends Application {
         loadingScreen.start(primaryStage, mainController.getAppController());
     }
 
+    @Override
+    public void stop() {
+        try {
+            javax.swing.SwingUtilities.invokeAndWait(() -> {
+                for (final java.awt.Window w : java.awt.Window.getWindows()) {
+                    w.dispose();
+                }
+            });
+        } catch (final Exception ignored) {}
+    }
+
 }

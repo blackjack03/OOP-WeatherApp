@@ -142,12 +142,12 @@ public class LocationSelectorGUI {
             /* =================== GESTIONE CHIUSURA FINESTRA =================== */
             frame.addWindowListener(new WindowAdapter() {
                 @Override
-                public void windowClosed(WindowEvent e) {
+                public void windowClosed(final WindowEvent e) {
                     latch.countDown();
                 }
 
                 @Override
-                public void windowClosing(WindowEvent e) {
+                public void windowClosing(final WindowEvent e) {
                     latch.countDown();
                 }
             });
