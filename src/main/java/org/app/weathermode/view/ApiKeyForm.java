@@ -16,6 +16,7 @@ import javafx.stage.Stage;
  * Utility dialog to prompt the user for a Google API key.
  */
 public class ApiKeyForm {
+
     /**
      * Shows a modal dialog asking for the API key.
      * @return An Optional containing the trimmed key if entered and non-empty, otherwise an empty Optional.

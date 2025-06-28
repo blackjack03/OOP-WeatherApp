@@ -1,6 +1,6 @@
 package org.app.appcore;
 
-import org.app.weathermode.controller.AppController;
+import org.app.weathermode.controller.Controller;
 
 import javafx.scene.Parent;
 
@@ -19,9 +19,9 @@ public interface MainController {
      * <p>This method provides access to the weather mode controller, which manages
      * all weather-related features and interactions within the application.
      *
-     * @return the {@link AppController} instance managing weather mode functionality
+     * @return the {@link Controller} instance managing weather mode functionality
      */
-    AppController getAppController();
+    Controller getAppController();
 
     /**
      * Retrieves the root view of the application.

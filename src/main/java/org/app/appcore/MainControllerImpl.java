@@ -10,6 +10,7 @@ import org.app.config.ConfigManager;
 import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.controller.TravelModeControllerImpl;
 import org.app.weathermode.controller.AppController;
+import org.app.weathermode.controller.Controller;
 
 /**
  * Main controller implementation that manages the application's root view and mode switching functionality.
@@ -33,7 +34,7 @@ public class MainControllerImpl implements MainController {
     private final TravelModeController travelModeController;
     private boolean isTravelModeFirstUse = true;
 
-    private final AppController appController;
+    private final Controller appController;
 
     /**
      * Constructs a new MainControllerImpl instance.
@@ -87,7 +88,7 @@ public class MainControllerImpl implements MainController {
      * {@inheritDoc}
      */
     @Override
-    public AppController getAppController() {
+    public Controller getAppController() {
         return this.appController;
     }
 
