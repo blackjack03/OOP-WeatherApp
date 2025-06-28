@@ -22,12 +22,13 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import org.app.weathermode.model.AllWeather;
-import org.app.weathermode.model.ConfigManager;
+import org.app.config.ConfigManager;
 import org.app.weathermode.model.LocationSelector;
 import org.app.weathermode.model.LocationSelectorImpl;
 import org.app.weathermode.model.Pair;
 import org.app.weathermode.model.UnitConversion;
-import org.app.weathermode.model.UserPreferences;
+import org.app.config.UserPreferences;
+import org.app.weathermode.view.ApiKeyForm;
 import org.app.weathermode.view.App;
 import org.app.weathermode.view.CustomErrorGUI;
 
@@ -40,6 +41,8 @@ public class AppController {
     /* ===================== costanti e formati ===================== */
     private static final int REFRESH_TIME = 20;
     private static final DateTimeFormatter HOUR_FMT = DateTimeFormatter.ofPattern("HH:mm");
+    private static final String API_KEY_ERROR = "Errore nella lettura della chiave API";
+    private static final String API_KEY_ERROR_MESSAGE = "La chiave inserita non è valida.\nRitentare l'inserimento.";
 
     /* ============================ modello ========================= */
     private AllWeather model;
@@ -56,7 +59,9 @@ public class AppController {
     private final VBox hourlyEntries;
     private final HBox forecastStrip;
 
-    /** === ID citta' attuale === */
+    /**
+     * === ID citta' attuale ===
+     */
     private int CITY_ID;
     private LocationSelector selector;
     private boolean city_changed = false;
@@ -106,6 +111,22 @@ public class AppController {
         return this.APP;
     }
 
+    public void requestGoogleApiKey() {
+        ApiKeyForm.showAndWait().ifPresentOrElse(key -> ConfigManager.getConfig().getApi().setApiKey(key),
+                () -> {
+                    this.showWarning(API_KEY_ERROR, API_KEY_ERROR_MESSAGE);
+                    requestGoogleApiKey();
+                });
+    }
+
+    public void showError(final String title, final String message) {
+        CustomErrorGUI.showErrorJFX(title, message);
+    }
+
+    public void showWarning(final String title, final String message) {
+        CustomErrorGUI.showWarningJFX(title, message);
+    }
+
     /*public AppController(final Label lblCity,
                          final ImageView todayIcon,
                          final Label lblCond,
@@ -147,20 +168,26 @@ public class AppController {
 
     /* ==================== API pubbliche ==================== */
 
-    /** Forza un aggiornamento immediato senza toccare il timer. */
+    /**
+     * Forza un aggiornamento immediato senza toccare il timer.
+     */
     public void forceRefresh() {
         this.setCity();
         this.refresh();
     }
 
-    /** Ferma il timer; da richiamare quando si chiude la finestra principale. */
+    /**
+     * Ferma il timer; da richiamare quando si chiude la finestra principale.
+     */
     public void stop() {
         if (this.autoRefresh != null) {
             this.autoRefresh.stop();
         }
     }
 
-    /** Prende la citta' dalla configurazione */
+    /**
+     * Prende la citta' dalla configurazione
+     */
     private void setCity() {
         // ConfigManager.loadConfig("src/main/java/org/files/configuration.json");
         final UserPreferences user_config =
@@ -172,7 +199,7 @@ public class AppController {
                 this.city_changed = true;
                 this.CITY_ID = city.get();
                 this.cityInfo = selector.getByID(this.CITY_ID)
-                .orElseThrow(() -> new IllegalStateException("ID città non valido"));
+                        .orElseThrow(() -> new IllegalStateException("ID città non valido"));
                 if (this.model != null) {
                     this.model.setLocation(this.cityInfo);
                 }
