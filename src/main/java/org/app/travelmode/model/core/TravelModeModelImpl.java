@@ -24,19 +24,34 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     private final TravelRequestImpl.Builder requestBuilder;
     private final GoogleApiClientFactory apiClientFactory;
-    private final PlacePredictionsApiClient placePredictionsApiClient;
+    private PlacePredictionsApiClient placePredictionsApiClient;
     private Directions directions;
     private Optional<DirectionsResponse> directionsResponse;
 
     /**
      * Constructs a new TravelModeModelImpl instance.
-     * Initializes all necessary components including API clients and request builder.
+     *
+     * <p>Initializes the model with:
+     * <ul>
+     *     <li>A new travel request builder for creating validated travel requests</li>
+     *     <li>A Google API client factory for creating various API clients</li>
+     * </ul>
+     *
+     * <p>Note: The {@link #start()} method must be called after construction
+     * to initialize the place predictions API client.
      */
     public TravelModeModelImpl() {
         this.requestBuilder = new TravelRequestImpl.Builder();
         this.apiClientFactory = new GoogleApiClientFactoryImpl();
-        this.placePredictionsApiClient = this.apiClientFactory.createPlacePredictionsApiClient();
         this.directionsResponse = Optional.empty();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void start() {
+        this.placePredictionsApiClient = this.apiClientFactory.createPlacePredictionsApiClient();
     }
 
     /**
@@ -82,6 +97,9 @@ public class TravelModeModelImpl implements TravelModeModel {
         this.requestBuilder.setArrivalLocation(arrivalLocation);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setArrivalPlaceId(final String arrivalPlaceId) {
         this.requestBuilder.setArrivalPlaceId(arrivalPlaceId);
