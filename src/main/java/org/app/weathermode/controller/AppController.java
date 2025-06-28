@@ -28,6 +28,7 @@ import org.app.weathermode.model.LocationSelectorImpl;
 import org.app.weathermode.model.Pair;
 import org.app.weathermode.model.UnitConversion;
 import org.app.config.UserPreferences;
+import org.app.weathermode.view.AbstractApp;
 import org.app.weathermode.view.ApiKeyForm;
 import org.app.weathermode.view.App;
 import org.app.weathermode.view.CustomErrorGUI;
@@ -51,15 +52,21 @@ import org.app.weathermode.view.CustomErrorGUI;
  */
 public class AppController implements Controller {
 
-    /** Intervallo tra due refresh automatici (minuti). */
+    /**
+     * Intervallo tra due refresh automatici (minuti).
+     */
     private static final int REFRESH_TIME = 20;
     private static final DateTimeFormatter HOUR_FMT = DateTimeFormatter.ofPattern("HH:mm");
     private static final String API_KEY_ERROR = "Errore nella lettura della chiave API";
     private static final String API_KEY_ERROR_MESSAGE = "La chiave inserita non è valida.\nRitentare l'inserimento.";
 
-    /** Wrapper per tutte le previsioni/meteo corrente. */
+    /**
+     * Wrapper per tutte le previsioni/meteo corrente.
+     */
     private AllWeather weatherObj;
-    /** Informazioni della città corrente (nome, latitudine, longitudine, …). */
+    /**
+     * Informazioni della città corrente (nome, latitudine, longitudine, …).
+     */
     private Map<String, String> cityInfo;
 
     private final Label lblCity;
@@ -73,7 +80,9 @@ public class AppController implements Controller {
     private final VBox hourlyEntries;
     private final HBox forecastStrip;
 
-    /** Identificativo della città scelta. */
+    /**
+     * Identificativo della città scelta.
+     */
     private int CITY_ID;
     private LocationSelector selector;
     private boolean city_changed = false;
@@ -148,7 +157,9 @@ public class AppController implements Controller {
         this.autoRefresh.play();
     }
 
-    /** @return il riferimento alla vista principale {@link App}. */
+    /**
+     * @return il riferimento alla vista principale {@link App}.
+     */
     @Override
     public AbstractApp getApp() {
         return this.APP;
@@ -170,45 +181,9 @@ public class AppController implements Controller {
         CustomErrorGUI.showWarningJFX(title, message);
     }
 
-    /*public AppController(final Label lblCity,
-                         final ImageView todayIcon,
-                         final Label lblCond,
-                         final Label lblTemp,
-                         final Label lblFeels,
-                         final Label lblMin,
-                         final Label lblMax,
-                         final VBox hourlyEntries,
-                         final HBox forecastStrip) {
-        this.selector = (App.getLocationSelector() != null)
-                ? App.getLocationSelector()
-                : new LocationSelectorImpl();
-
-        this.setCity();
-
-        this.cityInfo = selector.getByID(this.CITY_ID)
-                .orElseThrow(() -> new IllegalStateException("ID città non valido"));
-
-        this.model = new AllWeather(this.cityInfo);
-        if (!this.model.reqestsAllForecast()) {
-            throw new IllegalStateException("Impossibile scaricare i dati meteo iniziali");
-        }
-
-        this.lblCity = lblCity;
-        this.lblCond = lblCond;
-        this.lblTemp = lblTemp;
-        this.lblFeels = lblFeels;
-        this.lblMin = lblMin;
-        this.lblMax = lblMax;
-        this.todayIcon = todayIcon;
-        this.hourlyEntries = hourlyEntries;
-        this.forecastStrip = forecastStrip;
-
-        this.refresh();
-        this.autoRefresh = new Timeline(new KeyFrame(Duration.minutes(REFRESH_TIME), e -> refresh()));
-        this.autoRefresh.setCycleCount(Animation.INDEFINITE);
-        this.autoRefresh.play();
-    }*/
-    /** @return il wrapper con tutti i dati meteo correnti. */
+    /**
+     * @return il wrapper con tutti i dati meteo correnti.
+     */
     @Override
     public AllWeather getWeatherObj() {
         return this.weatherObj;
@@ -264,7 +239,7 @@ public class AppController implements Controller {
                 this.city_changed = true;
                 this.CITY_ID = city.get();
                 this.cityInfo = selector.getByID(this.CITY_ID)
-                    .orElseThrow(() -> new IllegalStateException("ID città non valido"));
+                        .orElseThrow(() -> new IllegalStateException("ID città non valido"));
                 if (this.weatherObj != null) {
                     this.weatherObj.setLocation(this.cityInfo);
                 }
@@ -382,7 +357,7 @@ public class AppController implements Controller {
                 this.weatherObj.getDailyInfo();
         if (daily_info.isPresent()) {
             final Map.Entry<String, Map<String, String>> entry =
-                daily_info.get().entrySet().iterator().next();
+                    daily_info.get().entrySet().iterator().next();
             final Map<String, String> sunInfo = entry.getValue();
             final String sunrise = sunInfo.get("sunrise");
             final String sunset = sunInfo.get("sunset");
@@ -406,7 +381,7 @@ public class AppController implements Controller {
                 this.weatherObj.getDailyGeneralForecast();
         if (dailyGeneral.isPresent()) {
             final Map.Entry<String, Map<String, Number>> entry =
-                dailyGeneral.get().entrySet().iterator().next();
+                    dailyGeneral.get().entrySet().iterator().next();
             final Number uv_max = entry.getValue().get("uv_max");
             if (uv_max != null) {
                 details.append("\nUV massimo: ").append(uv_max);
@@ -444,7 +419,7 @@ public class AppController implements Controller {
             final String tomorrowKey = LocalDate.now().plusDays(1).toString();
             if (hourly.containsKey(tomorrowKey)) {
                 next.addAll(hourly.get(tomorrowKey).keySet().stream()
-                    .sorted().limit(rest).toList());
+                        .sorted().limit(rest).toList());
             }
         }
 
@@ -475,8 +450,8 @@ public class AppController implements Controller {
      * Costruisce una riga di previsioni orarie (icona, ora, descrizione, temp &amp;
      * percepita) pronta per essere aggiunta al {@link #hourlyEntries}.
      *
-     * @param hour  ora nel formato "HH:mm".
-     * @param info  mappa con i dati meteo dell’ora specificata.
+     * @param hour ora nel formato "HH:mm".
+     * @param info mappa con i dati meteo dell’ora specificata.
      * @return nodo JavaFX rappresentante la riga.
      */
     private Node createHourlyRow(final String hour, final Map<String, Number> info) {
@@ -566,6 +541,7 @@ public class AppController implements Controller {
 
     /**
      * Converte un codice WMO in descrizione testuale (in italiano).
+     *
      * @param code codice WMO.
      * @return descrizione leggibile (es. "Sereno", "Pioggia", …).
      */
