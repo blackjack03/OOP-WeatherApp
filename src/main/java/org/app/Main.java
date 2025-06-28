@@ -20,7 +20,8 @@ public class Main {
         // 1) carico subito la config
         ConfigManager.loadConfig(CONFIG_PATH);
 
-        Toolkit.getDefaultToolkit();
+        // Toolkit.getDefaultToolkit();
+        java.awt.Toolkit.getDefaultToolkit();
 
         // 2) lancio la splash (LoadingScreen.start)
         Application.launch(AppCore.class, args);
