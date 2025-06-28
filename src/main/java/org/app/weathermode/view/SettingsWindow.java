@@ -157,14 +157,14 @@ public class SettingsWindow extends Stage {
             final LocationSelectorGUI gui = new LocationSelectorGUI();
             final Optional<Integer> res = gui.start(App.getLocationSelector());
             res.ifPresent(id ->
-                Platform.runLater(() -> {
+                /*Platform.runLater(() ->*/ {
                         final AppConfig appConfig = ConfigManager.getConfig();
                         appConfig.getUserPreferences().setDefaultCity(id);
                         ConfigManager.saveConfig(CONFIG_PATH);
                         System.out.println("City ID = " + id);
                         this.controller.forceRefresh();
-                    }
-                )
+                   }
+                //)
             );
         }, "ChangeCitySwing");
         t.setDaemon(true);

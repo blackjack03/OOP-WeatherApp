@@ -38,14 +38,13 @@ public class LocationSelectorGUI {
         SwingUtilities.invokeLater(() -> {
             // Nimbus Look & Feel
             try {
-                for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                for (final UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
                         UIManager.setLookAndFeel(info.getClassName());
                         break;
                     }
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (final Exception ignored) {}
 
             // Finestra principale
             final JFrame frame = new JFrame("Scegli la Località");
