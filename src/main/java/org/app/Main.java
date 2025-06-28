@@ -6,7 +6,6 @@ import org.app.config.ConfigBuilder;
 import org.app.config.ConfigManager;
 
 import javafx.application.Application;
-import java.awt.Toolkit;
 
 public class Main {
 
@@ -19,9 +18,6 @@ public class Main {
 
         // 1) carico subito la config
         ConfigManager.loadConfig(CONFIG_PATH);
-
-        // Toolkit.getDefaultToolkit();
-        java.awt.Toolkit.getDefaultToolkit();
 
         // 2) lancio la splash (LoadingScreen.start)
         Application.launch(AppCore.class, args);
