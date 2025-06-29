@@ -19,7 +19,7 @@ public class Main {
         // 1) carico subito la config
         ConfigManager.loadConfig(CONFIG_PATH);
 
-        // 2) lancio la splash (LoadingScreen.start)
+        // 2) lancio AppCore
         Application.launch(AppCore.class, args);
     }
 
