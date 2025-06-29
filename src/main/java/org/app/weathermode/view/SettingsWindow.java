@@ -151,24 +151,19 @@ public class SettingsWindow extends Stage {
         t.start();
     }
 
-    /** Lancia il frame Swing per cambiare città. */
+    /** Lancia il frame JavaFX per cambiare città. */
     private void openChangeCity() {
-        final Thread t = new Thread(() -> {
+        Platform.runLater(() -> {
             final LocationSelectorGUI gui = new LocationSelectorGUI();
             final Optional<Integer> res = gui.start(App.getLocationSelector());
-            res.ifPresent(id ->
-                Platform.runLater(() -> {
-                        final AppConfig appConfig = ConfigManager.getConfig();
-                        appConfig.getUserPreferences().setDefaultCity(id);
-                        ConfigManager.saveConfig(CONFIG_PATH);
-                        System.out.println("City ID = " + id);
-                        this.controller.forceRefresh();
-                    }
-                )
-            );
-        }, "ChangeCitySwing");
-        t.setDaemon(true);
-        t.start();
+            res.ifPresent(id -> {
+                final AppConfig appConfig = ConfigManager.getConfig();
+                appConfig.getUserPreferences().setDefaultCity(id);
+                ConfigManager.saveConfig(CONFIG_PATH);
+                System.out.println("City ID = " + id);
+                controller.forceRefresh();
+            });
+        });
     }
 
 }

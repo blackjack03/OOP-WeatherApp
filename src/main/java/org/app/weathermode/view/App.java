@@ -120,8 +120,10 @@ public class App implements AbstractApp {
         final Label lblFeels = new Label("Percepita: xx °C");
         final Label lblMin = new Label("Min: xx°");
         final Label lblMax = new Label("Max: xx°");
+        final Label windInfo = new Label("Wind: ...");
         todayBox.getChildren().addAll(lblCity, todayIcon, lblOggi, lblCond, lblTemp, lblFeels,
                 new HBox(20, lblMin, lblMax));
+        todayBox.getChildren().add(windInfo);
 
         //---------------- HOURLY panel ---------------------------------------
         final VBox hourlyBox = createCardVBox();
@@ -179,6 +181,7 @@ public class App implements AbstractApp {
         this.labels.put("lblMin", lblMin);
         this.labels.put("lblMax", lblMax);
         this.labels.put("otherDetails", otherDetails);
+        this.labels.put("windInfo", windInfo);
 
         settingsBtn.setOnAction(e -> new SettingsWindow(appController).show());
 

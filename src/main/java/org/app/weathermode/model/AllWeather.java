@@ -65,8 +65,6 @@ public class AllWeather implements Weather {
     private long last_update = 0;         // timestamp epoch seconds
     private boolean requested = false;    // true dopo la prima fetch globale
 
-    /* ======================== ctor ============================== */
-
     /**
      * Costruisce il wrapper e imposta immediatamente la località; i dati non
      * vengono scaricati finché non si invoca {@link #reqestsAllForecast()}.
@@ -242,10 +240,14 @@ public class AllWeather implements Weather {
 
     /* ==================== getter & helper ==================== */
 
-    @Override public int getForecastDays() { return this.forecast_days; }
-    @Override public Optional<Map<String, Map<String, Map<String, Number>>>> getAllForecast() { return this.requested ? Optional.of(this.FORECAST_HOURS) : Optional.empty(); }
-    @Override public Optional<Map<String, Map<String, Number>>> getDailyGeneralForecast() { return this.requested ? Optional.of(this.DAILY_GENERAL_FORECAST) : Optional.empty(); }
-    @Override public Optional<Map<String, Map<String, String>>> getDailyInfo() { return this.requested ? Optional.of(this.SUN_DAILY_INFO) : Optional.empty(); }
+    @Override
+    public int getForecastDays() { return this.forecast_days; }
+    @Override
+    public Optional<Map<String, Map<String, Map<String, Number>>>> getAllForecast() { return this.requested ? Optional.of(this.FORECAST_HOURS) : Optional.empty(); }
+    @Override
+    public Optional<Map<String, Map<String, Number>>> getDailyGeneralForecast() { return this.requested ? Optional.of(this.DAILY_GENERAL_FORECAST) : Optional.empty(); }
+    @Override
+    public Optional<Map<String, Map<String, String>>> getDailyInfo() { return this.requested ? Optional.of(this.SUN_DAILY_INFO) : Optional.empty(); }
 
     /**
      * Dati meteo correnti (con caching 20 minuti).
@@ -271,10 +273,11 @@ public class AllWeather implements Weather {
         return Optional.of(new Pair<>(this.lastDataUpdate, this.NOW));
     }
 
-    @Override public Optional<Map<String, Number>> getCityInfo() { return this.last_update == 0 ? Optional.empty() : Optional.of(this.CITY_INFO); }
+    @Override
+    public Optional<Map<String, Number>> getCityInfo() { return this.last_update == 0 ? Optional.empty() : Optional.of(this.CITY_INFO); }
 
     /**
-     * Converte gradi bussola (0‑360) in direzione testuale ITA.
+     * Converte gradi bussola (0‑360) in direzione testuale.
      */
     @Override
     public String getWindDirection(int degrees) {
@@ -360,7 +363,8 @@ public class AllWeather implements Weather {
         int resto = minuti % 15;
         minuti = resto < 8 ? minuti - resto : minuti + (15 - resto);
         if (minuti == 60) {
-            minuti = 0; ore = (ore + 1) % 24;
+            minuti = 0;
+            ore = (ore + 1) % 24;
         }
         return String.format("%02d:%02d", ore, minuti);
     }
