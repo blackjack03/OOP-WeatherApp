@@ -445,8 +445,9 @@ public class AppController implements Controller {
      *              {@link AllWeather#getDailyGeneralForecast()}.
      */
     private void updateDaily(final Map<String, Map<String, Number>> daily) {
+        final int days = 7;
         forecastStrip.getChildren().clear();
-        daily.keySet().stream().sorted().limit(7).forEach(day -> {
+        daily.keySet().stream().sorted().limit(days).forEach(day -> {
             forecastStrip.getChildren().add(createMiniForecast(day, daily.get(day)));
         });
     }
