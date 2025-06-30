@@ -38,10 +38,7 @@ public class ApiKeyForm {
         final Button okButton = new Button("Conferma");
         okButton.setDefaultButton(true);
         okButton.setOnAction(e -> {
-            final String entered = textField.getText().trim();
-            if (!entered.isEmpty()) {
-                inputHolder[0] = entered;
-            }
+            inputHolder[0] = textField.getText().trim();
             dialog.close();
         });
 

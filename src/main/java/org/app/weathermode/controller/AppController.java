@@ -167,11 +167,14 @@ public class AppController implements Controller {
     }
 
     public void requestGoogleApiKey() {
-        ApiKeyForm.showAndWait().ifPresentOrElse(key -> ConfigManager.getConfig().getApi().setApiKey(key),
-                () -> {
-                    this.showWarning(API_KEY_ERROR, API_KEY_ERROR_MESSAGE);
-                    requestGoogleApiKey();
-                });
+        ApiKeyForm.showAndWait().ifPresent(key -> {
+            if (key.isBlank()) {
+                showWarning(API_KEY_ERROR, API_KEY_ERROR_MESSAGE);
+                requestGoogleApiKey();
+            } else {
+                ConfigManager.getConfig().getApi().setApiKey(key);
+            }
+        });
     }
 
     public void showError(final String title, final String message) {
