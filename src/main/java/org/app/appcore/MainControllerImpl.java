@@ -101,6 +101,22 @@ public class MainControllerImpl implements MainController {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showErrorOnGUI(final String title, final String message) {
+        this.appController.showError(title, message);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showWarningOnGUI(final String title, final String message) {
+        this.appController.showWarning(title, message);
+    }
+
+    /**
      * Checks for the presence of a Google API key in the configuration.
      *
      * <p>If no API key is found, triggers the API key request dialog through
