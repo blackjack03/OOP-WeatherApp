@@ -1,5 +1,8 @@
 package org.app.travelmode.model.core;
 
+import org.app.travelmode.model.exception.DirectionsApiException;
+import org.app.travelmode.model.exception.TravelRequestException;
+import org.app.travelmode.model.exception.WeatherDataException;
 import org.app.travelmode.model.google.dto.directions.DirectionsResponse;
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.impl.GoogleApiClientFactoryImpl;
@@ -12,6 +15,7 @@ import org.app.travelmode.model.travel.api.TravelRequest;
 import org.app.travelmode.model.travel.impl.TravelRequestImpl;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 
+import java.io.IOException;
 import java.time.*;
 import java.util.List;
 import java.util.Optional;
@@ -56,15 +60,13 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws IOException if an error occurs while communicating with the service providing the predictions,
+     *                     or if an error occurs while decoding the response.
      */
     @Override
-    public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
-        try {
-            return this.placePredictionsApiClient.getPlacePredictions(input);
-        } catch (Exception e) {
-            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: MIGLIORARE!!!!
-        }
-        return null;
+    public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) throws IOException {
+        return this.placePredictionsApiClient.getPlacePredictions(input);
     }
 
     /**
@@ -77,16 +79,14 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws IOException if the time zone of the starting location cannot be obtained.
      */
     @Override
-    public void setDeparturePlaceId(final String departurePlaceId) {
-        try {
-            final PlaceDetailsApiClient placeDetailsApiClient = this.apiClientFactory.createPlaceDetailsApiClient();
-            this.requestBuilder.setDeparturePlaceId(departurePlaceId)
-                    .setDepartureZoneId(placeDetailsApiClient.getTimezone(departurePlaceId));
-        } catch (Exception e) {
-            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: MIGLIORARE!!!!
-        }
+    public void setDeparturePlaceId(final String departurePlaceId) throws IOException {
+        final PlaceDetailsApiClient placeDetailsApiClient = this.apiClientFactory.createPlaceDetailsApiClient();
+        this.requestBuilder.setDeparturePlaceId(departurePlaceId)
+                .setDepartureZoneId(placeDetailsApiClient.getTimezone(departurePlaceId));
     }
 
     /**
@@ -123,53 +123,42 @@ public class TravelModeModelImpl implements TravelModeModel {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws DirectionsApiException if an error occurs while requesting the desired routes.
      */
     @Override
-    public void startDirectionsAnalysis(final TravelRequest travelRequest) {
+    public void startDirectionsAnalysis(final TravelRequest travelRequest) throws DirectionsApiException {
         this.directions = new DirectionsImpl(travelRequest);
-        try {
-            directions.askForDirections();
-        } catch (Exception e) {
-            System.out.println("TRAVEL MODEL ERROR!!!!: " + e.getMessage()); //TODO: Visualizzare errore nella GUI
-        }
+        directions.askForDirections();
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @throws WeatherDataException if there is an error getting weather information for route analysis.
      */
     @Override
-    public TravelModeResult getTravelModeMainResult() {
-        try {
-            return this.directions.getMainResult();
-        } catch (Exception e) {
-            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: MIGLIORARE!!!
-        }
-        return null;
+    public TravelModeResult getTravelModeMainResult() throws WeatherDataException {
+        return this.directions.getMainResult();
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @throws WeatherDataException if there is an error getting weather information for route analysis.
      */
     @Override
-    public Optional<List<TravelModeResult>> getAlternativesResults() {
-        try {
-            return this.directions.getAlternativeResults();
-        } catch (Exception e) {
-            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: MIGLIORARE!!!
-        }
-        return null;
+    public Optional<List<TravelModeResult>> getAlternativesResults() throws WeatherDataException {
+        return this.directions.getAlternativeResults();
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @throws TravelRequestException if not all the parameters needed to calculate the routes have been entered.
      */
     @Override
-    public TravelRequest finalizeTheRequest() {
-        try {
-            return this.requestBuilder.build();
-        } catch (final IllegalStateException e) {
-            System.out.println("TRAVEL MODEL ERROR!!!! -> " + e.getMessage()); //TODO: migliore gestione dell'errore
-        }
-        return null;
+    public TravelRequest finalizeTheRequest() throws TravelRequestException {
+        return this.requestBuilder.build();
     }
 }
