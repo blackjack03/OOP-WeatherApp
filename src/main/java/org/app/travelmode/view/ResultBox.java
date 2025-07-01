@@ -11,7 +11,22 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Window;
 
-
+/**
+ * {@code ResultBox} is a custom JavaFX component that visually presents a weather-based evaluation
+ * of a planned route, including a meteorological score, travel details, and a map snapshot.
+ * <p>
+ * This class extends {@link HBox} and is composed of:
+ * <ul>
+ *   <li>A numerical "meteo score" label, color-coded based on value</li>
+ *   <li>Textual descriptions such as duration, and estimated arrival</li>
+ *   <li>A dynamically sized and clipped {@link ImageView} for the map</li>
+ * </ul>
+ * </p>
+ * <p>
+ * The layout adapts based on the screen size and window location, ensuring a responsive display.
+ * </p>
+ *
+ */
 public class ResultBox extends HBox {
 
     private static final String DURATION_TEXT = "Durata:";
@@ -38,7 +53,19 @@ public class ResultBox extends HBox {
     private final Image mapImage;
     private double maxWidth;
 
-    public ResultBox(int meteoScore, final String description, final String duration, final String arrivalDate, final String arrivalTime, final Image mapImage, final Window window) {
+    /**
+     * Constructs a {@code ResultBox} instance containing a summary of a travel result.
+     *
+     * @param meteoScore  A numerical score from 0 to 100 representing the weather favorability.
+     * @param description A textual description of the route.
+     * @param duration    The duration of the travel.
+     * @param arrivalDate The expected arrival date.
+     * @param arrivalTime The expected arrival time.
+     * @param mapImage    A static image of the route or map.
+     * @param window      The window in which this component is displayed (used for sizing).
+     */
+    public ResultBox(int meteoScore, final String description, final String duration, final String arrivalDate,
+                     final String arrivalTime, final Image mapImage, final Window window) {
         this.meteoScore = new Label(String.valueOf(meteoScore));
         this.description1 = new Label(DESCRIPTION_TEXT);
         this.description2 = new Label(description);
@@ -119,6 +146,12 @@ public class ResultBox extends HBox {
         HBox.setHgrow(infoPane, Priority.ALWAYS);
     }
 
+    /**
+     * Updates the maximum width and height of this {@code ResultBox}
+     * based on the screen where the specified window is located.
+     *
+     * @param window The current window used to calculate responsive layout constraints.
+     */
     private void updateMaxWidth(final Window window) {
         final Screen screen = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth() * DISPLAY_SCALE_FACTOR, window.getHeight() * DISPLAY_SCALE_FACTOR).get(0);
         this.maxWidth = screen.getBounds().getWidth() * MAX_WIDTH_FACTOR;
@@ -126,6 +159,12 @@ public class ResultBox extends HBox {
         this.setMaxHeight(maxWidth * HEIGHT_RATIO / WIDTH_RATIO);
     }
 
+    /**
+     * Applies CSS styling classes to this box and the meteo score label
+     * based on the numeric value of the weather score.
+     *
+     * @param meteoScore An integer score used to determine the color class (0–100).
+     */
     private void addColor(int meteoScore) {
         if (meteoScore >= 76) {
             this.getStyleClass().add("result-box-green");
