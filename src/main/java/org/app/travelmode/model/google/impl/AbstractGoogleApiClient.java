@@ -48,9 +48,7 @@ public abstract class AbstractGoogleApiClient implements GoogleApiClient {
     protected String requestJson(final String requestUrl) throws IOException {
         final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl();
         jsonReader.requestJSON(requestUrl);
-        final String rawJSon = jsonReader.getRawJSON();
-        System.out.println(rawJSon); //TODO: da eliminare
-        return rawJSon;
+        return jsonReader.getRawJSON();
     }
 
     /**
