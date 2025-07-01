@@ -79,7 +79,7 @@ public class WeatherReportImpl implements WeatherReport {
             double totalImpact = this.weatherConditions.stream()
                     .mapToDouble(WeatherCondition::getWeightedIntensityScore)
                     .sum();
-            long normalizedImpact = Math.round(MULTIPLIER * Math.log(totalImpact + HORIZONTAL_SHIFT) - VERTICAL_SHIFT); //TODO: valutare il moltiplicatore
+            long normalizedImpact = Math.round(MULTIPLIER * Math.log(totalImpact + HORIZONTAL_SHIFT) - VERTICAL_SHIFT);
             int score = (int) Math.min(MAX_SCORE, Math.max(MIN_SCORE, MAX_SCORE - normalizedImpact));
             this.weatherScore = Optional.of(score);
         }
