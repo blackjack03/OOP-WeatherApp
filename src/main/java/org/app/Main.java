@@ -3,6 +3,9 @@ package org.app;
 
 import org.app.launcher.AppCore;
 import org.app.weathermode.view.CustomErrorGUI;
+
+import java.io.IOException;
+
 import org.app.config.ConfigBuilder;
 import org.app.config.ConfigManager;
 
@@ -17,9 +20,11 @@ public class Main {
         // ed eventualmente la creo
         try {
             ConfigBuilder.createConfigIfNotExists(CONFIG_PATH);
-        } catch (final Exception e) {
-            System.err.println("Errore durante la creazione del file di configurazione: " + e.getMessage());
-            CustomErrorGUI.showError("Errore durante la creazione del file di configurazione", "Errore File Configurazione");
+        } catch (final IOException e) {
+            System.err.println("Errore durante la creazione del file di configurazione: "
+                + e.getMessage());
+            CustomErrorGUI.showError("Errore durante la creazione del file di configurazione",
+                "Errore File Configurazione");
             return;
         }
 

@@ -50,10 +50,9 @@ public class SubStepGeneratorImpl implements SubStepGenerator {
         final List<LatLng> decodedPoints = PolylineDecoder.decode(step.getPolyline().getPoints());
 
         LatLng startPoint = decodedPoints.get(0);
-        int i;
-        for (i = 1; i < decodedPoints.size(); i++) {
-            LatLng actualPoint = decodedPoints.get(i);
-            BigDecimal segmentDistance = GeographicDistanceCalculator.computeDistance(startPoint, actualPoint);
+        for (int i = 1; i < decodedPoints.size(); i++) {
+            final LatLng actualPoint = decodedPoints.get(i);
+            final BigDecimal segmentDistance = GeographicDistanceCalculator.computeDistance(startPoint, actualPoint);
 
             if (segmentDistance.compareTo(SUBSTEP_DISTANCE) >= 0) {
                 subSteps.add(new SimpleDirectionsStep(calculateSubStepDuration(step, segmentDistance), actualPoint, startPoint, segmentDistance.doubleValue()));
@@ -86,8 +85,8 @@ public class SubStepGeneratorImpl implements SubStepGenerator {
      * @return the calculated duration of the sub-step in seconds
      */
     private double calculateSubStepDuration(final DirectionsStep directionsStep, final BigDecimal subStepLength) {
-        BigDecimal stepDuration = BigDecimal.valueOf(directionsStep.getDuration().getValue());
-        BigDecimal stepDistance = BigDecimal.valueOf(directionsStep.getDistance().getValue());
+        final BigDecimal stepDuration = BigDecimal.valueOf(directionsStep.getDuration().getValue());
+        final BigDecimal stepDistance = BigDecimal.valueOf(directionsStep.getDistance().getValue());
         final BigDecimal subStepDuration = subStepLength.multiply(stepDuration).divide(stepDistance, 1, RoundingMode.HALF_UP);
 
         return subStepDuration.doubleValue();

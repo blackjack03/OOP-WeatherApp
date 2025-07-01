@@ -1,13 +1,10 @@
 package org.app.weathermode.view;
 
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.geometry.Insets;
 
 import org.app.weathermode.model.LocationSelector;
@@ -26,36 +23,56 @@ public class LocationSelectorGUI {
     private Integer selectedId = null;
 
     public Optional<Integer> start(final LocationSelector citySelector) {
-        final Stage stage = new Stage();
-        stage.setTitle("Scegli la Località");
+        final double rootSpacing = 10.0;
+        final double rootPadding = 15.0;
+        final String stageTitle = "Scegli la Località";
+        final String labelText = "Cerca una città (in inglese):";
+        final double resultsSpacing = 5.0;
+        final double scrollPrefHeight = 300.0;
+        final String scrollStyle = "-fx-background: white;";
+        final String exitBtnText = "Esci";
+        final int minSearchLength = 2;
+        final String noResultsText = "Nessuna città trovata.";
+        final String noResultsStyle = "-fx-font-style: italic; -fx-text-fill: gray;";
+        final double sceneWidth = 600.0;
+        final double sceneHeight = 450.0;
+        final String btnBgColor = "#4682B4";
+        final String btnTextColor = "white";
 
-        final VBox root = new VBox(10);
-        root.setPadding(new Insets(15));
+        // Configura stage
+        final Stage stage = new Stage();  
+        stage.setTitle(stageTitle);
 
-        final Label label = new Label("Cerca una città (in inglese):");
+        // Contenitore radice
+        final VBox root = new VBox(rootSpacing);
+        root.setPadding(new Insets(rootPadding));
+
+        // Componenti UI
+        final Label label = new Label(labelText);
         final TextField searchField = new TextField();
-        final VBox resultsBox = new VBox(5);
+        final VBox resultsBox = new VBox(resultsSpacing);
 
         final ScrollPane scrollPane = new ScrollPane(resultsBox);
         scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(300);
-        scrollPane.setStyle("-fx-background: white;");
+        scrollPane.setPrefHeight(scrollPrefHeight);
+        scrollPane.setStyle(scrollStyle);
 
-        final Button exitButton = new Button("Esci");
+        final Button exitButton = new Button(exitBtnText);
         exitButton.setOnAction(e -> stage.close());
 
+        // Logica ricerca
         searchField.setOnKeyReleased(event -> {
             final String text = searchField.getText().trim();
             resultsBox.getChildren().clear();
 
-            if (text.length() < 2) {
+            if (text.length() < minSearchLength) {
                 return;
             }
 
             final List<Pair<String, Integer>> locations = citySelector.getPossibleLocations(text);
             if (locations.isEmpty()) {
-                Label noResults = new Label("Nessuna città trovata.");
-                noResults.setStyle("-fx-font-style: italic; -fx-text-fill: gray;");
+                final Label noResults = new Label(noResultsText);
+                noResults.setStyle(noResultsStyle);
                 resultsBox.getChildren().add(noResults);
                 return;
             }
@@ -63,7 +80,7 @@ public class LocationSelectorGUI {
             for (final Pair<String, Integer> location : locations) {
                 final Button cityButton = new Button(location.getX());
                 cityButton.setMaxWidth(Double.MAX_VALUE);
-                cityButton.setStyle("-fx-background-color: #4682B4; -fx-text-fill: white;");
+                cityButton.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: %s;", btnBgColor, btnTextColor));
                 cityButton.setOnAction(ev -> {
                     selectedId = location.getY();
                     stage.close();
@@ -74,10 +91,10 @@ public class LocationSelectorGUI {
 
         root.getChildren().addAll(label, searchField, scrollPane, exitButton);
 
-        final Scene scene = new Scene(root, 600, 450);
+        final Scene scene = new Scene(root, sceneWidth, sceneHeight);
         stage.setScene(scene);
 
-        // Rende la finestra modale e bloccante
+        // Finestra modale e bloccante
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
 

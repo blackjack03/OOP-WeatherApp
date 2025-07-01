@@ -99,6 +99,7 @@ public class DirectionsImpl implements Directions {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("checkstyle:MagicNumber")
     public TravelModeResult getMainResult() throws WeatherDataException {
         if (this.mainResult.isEmpty()) {
             final DirectionsResponse directionResult = getDirectionsResponse();
@@ -183,7 +184,7 @@ public class DirectionsImpl implements Directions {
      * @return a {@link Duration} representing the total route duration.
      */
     private Duration calculateRouteDuration(final DirectionsRoute route) {
-        double totalDuration = route.getLegs().stream()
+        final double totalDuration = route.getLegs().stream()
                 .mapToDouble(leg -> leg.getDuration().getValue())
                 .sum();
 

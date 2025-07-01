@@ -20,6 +20,7 @@ public class ImageFromURLSwing {
         viewIMG(imageUrl, null, null);
     }
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     private static double calcScale(final int origW, final int origH) {
         final double availableMaxW = MAX_WIDTH - 2 * PADDING;
         final double availableMaxH = MAX_HEIGHT - 2 * PADDING;
