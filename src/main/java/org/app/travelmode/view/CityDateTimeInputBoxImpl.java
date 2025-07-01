@@ -12,6 +12,19 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * {@code CityDateTimeInputBoxImpl} is a UI component that extends {@link CityInputBoxImpl}
+ * and adds support for selecting a date and time alongside the city input.
+ * <p>
+ * This JavaFX component provides:
+ * <ul>
+ *   <li>An input field with autocomplete for city or address</li>
+ *   <li>A collapsible section to select the date and time</li>
+ *   <li>Date constraints (only selectable within a 7-day range from today)</li>
+ *   <li>Time selection via hour and minute spinners</li>
+ * </ul>
+ *
+ */
 public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDateTimeInputBox {
 
     private static final double SPACING = 5;
@@ -22,7 +35,18 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
     private final DatePicker datePicker;
     private final TitledPane dateTimeTitledPane;
 
-    public CityDateTimeInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected, final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, final Consumer<LocalDate> onDateSelected, boolean resize) {
+    /**
+     * Constructs a new {@code CityDateTimeInputBoxImpl}.
+     *
+     * @param title           The label shown above the input field.
+     * @param onCitySelected  A {@link BiConsumer} callback executed when a city is selected (description and place ID).
+     * @param fetcPredictions A function that takes user input and returns a list of {@link PlaceAutocompletePrediction}.
+     * @param onDateSelected  A {@link Consumer} that receives the selected {@link LocalDate} when changed.
+     * @param resize          If true, enables component resizing based on content.
+     */
+    public CityDateTimeInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected,
+                                    final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions,
+                                    final Consumer<LocalDate> onDateSelected, boolean resize) {
         super(title, onCitySelected, fetcPredictions, false);
 
         // Spinner per le ore (0-23)
@@ -73,36 +97,61 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
         }
     }
 
+    /**
+     * Computes the required height for the component, including the city input box and
+     * the optional date/time pane if expanded.
+     *
+     * @return The total required height.
+     */
     @Override
     protected double computeRequiredHeight() {
         return super.computeRequiredHeight() + this.dateTimeTitledPane.getHeight();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Spinner<Integer> getHourSpinner() {
         return this.hourSpinner;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Spinner<Integer> getMinuteSpinner() {
         return this.minuteSpinner;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DatePicker getDatePicker() {
         return this.datePicker;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getSelectedHour() {
         return this.hourSpinner.getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getSelectedMinute() {
         return this.minuteSpinner.getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     * If the date/time section is collapsed, the current system time is returned instead.
+     */
     @Override
     public LocalTime getSelectedTime() {
         if (this.dateTimeTitledPane.isExpanded()) {
@@ -111,16 +160,25 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
         return LocalTime.now();
     }
 
+    /**
+     * Disables all input components (city field, spinners, and date picker).
+     */
     @Override
     public void disableAllInputs() {
         this.setDisableAllInputs(true);
     }
 
+    /**
+     * Enables all input components (city field, spinners, and date picker).
+     */
     @Override
     public void activateAllInputs() {
         this.setDisableAllInputs(false);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void setDisableAllInputs(boolean disable) {
         super.setDisableAllInputs(disable);
