@@ -56,7 +56,6 @@ public class AppController implements Controller {
      * Intervallo tra due refresh automatici (minuti).
      */
     private static final int REFRESH_TIME = 20;
-    private static final DateTimeFormatter HOUR_FMT = DateTimeFormatter.ofPattern("HH:mm");
     private static final String API_KEY_ERROR = "Errore nella lettura della chiave API";
     private static final String API_KEY_ERROR_MESSAGE = "La chiave inserita non è valida.\nRitentare l'inserimento.";
 
@@ -76,6 +75,7 @@ public class AppController implements Controller {
     private final Label lblMin;
     private final Label lblMax;
     private final Label otherDetails;
+    private final Label windInfo;
     private final ImageView todayIcon;
     private final VBox hourlyEntries;
     private final HBox forecastStrip;
@@ -110,6 +110,7 @@ public class AppController implements Controller {
         this.lblMin = labels.get("lblMin");
         this.lblMax = labels.get("lblMax");
         this.otherDetails = labels.get("otherDetails");
+        this.windInfo = labels.get("windInfo");
         this.hourlyEntries = this.APP.getHourlyEntries();
         this.forecastStrip = this.APP.getForecastStrip();
         this.todayIcon = this.APP.getTodayIcon();
@@ -170,11 +171,14 @@ public class AppController implements Controller {
      */
     @Override
     public void requestGoogleApiKey() {
-        ApiKeyForm.showAndWait().ifPresentOrElse(key -> ConfigManager.getConfig().getApi().setApiKey(key),
-                () -> {
-                    this.showWarning(API_KEY_ERROR, API_KEY_ERROR_MESSAGE);
-                    requestGoogleApiKey();
-                });
+        ApiKeyForm.showAndWait().ifPresent(key -> {
+            if (key.isBlank()) {
+                showWarning(API_KEY_ERROR, API_KEY_ERROR_MESSAGE);
+                requestGoogleApiKey();
+            } else {
+                ConfigManager.getConfig().getApi().setApiKey(key);
+            }
+        });
     }
 
     /**
@@ -292,7 +296,7 @@ public class AppController implements Controller {
         }
         if (err_flag) {
             System.out.println("ERRORE RICHIESTA DATI METEO!");
-            CustomErrorGUI.showError(
+            CustomErrorGUI.showErrorJFX(
                     "Impossibile recuperare i dati meteo. Controlla la tua connessione internet e riprova.",
                     "Errore di rete!"
             );
@@ -357,6 +361,12 @@ public class AppController implements Controller {
                 lblMax.setText(String.format("Max: %.0f°C | %.0f°F", today.get("temperature_max_C").doubleValue(), today.get("temperature_max_F").doubleValue()));
             }
         });
+
+        /* Wind info */
+        final double wind_kmh = now.get("wind_speed_kmh").doubleValue();
+        final double wind_mph = now.get("wind_speed_mph").doubleValue();
+        final String windDirection = weatherObj.getWindDirection(now.get("wind_direction").intValue());
+        windInfo.setText(String.format("Wind: %.1f km/h | %.1f mph - Direzione: %s", wind_kmh, wind_mph, windDirection));
     }
 
     /**
@@ -450,8 +460,9 @@ public class AppController implements Controller {
      *              {@link AllWeather#getDailyGeneralForecast()}.
      */
     private void updateDaily(final Map<String, Map<String, Number>> daily) {
+        final int days = 7;
         forecastStrip.getChildren().clear();
-        daily.keySet().stream().sorted().limit(7).forEach(day -> {
+        daily.keySet().stream().sorted().limit(days).forEach(day -> {
             forecastStrip.getChildren().add(createMiniForecast(day, daily.get(day)));
         });
     }
@@ -565,7 +576,7 @@ public class AppController implements Controller {
             case 45, 48 -> "Nebbia";
             case 51, 53, 55, 56, 57 -> "Pioviggine";
             case 61, 63, 65 -> "Pioggia";
-            case 66, 67 -> "Pioggia gelata";
+            case 66, 67 -> "Grandine";
             case 71, 73, 75 -> "Neve";
             case 80, 81, 82 -> "Rovesci";
             case 95, 96, 99 -> "Temporale";

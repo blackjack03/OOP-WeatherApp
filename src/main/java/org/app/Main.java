@@ -2,6 +2,7 @@
 package org.app;
 
 import org.app.launcher.AppCore;
+import org.app.weathermode.view.CustomErrorGUI;
 import org.app.config.ConfigBuilder;
 import org.app.config.ConfigManager;
 
@@ -14,12 +15,18 @@ public class Main {
     public static void main(final String[] args) {
         // 0) controllo che la configurazione esista
         // ed eventualmente la creo
-        ConfigBuilder.createConfigIfNotExists(CONFIG_PATH);
+        try {
+            ConfigBuilder.createConfigIfNotExists(CONFIG_PATH);
+        } catch (final Exception e) {
+            System.err.println("Errore durante la creazione del file di configurazione: " + e.getMessage());
+            CustomErrorGUI.showError("Errore durante la creazione del file di configurazione", "Errore File Configurazione");
+            return;
+        }
 
         // 1) carico subito la config
         ConfigManager.loadConfig(CONFIG_PATH);
 
-        // 2) lancio la splash (LoadingScreen.start)
+        // 2) lancio AppCore
         Application.launch(AppCore.class, args);
     }
 

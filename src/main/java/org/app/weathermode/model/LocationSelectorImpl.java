@@ -72,7 +72,7 @@ public class LocationSelectorImpl implements LocationSelector {
         final List<Pair<String, Integer>> possibleLocations = new ArrayList<>();
         final String query = txt.toLowerCase(Locale.ROOT);
 
-        for (Map<String, String> entry : this.CSV) {
+        for (final Map<String, String> entry : this.CSV) {
             final String cityName = entry.get("city").toLowerCase(Locale.ROOT);
             final String cityNameAscii = entry.get("city_ascii").toLowerCase(Locale.ROOT);
             if (cityName.contains(query) || cityNameAscii.contains(query)) {
@@ -110,8 +110,8 @@ public class LocationSelectorImpl implements LocationSelector {
         if (lookUp == null) return Optional.empty();
         final String city = lookUp.getCity();
         final String country_code = lookUp.getCountryCode();
-        for (var entry : this.CITIES_MAP.entrySet()) {
-            Map<String, String> cityData = entry.getValue();
+        for (final var entry : this.CITIES_MAP.entrySet()) {
+            final Map<String, String> cityData = entry.getValue();
             if (cityData.get("city").equalsIgnoreCase(city) &&
                 cityData.get("iso2").equalsIgnoreCase(country_code)) {
                 return Optional.of(entry.getKey());

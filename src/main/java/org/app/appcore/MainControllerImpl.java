@@ -51,7 +51,8 @@ public class MainControllerImpl implements MainController {
         this.travelModeController = new TravelModeControllerImpl(this);
         this.travelModeView = this.travelModeController.gatTraveleModeView();
 
-        final HBox topBar = new HBox(20);
+        final int spacing = 20;
+        final HBox topBar = new HBox(spacing);
         topBar.setAlignment(Pos.CENTER);
         final Button travelButton = new Button(TRAVEL_BUTTON_TEXT);
         final Button weatherButton = new Button(WEATHER_BUTTON_TEXT);
@@ -59,8 +60,16 @@ public class MainControllerImpl implements MainController {
         travelButton.setOnAction(event -> {
             if (this.isTravelModeFirstUse) {
                 this.isTravelModeFirstUse = false;
-                this.lookForGoogleApiKey();
-                this.travelModeController.startTravelMode();
+                try {
+                    this.travelModeController.startTravelMode();
+                } catch (final IllegalStateException e) {
+                    this.lookForGoogleApiKey();
+                    if (ConfigManager.getConfig().getApi().getApiKey().isEmpty()) {
+                        this.isTravelModeFirstUse = true;
+                        return;
+                    }
+                    this.travelModeController.startTravelMode();
+                }
             }
             this.rootView.setCenter(this.travelModeView);
             travelButton.setDisable(true);
@@ -76,7 +85,7 @@ public class MainControllerImpl implements MainController {
         weatherButton.setDisable(true);
         weatherButton.getStyleClass().addAll("weather-mode-button", "mode-selector-button");
 
-        topBar.getChildren().addAll(weatherButton, travelButton);
+        topBar.getChildren().addAll(travelButton, weatherButton);
         topBar.getStyleClass().add("control-bar");
 
         this.rootView.setTop(topBar);
