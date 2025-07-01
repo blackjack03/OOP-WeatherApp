@@ -165,6 +165,10 @@ public class AppController implements Controller {
         return this.APP;
     }
 
+    /**
+     * {@inheritDoc}}
+     */
+    @Override
     public void requestGoogleApiKey() {
         ApiKeyForm.showAndWait().ifPresentOrElse(key -> ConfigManager.getConfig().getApi().setApiKey(key),
                 () -> {
@@ -173,12 +177,20 @@ public class AppController implements Controller {
                 });
     }
 
+    /**
+     * {@inheritDoc}}
+     */
+    @Override
     public void showError(final String title, final String message) {
-        CustomErrorGUI.showErrorJFX(title, message);
+        CustomErrorGUI.showErrorJFX(message, title);
     }
 
+    /**
+     * {@inheritDoc}}
+     */
+    @Override
     public void showWarning(final String title, final String message) {
-        CustomErrorGUI.showWarningJFX(title, message);
+        CustomErrorGUI.showWarningJFX(message, title);
     }
 
     /**
