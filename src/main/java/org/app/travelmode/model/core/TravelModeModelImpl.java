@@ -3,7 +3,6 @@ package org.app.travelmode.model.core;
 import org.app.travelmode.model.exception.DirectionsApiException;
 import org.app.travelmode.model.exception.TravelRequestException;
 import org.app.travelmode.model.exception.WeatherDataException;
-import org.app.travelmode.model.google.dto.directions.DirectionsResponse;
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.impl.GoogleApiClientFactoryImpl;
 import org.app.travelmode.model.google.impl.PlaceDetailsApiClient;
@@ -30,7 +29,6 @@ public class TravelModeModelImpl implements TravelModeModel {
     private final GoogleApiClientFactory apiClientFactory;
     private PlacePredictionsApiClient placePredictionsApiClient;
     private Directions directions;
-    private Optional<DirectionsResponse> directionsResponse;
 
     /**
      * Constructs a new TravelModeModelImpl instance.
@@ -47,7 +45,6 @@ public class TravelModeModelImpl implements TravelModeModel {
     public TravelModeModelImpl() {
         this.requestBuilder = new TravelRequestImpl.Builder();
         this.apiClientFactory = new GoogleApiClientFactoryImpl();
-        this.directionsResponse = Optional.empty();
     }
 
     /**
