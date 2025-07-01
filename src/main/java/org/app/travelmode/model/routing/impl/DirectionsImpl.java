@@ -159,10 +159,8 @@ public class DirectionsImpl implements Directions {
         final CheckpointGenerator checkpointGenerator = new CheckpointGeneratorImpl();
 
         final List<SimpleDirectionsStep> intermediatePoints = routeAnalyzer.calculateIntermediatePoints(route);
-        System.out.println(intermediatePoints);
 
         final List<Checkpoint> checkpoints = checkpointGenerator.generateCheckpoints(intermediatePoints, this.travelRequest.getDepartureDateTime());
-        System.out.println(checkpoints);
 
         final WeatherInformationService weatherInformationService = new WeatherInformationServiceImpl(new WeatherConditionFactoryImpl());
         final List<CheckpointWithMeteo> checkpointsWithMeteo = new ArrayList<>();
