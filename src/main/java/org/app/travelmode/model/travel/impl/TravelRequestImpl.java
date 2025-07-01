@@ -1,5 +1,6 @@
 package org.app.travelmode.model.travel.impl;
 
+import org.app.travelmode.model.exception.TravelRequestException;
 import org.app.travelmode.model.travel.api.TravelRequest;
 
 import java.time.LocalDate;
@@ -215,11 +216,11 @@ public final class TravelRequestImpl implements TravelRequest {
          * If all the necessary parameters have been configured correctly a new TravelRequestImpl is returned.
          *
          * @return a new TravelRequestImpl.
-         * @throws IllegalStateException If not all the necessary parameters have been entered
+         * @throws TravelRequestException If not all the necessary parameters have been entered
          */
-        public final TravelRequestImpl build() throws IllegalStateException {
+        public final TravelRequestImpl build() throws TravelRequestException {
             if (!this.isReady()) {
-                throw new IllegalStateException("Non sono stati inseriti tutti i parametri necessari per il calcolo del percorso");
+                throw new TravelRequestException("Non sono stati inseriti tutti i parametri necessari per il calcolo del percorso");
             }
             return new TravelRequestImpl(departureLocation, departurePlaceId, arrivalLocation, arrivalPlaceId, departureTime, departureDate, departureZoneId);
         }
