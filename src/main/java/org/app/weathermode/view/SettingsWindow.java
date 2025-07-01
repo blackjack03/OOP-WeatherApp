@@ -34,111 +34,124 @@ public class SettingsWindow extends Stage {
     public SettingsWindow(final Controller controller) {
         this.controller = controller;
 
-        setTitle("Impostazioni");
+        // Costanti locali
+        final String windowTitle = "Impostazioni";
+        final double rootPadding = 20.0;
+        final double vboxSpacing = 15.0;
+        final String chartBtnText = "Visualizza Grafico Temperature";
+        final String moonBtnText = "Visualizza Luna di Oggi";
+        final String changeCityBtnText = "Cambia Città";
+        final String btnFontStyle = "-fx-font-size: 18px;";
+        final double minWidth = 400.0;
+        final double minHeight = 300.0;
+        final double initialWidth = minWidth;
+        final double initialHeight = minHeight;
+
+        // Impostazioni finestra
+        setTitle(windowTitle);
         initModality(Modality.APPLICATION_MODAL);
         setResizable(true);
 
-        /* ---------- pulsanti ---------- */
-
-        final Button chartBtn = new Button("Visualizza Grafico Temperature");
-        chartBtn.setStyle("-fx-font-size: 18px;");
+        // Pulsanti
+        final Button chartBtn = new Button(chartBtnText);
+        chartBtn.setStyle(btnFontStyle);
         chartBtn.setMaxWidth(Double.MAX_VALUE);
-        chartBtn.setOnAction(e -> this.openChart());
+        chartBtn.setOnAction(e -> openChart());
 
-        final Button moonBtn = new Button("Visualizza Luna di Oggi");
-        moonBtn.setStyle("-fx-font-size: 18px;");
+        final Button moonBtn = new Button(moonBtnText);
+        moonBtn.setStyle(btnFontStyle);
         moonBtn.setMaxWidth(Double.MAX_VALUE);
-        moonBtn.setOnAction(e -> this.openMoon());
+        moonBtn.setOnAction(e -> openMoon());
 
-        final Button changeCityBtn = new Button("Cambia Città");
-        changeCityBtn.setStyle("-fx-font-size: 18px;");
+        final Button changeCityBtn = new Button(changeCityBtnText);
+        changeCityBtn.setStyle(btnFontStyle);
         changeCityBtn.setMaxWidth(Double.MAX_VALUE);
-        changeCityBtn.setOnAction(e -> this.openChangeCity());
+        changeCityBtn.setOnAction(e -> openChangeCity());
 
-        /* ---------- layout ---------- */
-        final VBox root = new VBox(15, chartBtn, moonBtn, changeCityBtn);
+        // Layout principale
+        final VBox root = new VBox(vboxSpacing, chartBtn, moonBtn, changeCityBtn);
         root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(20));
+        root.setPadding(new Insets(rootPadding));
 
         final Scene scene = new Scene(root);
         setScene(scene);
 
-        // Imposta dimensione minima
-        setMinWidth(400);
-        setMinHeight(300);
-
-        // Imposta dimensione iniziale = dimensione minima
-        setWidth(400);
-        setHeight(300);
-
+        // Dimensioni
+        setMinWidth(minWidth);
+        setMinHeight(minHeight);
+        setWidth(initialWidth);
+        setHeight(initialHeight);
         setResizable(false);
     }
 
-    /* ---------- handler ---------- */
-
     @SuppressWarnings({"unchecked","varargs"})
     private void openChart() {
+        // Costanti locali
+        final String errorTitle = "Dati mancanti";
+        final String errorMessage = "Nessun dato di temperatura disponibile.";
+        final String dateAxisLabel = "Data";
+        final String tempAxisLabel = "Temperatura (°C)";
+        final String chartTitle = "Temperature Massime e Minime";
+        final String seriesMinName = "Minime";
+        final String seriesMaxName = "Massime";
+        final double chartWidth = 800.0;
+        final double chartHeight = 600.0;
+
         final Optional<Map<String, Map<String, Number>>> hourlyOpt =
-                controller.getWeatherObj().getDailyGeneralForecast();
+            controller.getWeatherObj().getDailyGeneralForecast();
         if (hourlyOpt.isEmpty()) {
-            CustomErrorGUI.showError(
-                "Nessun dato di temperatura disponibile.",
-                "Dati mancanti"
-            );
+            CustomErrorGUI.showError(errorMessage, errorTitle);
             return;
         }
 
         final Map<String, double[]> extremes = new LinkedHashMap<>();
-
-        for (final var date : hourlyOpt.get().keySet()) {
-            final Map<String, Number> todayData = hourlyOpt.get().get(date);
+        hourlyOpt.get().forEach((date, todayData) -> {
             final double tempCMin = todayData.get("temperature_min_C").doubleValue();
             final double tempCMax = todayData.get("temperature_max_C").doubleValue();
             extremes.put(date, new double[]{tempCMin, tempCMax});
-        }
+        });
 
         final CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("Data");
+        xAxis.setLabel(dateAxisLabel);
         final NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel("Temperatura (°C)");
+        yAxis.setLabel(tempAxisLabel);
         final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
-        lineChart.setTitle("Temperature Massime e Minime");
+        lineChart.setTitle(chartTitle);
         lineChart.setCreateSymbols(true);
         lineChart.setAnimated(true);
-        final XYChart.Series<String, Number> minSeries = new XYChart.Series<>();
-        minSeries.setName("Minime");
 
+        final XYChart.Series<String, Number> minSeries = new XYChart.Series<>();
+        minSeries.setName(seriesMinName);
         final XYChart.Series<String, Number> maxSeries = new XYChart.Series<>();
-        maxSeries.setName("Massime");
-        extremes.entrySet().stream()
-                .forEach(entry -> {
-                    final String date = entry.getKey();
-                    final double[] vals = entry.getValue();
-                    minSeries.getData().add(new XYChart.Data<>(date, vals[0]));
-                    maxSeries.getData().add(new XYChart.Data<>(date, vals[1]));
-                });
+        maxSeries.setName(seriesMaxName);
+        extremes.forEach((date, vals) -> {
+            minSeries.getData().add(new XYChart.Data<>(date, vals[0]));
+            maxSeries.getData().add(new XYChart.Data<>(date, vals[1]));
+        });
 
         lineChart.getData().addAll(maxSeries, minSeries);
 
         final Stage chartStage = new Stage();
         chartStage.initOwner(this);
         chartStage.initModality(Modality.WINDOW_MODAL);
-        chartStage.setTitle("Grafico Temperature");
-        chartStage.setScene(new Scene(lineChart, 800, 600));
+        chartStage.setTitle(chartTitle);
+        chartStage.setScene(new Scene(lineChart, chartWidth, chartHeight));
         chartStage.show();
     }
 
     /** Lancia il frame Swing che mostra le fasi lunari di oggi. */
     private void openMoon() {
+        // Costanti locali
+        final String errorLog = "Errore nel recupero delle informazioni lunari.";
+        final String errorTitle = "Errore!";
+        final String errorMessage = "Errore nel recupero delle informazioni lunari.";
+
         final Thread t = new Thread(() -> {
             final MoonPhases moon = new MoonPhasesImpl();
             final Optional<Map<String, String>> moonInfo = moon.getMoonInfo();
             if (moonInfo.isEmpty()) {
-                System.err.println("Errore nel recupero delle informazioni lunari.");
-                CustomErrorGUI.showError(
-                    "Errore nel recupero delle informazioni lunari.",
-                    "Errore!"
-                );
+                System.err.println(errorLog);
+                CustomErrorGUI.showError(errorMessage, errorTitle);
                 return;
             }
             ImageFromURLSwing.viewIMG(

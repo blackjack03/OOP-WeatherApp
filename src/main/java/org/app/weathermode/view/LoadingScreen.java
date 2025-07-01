@@ -52,19 +52,32 @@ public class LoadingScreen {
      * di business viene eseguita in questo costruttore.
      */
     public LoadingScreen() {
+        final double imageFitWidth = 150.0;
+        final double rootSpacing = 10.0;
+        final double sceneWidth = 325.0;
+        final double sceneHeight = 225.0;
+        final double fontSize = 20.0;
+        final String imagePath = "/logo.png";
+        final String loadingText = "Loading...";
+        final String windowTitle = "Weather App - Loading...";
+
+        // Initialize stage
         splashStage = new Stage();
 
-        /* ---- UI statica -------------------------------------------------- */
-        final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/logo.png")));
+        // Static UI elements
+        final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
         imageView.setPreserveRatio(true);
-        imageView.setFitWidth(150);
-        final Label loadingLabel = new Label("Loading...");
-        loadingLabel.setFont(Font.font("System", FontWeight.BOLD, 20));
-        final VBox root = new VBox(10, imageView, loadingLabel);
+        imageView.setFitWidth(imageFitWidth);
+
+        final Label loadingLabel = new Label(loadingText);
+        loadingLabel.setFont(Font.font("System", FontWeight.BOLD, fontSize));
+
+        final VBox root = new VBox(rootSpacing, imageView, loadingLabel);
         root.setAlignment(Pos.CENTER);
 
-        splashStage.setScene(new Scene(root, 325, 225));
-        splashStage.setTitle("Weather App - Loading...");
+        // Configure and show scene
+        splashStage.setScene(new Scene(root, sceneWidth, sceneHeight));
+        splashStage.setTitle(windowTitle);
         splashStage.setResizable(false);
         splashStage.centerOnScreen();
     }

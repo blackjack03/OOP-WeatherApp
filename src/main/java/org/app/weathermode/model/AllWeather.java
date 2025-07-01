@@ -243,11 +243,14 @@ public class AllWeather implements Weather {
     @Override
     public int getForecastDays() { return this.forecast_days; }
     @Override
-    public Optional<Map<String, Map<String, Map<String, Number>>>> getAllForecast() { return this.requested ? Optional.of(this.FORECAST_HOURS) : Optional.empty(); }
+    public Optional<Map<String, Map<String, Map<String, Number>>>> getAllForecast() { return this.requested ?
+        Optional.of(this.FORECAST_HOURS) : Optional.empty(); }
     @Override
-    public Optional<Map<String, Map<String, Number>>> getDailyGeneralForecast() { return this.requested ? Optional.of(this.DAILY_GENERAL_FORECAST) : Optional.empty(); }
+    public Optional<Map<String, Map<String, Number>>> getDailyGeneralForecast() { return this.requested ?
+        Optional.of(this.DAILY_GENERAL_FORECAST) : Optional.empty(); }
     @Override
-    public Optional<Map<String, Map<String, String>>> getDailyInfo() { return this.requested ? Optional.of(this.SUN_DAILY_INFO) : Optional.empty(); }
+    public Optional<Map<String, Map<String, String>>> getDailyInfo() { return this.requested ?
+        Optional.of(this.SUN_DAILY_INFO) : Optional.empty(); }
 
     /**
      * Dati meteo correnti (con caching 20 minuti).
@@ -255,7 +258,9 @@ public class AllWeather implements Weather {
      */
     @Override
     public Optional<Pair<String, Map<String, Number>>> getWeatherNow(final boolean avoid_check) {
-        if (this.last_update == 0 || avoid_check || this.checkMinutesPassed(this.last_update, 20)) {
+        final int refreshTime = 20;
+        if (this.last_update == 0 || avoid_check ||
+                this.checkMinutesPassed(this.last_update, refreshTime)) {
             try {
                 final var reader = new AdvancedJsonReaderImpl(this.NOW_API_URL
                     .replace("%LAT", this.coords.getX())
@@ -280,6 +285,7 @@ public class AllWeather implements Weather {
      * Converte gradi bussola (0‑360) in direzione testuale.
      */
     @Override
+    @SuppressWarnings("checkstyle:MagicNumber")
     public String getWindDirection(int degrees) {
         final List<String> DIREZIONI = Arrays.asList(
             "Nord", "Nord-Nordest", "Nordest", "Est-Nordest",

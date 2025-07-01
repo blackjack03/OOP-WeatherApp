@@ -466,12 +466,15 @@ public class AppController implements Controller {
      * @return nodo JavaFX rappresentante la riga.
      */
     private Node createHourlyRow(final String hour, final Map<String, Number> info) {
-        final HBox row = new HBox(20);
-        row.setPadding(new Insets(5));
+        final int spacing = 20;
+        final int topRightBottomLeft = 5;
+        final HBox row = new HBox(spacing);
+        row.setPadding(new Insets(topRightBottomLeft));
 
         final ImageView ico = new ImageView(loadIcon(info.get("weather_code").intValue()));
         ico.setPreserveRatio(true);
-        ico.setFitWidth(45);
+        final int icoWidth = 45;
+        ico.setFitWidth(icoWidth);
 
         final Label lblHour = new Label(hour);
         lblHour.getStyleClass().add("subtitle");
@@ -504,10 +507,13 @@ public class AppController implements Controller {
      * @return nodo JavaFX pronto per essere inserito in {@link #forecastStrip}.
      */
     private Node createMiniForecast(final String dayKey, final Map<String, Number> info) {
-        final VBox mini = new VBox(5);
-        mini.setPadding(new Insets(10));
+        final int spacing = 5;
+        final VBox mini = new VBox(spacing);
+        final int topRightBottomLeft = 10;
+        mini.setPadding(new Insets(topRightBottomLeft));
         mini.setAlignment(Pos.CENTER);
-        mini.setPrefWidth(190);
+        final int prefWidth = 190;
+        mini.setPrefWidth(prefWidth);
         mini.setStyle("-fx-border-color:black;-fx-border-radius:10;-fx-background-radius:10;-fx-background-color:white;");
 
         final LocalDate date = LocalDate.parse(dayKey);
@@ -519,7 +525,8 @@ public class AppController implements Controller {
 
         final ImageView ico = new ImageView(loadIcon(info.get("weather_code").intValue()));
         ico.setPreserveRatio(true);
-        ico.setFitWidth(45);
+        final int icoWidth = 45;
+        ico.setFitWidth(icoWidth);
 
         final String range = String.format(
                 "Min: %.0f°C | %.0f°F\nMax: %.0f°C | %.0f°F",
@@ -556,6 +563,7 @@ public class AppController implements Controller {
      * @param code codice WMO.
      * @return descrizione leggibile (es. "Sereno", "Pioggia", …).
      */
+    @SuppressWarnings("checkstyle:MagicNumber")
     private String codeToDescription(final int code) {
         return switch (code) {
             case 0 -> "Sereno";

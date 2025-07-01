@@ -204,6 +204,7 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
      * @throws Exception propagata da metodi interni.
      */
     @Override
+    @SuppressWarnings("checkstyle:MagicNumber")
     public <T> T getFromJson(final String path, final Class<T> type) throws Exception {
         assertIsSet();
         T outElem = null;

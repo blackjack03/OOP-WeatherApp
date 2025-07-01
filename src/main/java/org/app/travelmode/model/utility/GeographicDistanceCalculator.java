@@ -25,11 +25,12 @@ public class GeographicDistanceCalculator {
      * @param p2 second point
      * @return a {@link BigDecimal} representing the distance of two points on earth in meters
      */
+    @SuppressWarnings("checkstyle:MagicNumber")
     public static BigDecimal computeDistance(final LatLng p1, final LatLng p2) {
-        double radiantLat1 = Math.toRadians(p1.getLat());
-        double radiantLng1 = Math.toRadians(p1.getLng());
-        double radiantLat2 = Math.toRadians(p2.getLat());
-        double radiantLng2 = Math.toRadians(p2.getLng());
+        final double radiantLat1 = Math.toRadians(p1.getLat());
+        final double radiantLng1 = Math.toRadians(p1.getLng());
+        final double radiantLat2 = Math.toRadians(p2.getLat());
+        final double radiantLng2 = Math.toRadians(p2.getLng());
         //R * arccos(sin(latA) * sin(latB) + cos(latA) * cos(latB) * cos(lonA-lonB))
         return BigDecimal.valueOf((EARTH_RADIUS *
                         Math.acos((Math.sin(radiantLat1) * Math.sin(radiantLat2) +

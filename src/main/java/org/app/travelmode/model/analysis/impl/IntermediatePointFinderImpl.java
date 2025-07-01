@@ -56,14 +56,15 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
      * @return an immutable list of intermediate points along the route
      */
     @Override
+    @SuppressWarnings("checkstyle:MagicNumber")
     public List<SimpleDirectionsStep> findIntermediatePoints(final DirectionsLeg directionsLeg, final SubStepGenerator subStepGenerator) {
         final List<SimpleDirectionsStep> intermediatePoints = new ArrayList<>();
 
         this.startPoint = directionsLeg.getStart_location();
 
         for (final DirectionsStep step : directionsLeg.getSteps()) {
-            BigDecimal stepDistance = BigDecimal.valueOf(step.getDistance().getValue());
-            BigDecimal stepDuration = BigDecimal.valueOf(step.getDuration().getValue());
+            final BigDecimal stepDistance = BigDecimal.valueOf(step.getDistance().getValue());
+            final BigDecimal stepDuration = BigDecimal.valueOf(step.getDuration().getValue());
 
             distanceCounter = distanceCounter.add(stepDistance);
             durationCounter = durationCounter.add(stepDuration);
@@ -92,6 +93,7 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
      * @param distance the distance to check, in meters.
      * @return true if the distance is within the target range; false otherwise.
      */
+    @SuppressWarnings("checkstyle:MagicNumber")
     private boolean isWithinTargetDistance(final BigDecimal distance) {
         return distance.compareTo(TARGET_DISTANCE.subtract(DELTA)) > 0 && distance.compareTo(TARGET_DISTANCE.add(DELTA)) < 0;
     }
@@ -113,8 +115,8 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
     private void analyzeSubSteps(final List<SimpleDirectionsStep> subSteps, final List<SimpleDirectionsStep> intermediatePoints) {
 
         for (final SimpleDirectionsStep subStep : subSteps) {
-            BigDecimal subStepDistance = BigDecimal.valueOf(subStep.getDistance().getValue());
-            BigDecimal subStepDuration = BigDecimal.valueOf(subStep.getDuration().getValue());
+            final BigDecimal subStepDistance = BigDecimal.valueOf(subStep.getDistance().getValue());
+            final BigDecimal subStepDuration = BigDecimal.valueOf(subStep.getDuration().getValue());
 
             distanceCounter = distanceCounter.add(subStepDistance);
             durationCounter = durationCounter.add(subStepDuration);

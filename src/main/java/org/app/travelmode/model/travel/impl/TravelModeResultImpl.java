@@ -136,9 +136,10 @@ public class TravelModeResultImpl implements TravelModeResult {
      * @param duration the {@link Duration} object to format.
      * @return a {@link String} representing the duration of the trip in the format "hh ore mm minuti".
      */
+    @SuppressWarnings("checkstyle:MagicNumber")
     private String formatDuration(final Duration duration) {
-        long hours = duration.toHours();
-        long minutes = duration.toMinutes() % 60;
+        final long hours = duration.toHours();
+        final long minutes = duration.toMinutes() % 60;
         return hours + " ore " + minutes + " minuti";
     }
 
@@ -149,7 +150,7 @@ public class TravelModeResultImpl implements TravelModeResult {
      * @return an integer representing the average weather score.
      */
     private Integer calculateMeteoScore(final List<CheckpointWithMeteo> checkpoints) {
-        int totalScore = checkpoints.stream().mapToInt(CheckpointWithMeteo::getWeatherScore).sum();
+        final int totalScore = checkpoints.stream().mapToInt(CheckpointWithMeteo::getWeatherScore).sum();
         return (int) Math.round((double) totalScore / checkpoints.size());
     }
 }
