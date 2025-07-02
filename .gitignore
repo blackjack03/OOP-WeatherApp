@@ -1,12 +1,6 @@
 # Ignore the bin folder and all its contents
 bin/
 
-# Ignore every pdf file
-*.pdf
-
-# Rule exception (beginning with a !): pdf files named 'myImportantFile.pdf' should be tracked
-!myImportantFile.pdf
-
 # Ignore Java class files
 *.class
 
