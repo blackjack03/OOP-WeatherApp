@@ -21,6 +21,7 @@ import org.app.travelmode.model.travel.api.TravelRequest;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 import org.app.travelmode.view.TravelModeView;
 import org.app.travelmode.view.TravelModeViewImpl;
+import org.app.weathermode.model.WeatherDataProviderImpl;
 
 /**
  * Implementation of the TravelMode controller that manages the interaction between
@@ -47,7 +48,7 @@ public class TravelModeControllerImpl implements TravelModeController {
      */
     public TravelModeControllerImpl(final MainController mainController) {
         this.view = new TravelModeViewImpl(this);
-        this.model = new TravelModeModelImpl();
+        this.model = new TravelModeModelImpl(new WeatherDataProviderImpl());
         this.mainController = mainController;
     }
 
