@@ -14,7 +14,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.danilopianini.gradle-java-qa") version "1.70.0"
 
-    id("application");
+    id("application")
 }
 
 repositories { // Where to search for dependencies
@@ -36,7 +36,6 @@ dependencies {
     }
 
     // Maven dependencies are composed by a group name, a name and a version, separated by colons
-    implementation("com.omertron:API-OMDB:1.5")
     implementation("org.jooq:jool:0.9.15")
 
     // Import libraries
