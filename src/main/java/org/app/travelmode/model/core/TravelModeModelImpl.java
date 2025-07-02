@@ -1,5 +1,8 @@
 package org.app.travelmode.model.core;
 
+import org.app.common.api.weather.WeatherDataProvider;
+import org.app.travelmode.model.analysis.api.WeatherInformationService;
+import org.app.travelmode.model.analysis.impl.WeatherInformationServiceImpl;
 import org.app.travelmode.model.exception.DirectionsApiException;
 import org.app.travelmode.model.exception.TravelRequestException;
 import org.app.travelmode.model.exception.WeatherDataException;
@@ -13,6 +16,7 @@ import org.app.travelmode.model.travel.api.TravelModeResult;
 import org.app.travelmode.model.travel.api.TravelRequest;
 import org.app.travelmode.model.travel.impl.TravelRequestImpl;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
+import org.app.travelmode.model.weather.impl.WeatherConditionFactoryImpl;
 
 import java.io.IOException;
 import java.time.*;
@@ -25,6 +29,7 @@ import java.util.Optional;
  */
 public class TravelModeModelImpl implements TravelModeModel {
 
+    private final WeatherInformationService weatherInformationService;
     private final TravelRequestImpl.Builder requestBuilder;
     private final GoogleApiClientFactory apiClientFactory;
     private PlacePredictionsApiClient placePredictionsApiClient;
@@ -42,7 +47,9 @@ public class TravelModeModelImpl implements TravelModeModel {
      * <p>Note: The {@link #start()} method must be called after construction
      * to initialize the place predictions API client.
      */
-    public TravelModeModelImpl() {
+    public TravelModeModelImpl(final WeatherDataProvider weatherDataProvider) {
+        this.weatherInformationService = new WeatherInformationServiceImpl(new WeatherConditionFactoryImpl(),
+                weatherDataProvider);
         this.requestBuilder = new TravelRequestImpl.Builder();
         this.apiClientFactory = new GoogleApiClientFactoryImpl();
     }
@@ -125,7 +132,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void startDirectionsAnalysis(final TravelRequest travelRequest) throws DirectionsApiException {
-        this.directions = new DirectionsImpl(travelRequest);
+        this.directions = new DirectionsImpl(this.weatherInformationService, travelRequest);
         directions.askForDirections();
     }
 
