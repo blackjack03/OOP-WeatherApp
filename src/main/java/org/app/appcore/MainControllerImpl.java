@@ -85,7 +85,7 @@ public class MainControllerImpl implements MainController {
         weatherButton.setDisable(true);
         weatherButton.getStyleClass().addAll("weather-mode-button", "mode-selector-button");
 
-        topBar.getChildren().addAll(travelButton, weatherButton);
+        topBar.getChildren().addAll(weatherButton, travelButton);
         topBar.getStyleClass().add("control-bar");
 
         this.rootView.setTop(topBar);
