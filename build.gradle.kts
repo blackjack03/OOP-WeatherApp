@@ -35,12 +35,25 @@ dependencies {
         }
     }
 
+    // Maven dependencies are composed by a group name, a name and a version, separated by colons
+    implementation("com.omertron:API-OMDB:1.5")
+    implementation("org.jooq:jool:0.9.15")
+
     // Import libraries
     implementation("org.jsoup:jsoup:1.18.1")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.opencsv:opencsv:5.5.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2")
+
+    /*
+     * Simple Logging Facade for Java (SLF4J) with Apache Log4j
+     * See: http://www.slf4j.org/
+     */
+    val slf4jVersion = "2.0.16"
+    implementation("org.slf4j:slf4j-api:$slf4jVersion")
+    // Logback backend for SLF4J
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.11")
 
     // JUnit API and testing engine
     val jUnitVersion = "5.11.3"
