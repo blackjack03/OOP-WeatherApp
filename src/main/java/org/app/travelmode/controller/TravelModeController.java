@@ -75,8 +75,10 @@ public interface TravelModeController {
 
     /**
      * Start the analysis of possible routes between the inserted places
+     *
+     * @return true if the analysis was successful, false otherwise
      */
-    void startRouteAnalysis();
+    boolean startRouteAnalysis();
 
     /**
      * Analyzes the alternative routes between the two entered locations and inserts the results into the view.

@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.app.weathermode.model.LocationSelector;
 import org.app.weathermode.model.LocationSelectorImpl;
 
-public class LocationSelectorTest {
+class LocationSelectorTest {
     
     private final LocationSelector locationSelector = new LocationSelectorImpl();
 

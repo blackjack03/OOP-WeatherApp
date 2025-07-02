@@ -2,6 +2,7 @@ package org.app.travelmode.controller;
 
 import javafx.scene.Parent;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,12 +12,16 @@ import java.util.Optional;
 import org.app.appcore.MainController;
 import org.app.travelmode.model.core.TravelModeModel;
 import org.app.travelmode.model.core.TravelModeModelImpl;
+import org.app.travelmode.model.exception.DirectionsApiException;
 import org.app.travelmode.model.exception.MapGenerationException;
+import org.app.travelmode.model.exception.TravelRequestException;
+import org.app.travelmode.model.exception.WeatherDataException;
 import org.app.travelmode.model.travel.api.TravelModeResult;
 import org.app.travelmode.model.travel.api.TravelRequest;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 import org.app.travelmode.view.TravelModeView;
 import org.app.travelmode.view.TravelModeViewImpl;
+import org.app.weathermode.model.WeatherDataProviderImpl;
 
 /**
  * Implementation of the TravelMode controller that manages the interaction between
@@ -43,7 +48,7 @@ public class TravelModeControllerImpl implements TravelModeController {
      */
     public TravelModeControllerImpl(final MainController mainController) {
         this.view = new TravelModeViewImpl(this);
-        this.model = new TravelModeModelImpl();
+        this.model = new TravelModeModelImpl(new WeatherDataProviderImpl());
         this.mainController = mainController;
     }
 
@@ -60,7 +65,12 @@ public class TravelModeControllerImpl implements TravelModeController {
      */
     @Override
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) {
-        return this.model.getPlacePredictions(input);
+        try {
+            return this.model.getPlacePredictions(input);
+        } catch (final IOException e) {
+            this.showErrorOnGUI("Errore nell'autocompletamento", e.getMessage() + "\nRitenta l'inserimento");
+        }
+        return List.of();
     }
 
     /**
@@ -76,7 +86,12 @@ public class TravelModeControllerImpl implements TravelModeController {
      */
     @Override
     public void setDeparturePlaceId(final String departurePlaceId) {
-        this.model.setDeparturePlaceId(departurePlaceId);
+        try {
+            this.model.setDeparturePlaceId(departurePlaceId);
+        } catch (final IOException e) {
+            this.showErrorOnGUI("Errore sui dati del luogo di partenza",
+                    "Impossibile ottenere il fuso orario del luogo di partenza\n" + e.getMessage());
+        }
     }
 
     /**
@@ -115,11 +130,23 @@ public class TravelModeControllerImpl implements TravelModeController {
      * {@inheritDoc}
      */
     @Override
-    public void startRouteAnalysis() {
-        final TravelRequest travelRequest = this.model.finalizeTheRequest();
-        this.model.startDirectionsAnalysis(travelRequest);
-        final TravelModeResult mainResult = this.model.getTravelModeMainResult();
-        displayResult(mainResult);
+    public boolean startRouteAnalysis() {
+        try {
+            final TravelRequest travelRequest = this.model.finalizeTheRequest();
+            this.model.startDirectionsAnalysis(travelRequest);
+            final TravelModeResult mainResult = this.model.getTravelModeMainResult();
+            displayResult(mainResult);
+        } catch (final TravelRequestException e) {
+            this.showWarningOnGUI("Richiesta incompleta", e.getMessage());
+            return false;
+        } catch (final DirectionsApiException e) {
+            this.showErrorOnGUI("Errore nella richiesta dei percorsi", e.getMessage());
+            return false;
+        } catch (final WeatherDataException e) {
+            this.showErrorOnGUI("Errore nella richiesta dei dati meteo", e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -127,25 +154,29 @@ public class TravelModeControllerImpl implements TravelModeController {
      */
     @Override
     public void computeAlternativeResults() {
-        final Optional<List<TravelModeResult>> travelModeResults = this.model.getAlternativesResults();
-        travelModeResults.ifPresentOrElse(results -> results.forEach(this::displayResult),
-                () -> this.showWarningOnGUI("No alternatives", "Non sono presenti percorsi alternativi")); //TODO: migliorare gestione
+        try {
+            final Optional<List<TravelModeResult>> travelModeResults = this.model.getAlternativesResults();
+            travelModeResults.ifPresentOrElse(results -> results.forEach(this::displayResult),
+                    () -> this.showWarningOnGUI("No alternatives", "Non sono presenti percorsi alternativi"));
+        } catch (final WeatherDataException e) {
+            this.showErrorOnGUI("Errore nella richiesta dei dati meteo", e.getMessage());
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void showErrorOnGUI(final String title, final String message) {  //TODO: migliorare gestione
-        System.out.println(title + ": " + message);
+    public void showErrorOnGUI(final String title, final String message) {
+        this.mainController.showErrorOnGUI(title, message);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void showWarningOnGUI(final String title, final String message) {    //TODO: migliorare gestione
-        System.out.println(title + ": " + message);
+    public void showWarningOnGUI(final String title, final String message) {
+        this.mainController.showWarningOnGUI(title, message);
     }
 
     /**
@@ -179,9 +210,9 @@ public class TravelModeControllerImpl implements TravelModeController {
             this.view.displayResult(travelModeResult.getMeteoScore(), travelModeResult.getSummary(), durationString,
                     arrivalDate, arrivalTime, travelModeResult.getMapImage());
         } catch (final IllegalStateException e) {
-            this.showErrorOnGUI("Errore nel calcolo del punteggio meteo", e.getMessage()); //TODO: migliorare gestione
+            this.showErrorOnGUI("Errore nel calcolo del punteggio meteo", e.getMessage());
         } catch (final MapGenerationException e) {
-            this.showErrorOnGUI("Errore nella creazione della mappa", e.getMessage()); //TODO: migliorare gestione
+            this.showErrorOnGUI("Errore nella creazione della mappa", e.getMessage());
         }
     }
 }

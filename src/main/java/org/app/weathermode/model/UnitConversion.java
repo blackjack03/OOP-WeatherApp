@@ -1,5 +1,6 @@
 package org.app.weathermode.model;
 
+@SuppressWarnings("checkstyle:MagicNumber")
 public class UnitConversion {
 
     /**

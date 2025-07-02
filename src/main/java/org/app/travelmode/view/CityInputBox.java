@@ -6,22 +6,26 @@ import javafx.scene.control.TextField;
 public interface CityInputBox {
 
     /**
-     * @return the {@link Label} used to display the box title
+     * Returns the label component used as the title of the input box.
+     *
+     * @return The {@link Label} component.
      */
     Label getTitleLabel();
 
     /**
-     * @return the {@link TextField} used to enter the city
+     * Returns the text field used to input the city or address.
+     *
+     * @return The {@link TextField} component.
      */
     TextField getCityTextField();
 
     /**
-     * Disable all input fields in the component
+     * Disables the input field to prevent user interaction.
      */
     void disableAllInputs();
 
     /**
-     * Activate all input fields of the component
+     * Enables the input field to allow user interaction.
      */
     void activateAllInputs();
 }

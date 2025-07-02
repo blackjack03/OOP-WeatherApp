@@ -2,11 +2,14 @@ package org.app.launcher;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.app.appcore.MainController;
 import org.app.appcore.MainControllerImpl;
 import org.app.config.ConfigManager;
 import org.app.weathermode.view.LoadingScreen;
+
+import java.util.Objects;
 
 public class AppCore extends Application {
 
@@ -14,13 +17,17 @@ public class AppCore extends Application {
 
     @Override
     public void start(final Stage primaryStage) {
+        final int minWidth = 1100;
+        final int minHeight = 700;
+        final Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/logo.png")));
         final MainController mainController = new MainControllerImpl();
-        final Scene scene = new Scene(mainController.getRootView(), 1100, 700);
+        final Scene scene = new Scene(mainController.getRootView(), minWidth, minHeight);
         scene.getStylesheets().add(ClassLoader.getSystemResource("css/style.css").toExternalForm());
         primaryStage.setScene(scene);
-        primaryStage.setMinWidth(1100);
-        primaryStage.setMinHeight(700);
+        primaryStage.setMinWidth(minWidth);
+        primaryStage.setMinHeight(minHeight);
         primaryStage.setTitle("App Meteo & Viaggio");
+        primaryStage.getIcons().add(icon);
         primaryStage.setOnCloseRequest(e -> ConfigManager.saveConfig(CONFIG_PATH));
 
         primaryStage.setOnShown(e -> {

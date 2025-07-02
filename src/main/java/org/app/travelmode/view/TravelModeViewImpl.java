@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 
@@ -17,28 +16,46 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Implementation of the travel mode view that handles the user interface for travel route planning.
+ *
+ * <p>This class provides a graphical interface that:
+ * <ul>
+ *     <li>Allows users to input departure and arrival locations</li>
+ *     <li>Enables date and time selection for travel</li>
+ *     <li>Displays route search results with weather information</li>
+ *     <li>Supports alternative route discovery</li>
+ * </ul>
+ */
 public class TravelModeViewImpl implements TravelModeView {
 
-    private static final String STAGE_NAME = "Navigation Mode Test";
     private static final String DEPARTURE_BOX_TITLE = "Partenza";
     private static final String ARRIVAL_BOX_TITLE = "Arrivo";
     private static final String SEARCH_BUTTON_TEXT = "CERCA PERCORSO";
     private static final String ALTERNATIVES_BUTTON_TEXT = "OTTIENI PERCORSI ALTERNATIVI";
 
     private final TravelModeController controller;
-    //private final Stage stage;
-    //private final Scene scene;
     private final VBox root;
     private VBox resultsVBox;
 
-
+    /**
+     * Constructs a new travel mode view with the specified controller.
+     *
+     * <p>This constructor:
+     * <ul>
+     *     <li>Initializes the UI components</li>
+     *     <li>Sets up input handlers for departure and arrival locations</li>
+     *     <li>Configures date/time selection functionality</li>
+     *     <li>Creates and arranges the search interface</li>
+     *     <li>Sets up the results display area</li>
+     * </ul>
+     *
+     * @param controller the controller that handles user interactions and data processing
+     */
     public TravelModeViewImpl(final TravelModeController controller) {
         this.controller = controller;
-        //this.stage = new Stage();
-        //this.stage.setTitle(STAGE_NAME);
         this.root = new VBox(20);
-        //this.scene = new Scene(root, 900, 650);
-        //this.scene.getStylesheets().add(ClassLoader.getSystemResource("css/style.css").toExternalForm());
+
         final BiConsumer<String, String> onDepartureCitySelected = (desc, pID) -> {
             this.controller.setDepartureLocation(desc);
             this.controller.setDeparturePlaceId(pID);
@@ -60,8 +77,9 @@ public class TravelModeViewImpl implements TravelModeView {
         searchButton.setOnAction(event -> {
             this.controller.setDepartureTime(departureInputBox.getSelectedTime());
             this.resultsVBox.getChildren().clear();
-            this.controller.startRouteAnalysis();
-            requestAlternatives.setDisable(false);
+            if (this.controller.startRouteAnalysis()) {
+                requestAlternatives.setDisable(false);
+            }
         });
         searchButton.getStyleClass().add("main-button");
 
@@ -101,19 +119,9 @@ public class TravelModeViewImpl implements TravelModeView {
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
     }
 
-    @Override
-    public void start() {
-
-        //this.stage.setScene(scene);
-        //this.stage.show();
-    }
-
-    @Override
-    public void displayError(String message) {
-
-
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void displayResult(int meteoScore, final String description, final String duration, final String arrivalDate, final String arrivalTime, final Image mapImage) {
         Platform.runLater(() -> {
@@ -123,6 +131,9 @@ public class TravelModeViewImpl implements TravelModeView {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Parent getRootView() {
         return this.root;

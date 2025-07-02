@@ -47,5 +47,40 @@ public interface Controller {
      */
     void stop();
 
+    /**
+     * Requests the Google API key from the user through a dialog.
+     *
+     * <p>This method:
+     * <ul>
+     *     <li>Prompts the user to input a valid Google API key</li>
+     *     <li>Validates the provided key</li>
+     *     <li>Updates the application configuration with the new key</li>
+     * </ul>
+     *
+     * <p>If an invalid key is provided, the method will show an error message
+     * and prompt the user to try again.
+     */
     void requestGoogleApiKey();
+
+    /**
+     * Displays an error message to the user through the GUI.
+     *
+     * <p>This method should be used to show critical errors that prevent
+     * normal operation of the travel mode functionality.
+     *
+     * @param title   the title of the error message dialog
+     * @param message the detailed error message to be displayed
+     */
+    void showError(final String title, final String message);
+
+    /**
+     * Displays a warning message to the user through the GUI.
+     *
+     * <p>This method should be used to show non-critical warnings that
+     * don't prevent the main functionality but require user attention.
+     *
+     * @param title   the title of the warning message dialog
+     * @param message the detailed warning message to be displayed
+     */
+    void showWarning(final String title, final String message);
 }

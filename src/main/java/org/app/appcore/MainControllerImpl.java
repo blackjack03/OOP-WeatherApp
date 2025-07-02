@@ -51,7 +51,8 @@ public class MainControllerImpl implements MainController {
         this.travelModeController = new TravelModeControllerImpl(this);
         this.travelModeView = this.travelModeController.gatTraveleModeView();
 
-        final HBox topBar = new HBox(20);
+        final int spacing = 20;
+        final HBox topBar = new HBox(spacing);
         topBar.setAlignment(Pos.CENTER);
         final Button travelButton = new Button(TRAVEL_BUTTON_TEXT);
         final Button weatherButton = new Button(WEATHER_BUTTON_TEXT);
@@ -59,8 +60,16 @@ public class MainControllerImpl implements MainController {
         travelButton.setOnAction(event -> {
             if (this.isTravelModeFirstUse) {
                 this.isTravelModeFirstUse = false;
-                this.lookForGoogleApiKey();
-                this.travelModeController.startTravelMode();
+                try {
+                    this.travelModeController.startTravelMode();
+                } catch (final IllegalStateException e) {
+                    this.lookForGoogleApiKey();
+                    if (ConfigManager.getConfig().getApi().getApiKey().isEmpty()) {
+                        this.isTravelModeFirstUse = true;
+                        return;
+                    }
+                    this.travelModeController.startTravelMode();
+                }
             }
             this.rootView.setCenter(this.travelModeView);
             travelButton.setDisable(true);
@@ -98,6 +107,22 @@ public class MainControllerImpl implements MainController {
     @Override
     public Parent getRootView() {
         return this.rootView;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showErrorOnGUI(final String title, final String message) {
+        this.appController.showError(title, message);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showWarningOnGUI(final String title, final String message) {
+        this.appController.showWarning(title, message);
     }
 
     /**

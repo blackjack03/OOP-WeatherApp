@@ -8,34 +8,44 @@ import java.time.LocalTime;
 public interface CityDateTimeInputBox extends CityInputBox {
 
     /**
-     * @return the {@link Spinner} used for entering hours
+     * Returns the hour spinner component.
+     *
+     * @return A {@link Spinner} for selecting the hour (0–23).
      */
     Spinner<Integer> getHourSpinner();
 
     /**
-     * @return the {@link Spinner} used for entering minutes
+     * Returns the minute spinner component.
+     *
+     * @return A {@link Spinner} for selecting the minute (0–59).
      */
     Spinner<Integer> getMinuteSpinner();
 
     /**
-     * @return the {@link DatePicker} used to insert the departure date
+     * Returns the {@link DatePicker} component used for selecting a date.
+     *
+     * @return The {@link DatePicker} with restricted selectable range.
      */
     DatePicker getDatePicker();
 
     /**
-     * @return the selected number in the hour spinner
+     * Gets the selected hour from the hour spinner.
+     *
+     * @return The selected hour as an integer.
      */
     int getSelectedHour();
 
     /**
-     * @return the selected number in the minute spinner
+     * Gets the selected minute from the minute spinner.
+     *
+     * @return The selected minute as an integer.
      */
     int getSelectedMinute();
 
     /**
-     * Return the selected departure time
+     * Returns the selected {@link LocalTime} based on spinner values.
      *
-     * @return a {@link LocalTime} representing the selected departure time
+     * @return The selected or current {@link LocalTime}.
      */
     LocalTime getSelectedTime();
 }

@@ -6,18 +6,6 @@ import javafx.scene.image.Image;
 public interface TravelModeView {
 
     /**
-     * This method is called before the UI is used. It should finalize its status.
-     */
-    void start();
-
-    /**
-     * Some unexpected error occurred in the Controller, and the user should be informed.
-     *
-     * @param message the message associated with the error.
-     */
-    void displayError(String message);
-
-    /**
      * Allows you to view the result of the analysis of a route.
      *
      * @param meteoScore  The score related to the weather conditions of the route.
@@ -29,5 +17,12 @@ public interface TravelModeView {
      */
     void displayResult(int meteoScore, String description, String duration, String arrivalDate, String arrivalTime, Image mapImage);
 
+    /**
+     * Returns the root view container for this travel mode interface.
+     *
+     * <p>The root view contains all UI components organized in a vertical layout.
+     *
+     * @return the root {@link Parent} node containing all view components
+     */
     Parent getRootView();
 }
