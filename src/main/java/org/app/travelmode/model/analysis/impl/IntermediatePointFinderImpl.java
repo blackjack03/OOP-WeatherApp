@@ -70,8 +70,8 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
             durationCounter = durationCounter.add(stepDuration);
 
             if (isWithinTargetDistance(distanceCounter)) {
-                intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), step.getEnd_location(), startPoint, distanceCounter.doubleValue()));
-                resetCounters(step.getEnd_location());
+                intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), step.getEndLocation(), startPoint, distanceCounter.doubleValue()));
+                resetCounters(step.getEndLocation());
             } else if (distanceCounter.compareTo(TARGET_DISTANCE.add(DELTA)) >= 0) {
                 distanceCounter = distanceCounter.subtract(stepDistance);
                 durationCounter = durationCounter.subtract(stepDuration);
@@ -122,8 +122,8 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
             durationCounter = durationCounter.add(subStepDuration);
 
             if (isWithinTargetDistance(distanceCounter)) {
-                intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), subStep.getEnd_location(), startPoint, distanceCounter.doubleValue()));
-                resetCounters(subStep.getEnd_location());
+                intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), subStep.getEndLocation(), startPoint, distanceCounter.doubleValue()));
+                resetCounters(subStep.getEndLocation());
             }
         }
     }

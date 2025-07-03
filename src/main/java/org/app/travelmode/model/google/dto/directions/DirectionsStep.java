@@ -71,7 +71,7 @@ public class DirectionsStep extends SimpleDirectionsStep {
     @Override
     public String toString() {
         return "DirectionsStep{" + "[duration= " + super.getDuration() + "], [distance= " + super.getDistance()
-                + "], start_location= " + super.getStart_location() + "], [end_location= " + super.getEnd_location()
+                + "], start_location= " + super.getStartLocation() + "], [end_location= " + super.getEndLocation()
                 + "], [polyline= " + polyline + "], [travel_mode= " + travel_mode + "]}\n";
     }
 }
