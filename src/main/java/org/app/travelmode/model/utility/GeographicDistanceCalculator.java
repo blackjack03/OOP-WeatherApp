@@ -7,19 +7,19 @@ import java.math.RoundingMode;
 
 
 /**
- * Utility class used to calculate the distance between two points on the Earth's surface
+ * Utility class used to calculate the distance between two points on the Earth's surface.
  */
-public class GeographicDistanceCalculator {
+public final class GeographicDistanceCalculator {
     private static final double EARTH_RADIUS = 6372.795477598;
 
     /**
-     * Creates a new instance of {@link GeographicDistanceCalculator}
+     * Private constructor to prevent instantiation of this utility class.
      */
-    public GeographicDistanceCalculator() {
+    private GeographicDistanceCalculator() {
     }
 
     /**
-     * Calculate the distance between two points on Earth
+     * Calculate the distance between two points on Earth.
      *
      * @param p1 first point
      * @param p2 second point
@@ -32,10 +32,10 @@ public class GeographicDistanceCalculator {
         final double radiantLat2 = Math.toRadians(p2.getLat());
         final double radiantLng2 = Math.toRadians(p2.getLng());
         //R * arccos(sin(latA) * sin(latB) + cos(latA) * cos(latB) * cos(lonA-lonB))
-        return BigDecimal.valueOf((EARTH_RADIUS *
-                        Math.acos((Math.sin(radiantLat1) * Math.sin(radiantLat2) +
-                                Math.cos(radiantLat1) * Math.cos(radiantLat2) *
-                                        Math.cos(radiantLng1 - radiantLng2)))) * 1000)
+        return BigDecimal.valueOf((EARTH_RADIUS
+                        * Math.acos((Math.sin(radiantLat1) * Math.sin(radiantLat2)
+                        + Math.cos(radiantLat1) * Math.cos(radiantLat2)
+                        * Math.cos(radiantLng1 - radiantLng2)))) * 1000)
                 .setScale(1, RoundingMode.HALF_UP);
     }
 

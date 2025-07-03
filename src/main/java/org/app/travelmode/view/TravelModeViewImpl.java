@@ -4,9 +4,12 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import org.app.travelmode.controller.TravelModeController;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 
@@ -33,6 +36,11 @@ public class TravelModeViewImpl implements TravelModeView {
     private static final String ARRIVAL_BOX_TITLE = "Arrivo";
     private static final String SEARCH_BUTTON_TEXT = "CERCA PERCORSO";
     private static final String ALTERNATIVES_BUTTON_TEXT = "OTTIENI PERCORSI ALTERNATIVI";
+    private static final int ROOT_SPACING = 20;
+    private static final int TOP_PANE_SPACING = 20;
+    private static final int CENTER_PANE_SPACING = 15;
+    private static final int TOP_PANE_MAX_WIDTH = 1200;
+    private static final int RESULT_BOX_SPACING = 20;
 
     private final TravelModeController controller;
     private final VBox root;
@@ -54,7 +62,7 @@ public class TravelModeViewImpl implements TravelModeView {
      */
     public TravelModeViewImpl(final TravelModeController controller) {
         this.controller = controller;
-        this.root = new VBox(20);
+        this.root = new VBox(ROOT_SPACING);
 
         final BiConsumer<String, String> onDepartureCitySelected = (desc, pID) -> {
             this.controller.setDepartureLocation(desc);
@@ -67,8 +75,10 @@ public class TravelModeViewImpl implements TravelModeView {
         final Function<String, List<PlaceAutocompletePrediction>> fetchPredictions = this.controller::getPlacePredictions;
         final Consumer<LocalDate> onDateSelected = this.controller::setDepartureDate;
 
-        final CityDateTimeInputBoxImpl departureInputBox = new CityDateTimeInputBoxImpl(DEPARTURE_BOX_TITLE, onDepartureCitySelected, fetchPredictions, onDateSelected, true);
-        final CityInputBoxImpl arrivalInputBox = new CityInputBoxImpl(ARRIVAL_BOX_TITLE, onArrivalCitySelected, fetchPredictions, true);
+        final CityDateTimeInputBoxImpl departureInputBox = new CityDateTimeInputBoxImpl(DEPARTURE_BOX_TITLE,
+                onDepartureCitySelected, fetchPredictions, onDateSelected, true);
+        final CityInputBoxImpl arrivalInputBox = new CityInputBoxImpl(ARRIVAL_BOX_TITLE,
+                onArrivalCitySelected, fetchPredictions, true);
 
 
         final Button searchButton = new Button(SEARCH_BUTTON_TEXT);
@@ -90,19 +100,19 @@ public class TravelModeViewImpl implements TravelModeView {
         });
         requestAlternatives.getStyleClass().add("main-button");
 
-        final VBox centerPane = new VBox(15);
+        final VBox centerPane = new VBox(CENTER_PANE_SPACING);
         centerPane.setAlignment(Pos.CENTER);
         centerPane.getChildren().addAll(searchButton, requestAlternatives);
         centerPane.setMaxHeight(departureInputBox.getHeight());
 
-        final HBox topPane = new HBox(20);
+        final HBox topPane = new HBox(TOP_PANE_SPACING);
         topPane.setAlignment(Pos.CENTER);
-        topPane.setMaxWidth(1200);
+        topPane.setMaxWidth(TOP_PANE_MAX_WIDTH);
         topPane.getChildren().addAll(departureInputBox, centerPane, arrivalInputBox);
         HBox.setHgrow(centerPane, Priority.ALWAYS);
         topPane.getStyleClass().add("top-pane");
 
-        resultsVBox = new VBox(20);
+        resultsVBox = new VBox(RESULT_BOX_SPACING);
         resultsVBox.setAlignment(Pos.CENTER);
         resultsVBox.setFillWidth(true);
         resultsVBox.getStyleClass().add("results-section");
@@ -123,10 +133,12 @@ public class TravelModeViewImpl implements TravelModeView {
      * {@inheritDoc}
      */
     @Override
-    public void displayResult(int meteoScore, final String description, final String duration, final String arrivalDate, final String arrivalTime, final Image mapImage) {
+    public void displayResult(final int meteoScore, final String description, final String duration,
+                              final String arrivalDate, final String arrivalTime, final Image mapImage) {
         Platform.runLater(() -> {
             final Scene mainScene = this.controller.requestAppViewRootNode().getScene();
-            final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalDate, arrivalTime, mapImage, mainScene.getWindow());
+            final ResultBox resultBox = new ResultBox(meteoScore, description, duration,
+                    arrivalDate, arrivalTime, mapImage, mainScene.getWindow());
             this.resultsVBox.getChildren().add(resultBox);
         });
     }

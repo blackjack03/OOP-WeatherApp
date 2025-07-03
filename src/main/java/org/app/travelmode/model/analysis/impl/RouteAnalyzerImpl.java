@@ -3,7 +3,9 @@ package org.app.travelmode.model.analysis.impl;
 import org.app.travelmode.model.analysis.api.IntermediatePointFinder;
 import org.app.travelmode.model.analysis.api.RouteAnalyzer;
 import org.app.travelmode.model.analysis.api.SubStepGenerator;
-import org.app.travelmode.model.google.dto.directions.*;
+import org.app.travelmode.model.google.dto.directions.DirectionsLeg;
+import org.app.travelmode.model.google.dto.directions.DirectionsRoute;
+import org.app.travelmode.model.google.dto.directions.SimpleDirectionsStep;
 
 import java.util.List;
 

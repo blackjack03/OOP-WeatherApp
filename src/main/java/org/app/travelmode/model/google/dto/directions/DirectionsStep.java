@@ -16,23 +16,25 @@ package org.app.travelmode.model.google.dto.directions;
  */
 public class DirectionsStep extends SimpleDirectionsStep {
 
+    // CHECKSTYLE: MemberName OFF
     private final DirectionsPolyline polyline;
     private final String travel_mode;
+    // CHECKSTYLE: MemberName ON
 
     /**
      * Constructs a new {@code DirectionsStep} with the given route step data.
      *
-     * @param duration       The duration of the step as a {@link TextValueObject}
-     * @param end_location   The coordinates where the step ends
-     * @param start_location The coordinates where the step begins
-     * @param distance       The distance of the step as a {@link TextValueObject}
-     * @param travel_mode    The mode of travel used for this step (e.g., "WALKING", "DRIVING")
-     * @param polyline       The {@link DirectionsPolyline} representing the path of this step
+     * @param duration      The duration of the step as a {@link TextValueObject}
+     * @param endLocation   The coordinates where the step ends
+     * @param startLocation The coordinates where the step begins
+     * @param distance      The distance of the step as a {@link TextValueObject}
+     * @param travelMode    The mode of travel used for this step (e.g., "WALKING", "DRIVING")
+     * @param polyline      The {@link DirectionsPolyline} representing the path of this step
      */
-    public DirectionsStep(final TextValueObject duration, final LatLng end_location, final LatLng start_location,
-                          final TextValueObject distance, final String travel_mode, final DirectionsPolyline polyline) {
-        super(duration, end_location, start_location, distance);
-        this.travel_mode = travel_mode;
+    public DirectionsStep(final TextValueObject duration, final LatLng endLocation, final LatLng startLocation,
+                          final TextValueObject distance, final String travelMode, final DirectionsPolyline polyline) {
+        super(duration, endLocation, startLocation, distance);
+        this.travel_mode = travelMode;
         this.polyline = polyline;
     }
 
@@ -50,7 +52,7 @@ public class DirectionsStep extends SimpleDirectionsStep {
      *
      * @return A string representing the mode of transportation
      */
-    public String getTravel_mode() {
+    public String getTravelMode() {
         return this.travel_mode;
     }
 
@@ -71,7 +73,7 @@ public class DirectionsStep extends SimpleDirectionsStep {
     @Override
     public String toString() {
         return "DirectionsStep{" + "[duration= " + super.getDuration() + "], [distance= " + super.getDistance()
-                + "], start_location= " + super.getStart_location() + "], [end_location= " + super.getEnd_location()
+                + "], start_location= " + super.getStartLocation() + "], [end_location= " + super.getEndLocation()
                 + "], [polyline= " + polyline + "], [travel_mode= " + travel_mode + "]}\n";
     }
 }

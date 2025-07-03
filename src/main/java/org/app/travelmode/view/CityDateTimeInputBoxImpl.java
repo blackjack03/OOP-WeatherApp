@@ -1,6 +1,10 @@
 package org.app.travelmode.view;
 
-import javafx.scene.control.*;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TitledPane;
+import javafx.scene.control.DateCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
@@ -29,6 +33,13 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
 
     private static final double SPACING = 5;
     private static final String TITLED_PANE_PROMPT = "Personalizza data e ora";
+    private static final int MAX_HOURS = 23;
+    private static final int MAX_MINUTES = 59;
+    private static final int MIN_HOURS = 0;
+    private static final int MIN_MINUTES = 0;
+    private static final int INITIAL_HOUR = 12;
+    private static final int INITIAL_MINUTE = 0;
+    private static final int MINUTES_TO_INCREMENT = 5;
 
     private final Spinner<Integer> hourSpinner;
     private final Spinner<Integer> minuteSpinner;
@@ -46,17 +57,19 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
      */
     public CityDateTimeInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected,
                                     final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions,
-                                    final Consumer<LocalDate> onDateSelected, boolean resize) {
+                                    final Consumer<LocalDate> onDateSelected, final boolean resize) {
         super(title, onCitySelected, fetcPredictions, false);
 
         // Spinner per le ore (0-23)
         this.hourSpinner = new Spinner<>();
-        hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12));
+        hourSpinner.setValueFactory(new SpinnerValueFactory
+                .IntegerSpinnerValueFactory(MIN_HOURS, MAX_HOURS, INITIAL_HOUR));
         hourSpinner.getStyleClass().add("spinner-custom");
 
         // Spinner per i minuti (0-59) con incremento di 5 minuti
         this.minuteSpinner = new Spinner<>();
-        minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 5));
+        minuteSpinner.setValueFactory(new SpinnerValueFactory
+                .IntegerSpinnerValueFactory(MIN_MINUTES, MAX_MINUTES, INITIAL_MINUTE, MINUTES_TO_INCREMENT));
         minuteSpinner.getStyleClass().add("spinner-custom");
 
         this.datePicker = new DatePicker();
@@ -65,7 +78,7 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
         final LocalDate end = oggi.plusDays(6);
         datePicker.setDayCellFactory((dP) -> new DateCell() {
             @Override
-            public void updateItem(final LocalDate date, boolean empty) {
+            public void updateItem(final LocalDate date, final boolean empty) {
                 super.updateItem(date, empty);
                 if (date.isBefore(start) || date.isAfter(end)) {
                     setDisable(true);
@@ -180,7 +193,7 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
      * {@inheritDoc}
      */
     @Override
-    protected void setDisableAllInputs(boolean disable) {
+    protected void setDisableAllInputs(final boolean disable) {
         super.setDisableAllInputs(disable);
         this.hourSpinner.setDisable(disable);
         this.minuteSpinner.setDisable(disable);

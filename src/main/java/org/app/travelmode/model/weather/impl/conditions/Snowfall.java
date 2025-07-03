@@ -26,7 +26,7 @@ public class Snowfall extends AbstractWeatherCondition {
      *
      * @param snowfallCm the amount of snowfall in centimeters (cm) that has fallen in the previous hour
      */
-    public Snowfall(double snowfallCm) {
+    public Snowfall(final double snowfallCm) {
         super(NAME, WEIGHT);
         this.intensity = SnowfallLevel.fromValue(snowfallCm);
     }
@@ -53,7 +53,7 @@ public class Snowfall extends AbstractWeatherCondition {
         private final double intensity;
         private final int intensityScore;
 
-        SnowfallLevel(double intensity, int intensityScore) {
+        SnowfallLevel(final double intensity, final int intensityScore) {
             this.intensity = intensity;
             this.intensityScore = intensityScore;
         }
@@ -64,7 +64,7 @@ public class Snowfall extends AbstractWeatherCondition {
          * @param value the measured snowfall in centimeters for the preceding hour
          * @return the corresponding snowfall level, or NO_SNOWFALL if no threshold is met
          */
-        public static SnowfallLevel fromValue(double value) {
+        public static SnowfallLevel fromValue(final double value) {
             for (final SnowfallLevel snowfallLevel : SnowfallLevel.values()) {
                 if (value >= snowfallLevel.intensity) {
                     return snowfallLevel;

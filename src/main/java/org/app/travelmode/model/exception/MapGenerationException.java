@@ -10,7 +10,7 @@ public class MapGenerationException extends Exception {
      *
      * @param message the detail message describing the error condition
      */
-    public MapGenerationException(String message) {
+    public MapGenerationException(final String message) {
         super(message);
     }
 
@@ -20,7 +20,7 @@ public class MapGenerationException extends Exception {
      * @param message the detail message describing the error condition
      * @param cause   the cause of this exception
      */
-    public MapGenerationException(String message, Throwable cause) {
+    public MapGenerationException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

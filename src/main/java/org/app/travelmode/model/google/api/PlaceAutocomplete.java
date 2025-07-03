@@ -28,5 +28,5 @@ public interface PlaceAutocomplete {
      * @throws IOException if there's an error communicating with the Google Places API
      *                     or parsing the response
      */
-    List<PlaceAutocompletePrediction> getPlacePredictions(final String input) throws IOException;
+    List<PlaceAutocompletePrediction> getPlacePredictions(String input) throws IOException;
 }

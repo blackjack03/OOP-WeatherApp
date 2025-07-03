@@ -16,7 +16,7 @@ public class DirectionsApiException extends Exception {
      *
      * @param message the detail message describing the error condition
      */
-    public DirectionsApiException(String message) {
+    public DirectionsApiException(final String message) {
         super(message);
     }
 
@@ -26,7 +26,7 @@ public class DirectionsApiException extends Exception {
      * @param message the detail message describing the error condition
      * @param cause   the cause of this exception
      */
-    public DirectionsApiException(String message, Throwable cause) {
+    public DirectionsApiException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

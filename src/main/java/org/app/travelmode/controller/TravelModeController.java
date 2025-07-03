@@ -29,52 +29,52 @@ public interface TravelModeController {
      * @param input a {@link String} representing the characters written by the user
      * @return a list of {@link PlaceAutocompletePrediction} matching the input text
      */
-    List<PlaceAutocompletePrediction> getPlacePredictions(final String input);
+    List<PlaceAutocompletePrediction> getPlacePredictions(String input);
 
     /**
-     * Set the departure location
+     * Set the departure location.
      *
      * @param departureLocation the name or address of the departure location
      */
-    void setDepartureLocation(final String departureLocation);
+    void setDepartureLocation(String departureLocation);
 
     /**
-     * Set the PlaceId associated with the starting location
+     * Set the PlaceId associated with the starting location.
      *
      * @param departurePlaceId the PlaceId associated with the starting location
      */
-    void setDeparturePlaceId(final String departurePlaceId);
+    void setDeparturePlaceId(String departurePlaceId);
 
     /**
-     * Set the arrival location
+     * Set the arrival location.
      *
      * @param arrivalLocation the name or address of the arrival location
      */
-    void setArrivalLocation(final String arrivalLocation);
+    void setArrivalLocation(String arrivalLocation);
 
     /**
-     * Set the PlaceId associated with the arrival location
+     * Set the PlaceId associated with the arrival location.
      *
      * @param arrivalPlaceId the PlaceId associated with the arrival location
      */
-    void setArrivalPlaceId(final String arrivalPlaceId);
+    void setArrivalPlaceId(String arrivalPlaceId);
 
     /**
-     * Set the departure time
+     * Set the departure time.
      *
      * @param departureTime the departure time
      */
-    void setDepartureTime(final LocalTime departureTime);
+    void setDepartureTime(LocalTime departureTime);
 
     /**
-     * Set the departure date
+     * Set the departure date.
      *
      * @param departureDate the departure date
      */
-    void setDepartureDate(final LocalDate departureDate);
+    void setDepartureDate(LocalDate departureDate);
 
     /**
-     * Start the analysis of possible routes between the inserted places
+     * Start the analysis of possible routes between the inserted places.
      *
      * @return true if the analysis was successful, false otherwise
      */
@@ -94,7 +94,7 @@ public interface TravelModeController {
      * @param title   the title of the error message dialog
      * @param message the detailed error message to be displayed
      */
-    void showErrorOnGUI(final String title, final String message);
+    void showErrorOnGUI(String title, String message);
 
     /**
      * Displays a warning message to the user through the GUI.
@@ -105,7 +105,7 @@ public interface TravelModeController {
      * @param title   the title of the warning message dialog
      * @param message the detailed warning message to be displayed
      */
-    void showWarningOnGUI(final String title, final String message);
+    void showWarningOnGUI(String title, String message);
 
     /**
      * Retrieves the root view node for the travel mode interface.

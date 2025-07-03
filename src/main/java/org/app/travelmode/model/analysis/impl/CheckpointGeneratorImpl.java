@@ -40,11 +40,10 @@ public class CheckpointGeneratorImpl implements CheckpointGenerator {
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("checkstyle:MagicNumber")
     public List<Checkpoint> generateCheckpoints(final List<SimpleDirectionsStep> steps, final ZonedDateTime departureDateTime) {
         final List<Checkpoint> checkpoints = new ArrayList<>();
         final SimpleDirectionsStep firstStep = steps.get(0);
-        checkpoints.add(createCheckpoint(firstStep.getStart_location(), departureDateTime));
+        checkpoints.add(createCheckpoint(firstStep.getStartLocation(), departureDateTime));
         for (int i = 0; i < steps.size(); i++) {
             final SimpleDirectionsStep step = steps.get(i);
             final Checkpoint previousCheckpoint = checkpoints.get(i);
@@ -77,7 +76,7 @@ public class CheckpointGeneratorImpl implements CheckpointGenerator {
      */
     private Checkpoint createNextCheckpoint(final Checkpoint previousCheckpoint, final SimpleDirectionsStep step) {
         return createCheckpoint(
-                step.getEnd_location(),
+                step.getEndLocation(),
                 previousCheckpoint.getArrivalDateTime().plusSeconds((long) step.getDuration().getValue())
         );
     }

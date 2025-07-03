@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class DirectionsLeg {
 
+    // CHECKSTYLE: MemberName OFF
     private final String end_address;
     private final LatLng end_location;
     private final String start_address;
@@ -25,31 +26,32 @@ public class DirectionsLeg {
     private final TextValueObject distance;
     private final TextValueObject duration;
     private final TextValueObject duration_in_traffic;
+    // CHECKSTYLE: MemberName ON
 
     /**
      * Constructs a new DirectionsLeg with all required information.
      *
-     * @param end_address         the human-readable destination address
-     * @param end_location        the geographical coordinates of the destination
-     * @param start_address       the human-readable starting address
-     * @param start_location      the geographical coordinates of the starting point
-     * @param steps               the list of navigation steps for this leg
-     * @param distance            the total distance of this leg
-     * @param duration            the estimated duration without traffic
-     * @param duration_in_traffic the estimated duration considering traffic
+     * @param endAddress        the human-readable destination address
+     * @param endLocation       the geographical coordinates of the destination
+     * @param startAddress      the human-readable starting address
+     * @param startLocation     the geographical coordinates of the starting point
+     * @param steps             the list of navigation steps for this leg
+     * @param distance          the total distance of this leg
+     * @param duration          the estimated duration without traffic
+     * @param durationInTraffic the estimated duration considering traffic
      */
-    public DirectionsLeg(final String end_address, final LatLng end_location, final String start_address,
-                         final LatLng start_location, final List<DirectionsStep> steps,
+    public DirectionsLeg(final String endAddress, final LatLng endLocation, final String startAddress,
+                         final LatLng startLocation, final List<DirectionsStep> steps,
                          final TextValueObject distance, final TextValueObject duration,
-                         final TextValueObject duration_in_traffic) {
-        this.end_address = end_address;
-        this.end_location = end_location;
-        this.start_address = start_address;
-        this.start_location = start_location;
+                         final TextValueObject durationInTraffic) {
+        this.end_address = endAddress;
+        this.end_location = endLocation;
+        this.start_address = startAddress;
+        this.start_location = startLocation;
         this.steps = steps;
         this.distance = distance;
         this.duration = duration;
-        this.duration_in_traffic = duration_in_traffic;
+        this.duration_in_traffic = durationInTraffic;
     }
 
     /**
@@ -57,7 +59,7 @@ public class DirectionsLeg {
      *
      * @return the destination address as a string.
      */
-    public String getEnd_address() {
+    public String getEndAddress() {
         return this.end_address;
     }
 
@@ -66,7 +68,7 @@ public class DirectionsLeg {
      *
      * @return the destination location coordinates.
      */
-    public LatLng getEnd_location() {
+    public LatLng getEndLocation() {
         return this.end_location;
     }
 
@@ -75,7 +77,7 @@ public class DirectionsLeg {
      *
      * @return the starting address as a string.
      */
-    public String getStart_address() {
+    public String getStartAddress() {
         return this.start_address;
     }
 
@@ -84,7 +86,7 @@ public class DirectionsLeg {
      *
      * @return the starting location coordinates
      */
-    public LatLng getStart_location() {
+    public LatLng getStartLocation() {
         return this.start_location;
     }
 
@@ -120,7 +122,7 @@ public class DirectionsLeg {
      *
      * @return the traffic-aware duration information
      */
-    public TextValueObject getDuration_in_traffic() {
+    public TextValueObject getDurationInTraffic() {
         return this.duration_in_traffic;
     }
 
@@ -129,9 +131,9 @@ public class DirectionsLeg {
      */
     @Override
     public String toString() {
-        return "{DirectionsLeg [end_address=" + end_address + ",\n end_location=" + end_location +
-                ",\n start_address=" + start_address + ",\n start_location=" + start_location +
-                ",\n distance=" + distance + ",\n duration=" + duration + ",\n duration_in_traffic=" + duration_in_traffic +
-                ",\n steps=" + steps + "\n}";
+        return "{DirectionsLeg [end_address=" + end_address + ",\n end_location=" + end_location
+                + ",\n start_address=" + start_address + ",\n start_location=" + start_location
+                + ",\n distance=" + distance + ",\n duration=" + duration + ",\n duration_in_traffic="
+                + duration_in_traffic + ",\n steps=" + steps + "\n}";
     }
 }

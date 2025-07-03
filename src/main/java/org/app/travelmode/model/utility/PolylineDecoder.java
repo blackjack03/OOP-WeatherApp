@@ -15,12 +15,12 @@ import java.util.List;
  *     <li>Handles latitude and longitude with 5 decimal places precision</li>
  * </ul>
  */
-public class PolylineDecoder {
+public final class PolylineDecoder {
 
     /**
-     * Creates a new instance of PolylineDecoder.
+     * Private constructor to prevent instantiation of this utility class.
      */
-    public PolylineDecoder() {
+    private PolylineDecoder() {
     }
 
     /**
@@ -29,10 +29,11 @@ public class PolylineDecoder {
      * @param encodedPolyline The Google-encoded polyline.
      * @return A list of {@link LatLng} representing the points on the polyline.
      */
+    // CHECKSTYLE: MagicNumber OFF
     public static List<LatLng> decode(final String encodedPolyline) {
         final List<LatLng> polyline = new ArrayList<>();
         int index = 0;
-        int len = encodedPolyline.length();
+        final int len = encodedPolyline.length();
         int lat = 0;
         int lng = 0;
 
@@ -45,7 +46,7 @@ public class PolylineDecoder {
                 result |= (b & 0x1F) << shift;
                 shift += 5;
             } while (b >= 0x20);
-            int deltaLat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            final int deltaLat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
             lat += deltaLat;
 
             shift = 0;
@@ -55,7 +56,7 @@ public class PolylineDecoder {
                 result |= (b & 0x1F) << shift;
                 shift += 5;
             } while (b >= 0x20);
-            int deltaLng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            final int deltaLng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
             lng += deltaLng;
 
             polyline.add(new LatLng(lat / 1e5, lng / 1e5));
@@ -63,4 +64,5 @@ public class PolylineDecoder {
 
         return polyline;
     }
+    // CHECKSTYLE: MagicNumber ON
 }

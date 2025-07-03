@@ -56,11 +56,11 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
      * @return an immutable list of intermediate points along the route
      */
     @Override
-    @SuppressWarnings("checkstyle:MagicNumber")
-    public List<SimpleDirectionsStep> findIntermediatePoints(final DirectionsLeg directionsLeg, final SubStepGenerator subStepGenerator) {
+    public List<SimpleDirectionsStep> findIntermediatePoints(final DirectionsLeg directionsLeg,
+                                                             final SubStepGenerator subStepGenerator) {
         final List<SimpleDirectionsStep> intermediatePoints = new ArrayList<>();
 
-        this.startPoint = directionsLeg.getStart_location();
+        this.startPoint = directionsLeg.getStartLocation();
 
         for (final DirectionsStep step : directionsLeg.getSteps()) {
             final BigDecimal stepDistance = BigDecimal.valueOf(step.getDistance().getValue());
@@ -70,8 +70,9 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
             durationCounter = durationCounter.add(stepDuration);
 
             if (isWithinTargetDistance(distanceCounter)) {
-                intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), step.getEnd_location(), startPoint, distanceCounter.doubleValue()));
-                resetCounters(step.getEnd_location());
+                intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), step.getEndLocation(),
+                        startPoint, distanceCounter.doubleValue()));
+                resetCounters(step.getEndLocation());
             } else if (distanceCounter.compareTo(TARGET_DISTANCE.add(DELTA)) >= 0) {
                 distanceCounter = distanceCounter.subtract(stepDistance);
                 durationCounter = durationCounter.subtract(stepDuration);
@@ -79,9 +80,10 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
             }
         }
 
-        final LatLng endPoint = directionsLeg.getEnd_location();
+        final LatLng endPoint = directionsLeg.getEndLocation();
         if (!startPoint.equals(endPoint) || directionsLeg.getSteps().size() == 1) {
-            intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), endPoint, startPoint, distanceCounter.doubleValue()));
+            intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), endPoint,
+                    startPoint, distanceCounter.doubleValue()));
         }
 
         return List.copyOf(intermediatePoints);
@@ -93,7 +95,6 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
      * @param distance the distance to check, in meters.
      * @return true if the distance is within the target range; false otherwise.
      */
-    @SuppressWarnings("checkstyle:MagicNumber")
     private boolean isWithinTargetDistance(final BigDecimal distance) {
         return distance.compareTo(TARGET_DISTANCE.subtract(DELTA)) > 0 && distance.compareTo(TARGET_DISTANCE.add(DELTA)) < 0;
     }
@@ -112,7 +113,8 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
      * @param subSteps           The list of sub-steps to analyze
      * @param intermediatePoints the list of intermediate points to update
      */
-    private void analyzeSubSteps(final List<SimpleDirectionsStep> subSteps, final List<SimpleDirectionsStep> intermediatePoints) {
+    private void analyzeSubSteps(final List<SimpleDirectionsStep> subSteps,
+                                 final List<SimpleDirectionsStep> intermediatePoints) {
 
         for (final SimpleDirectionsStep subStep : subSteps) {
             final BigDecimal subStepDistance = BigDecimal.valueOf(subStep.getDistance().getValue());
@@ -122,8 +124,9 @@ public class IntermediatePointFinderImpl implements IntermediatePointFinder {
             durationCounter = durationCounter.add(subStepDuration);
 
             if (isWithinTargetDistance(distanceCounter)) {
-                intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(), subStep.getEnd_location(), startPoint, distanceCounter.doubleValue()));
-                resetCounters(subStep.getEnd_location());
+                intermediatePoints.add(new SimpleDirectionsStep(durationCounter.doubleValue(),
+                        subStep.getEndLocation(), startPoint, distanceCounter.doubleValue()));
+                resetCounters(subStep.getEndLocation());
             }
         }
     }

@@ -17,9 +17,11 @@ import java.util.Objects;
  */
 public class DirectionsResponse {
 
+    // CHECKSTYLE: MemberName OFF
     private final List<DirectionsRoute> routes;
     private final String status;
     private final String error_message;
+    // CHECKSTYLE: MemberName ON
 
     /**
      * Constructs a new response with status, routes, and error message.
