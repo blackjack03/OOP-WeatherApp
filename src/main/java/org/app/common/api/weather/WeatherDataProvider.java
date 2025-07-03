@@ -18,4 +18,3 @@ public interface WeatherDataProvider {
      */
     Optional<Map<String, Number>> getWeatherInfo(double lat, double lng, LocalDateTime dateTime);
 }
-

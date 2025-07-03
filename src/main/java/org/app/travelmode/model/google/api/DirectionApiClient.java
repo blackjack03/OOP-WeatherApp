@@ -4,6 +4,13 @@ import org.app.travelmode.model.exception.DirectionsApiException;
 import org.app.travelmode.model.google.dto.directions.DirectionsResponse;
 import org.app.travelmode.model.travel.api.TravelRequest;
 
+/**
+ * {@code DirectionApiClient} defines the contract for any client that connects to a directions API
+ * (for example, Google Directions API or similar services).
+ * <p>
+ * It is responsible for sending a travel request and receiving a route with details like steps, duration, and distance.
+ *
+ */
 public interface DirectionApiClient {
 
     /**

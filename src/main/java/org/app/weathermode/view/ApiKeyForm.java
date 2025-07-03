@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 /**
  * Utility dialog to prompt the user for a Google API key.
  */
-public class ApiKeyForm {
+public final class ApiKeyForm {
 
     private static final double DIALOG_WIDTH = 350;
     private static final double DIALOG_HEIGHT = 125;
@@ -25,6 +25,8 @@ public class ApiKeyForm {
     private static final String LABEL_TEXT = "API Key Google:";
     private static final String TEXT_PROMPT = "Inserisci la tua API key";
     private static final String BUTTON_TEXT = "Conferma";
+
+    private ApiKeyForm() { }
 
     /**
      * Shows a modal dialog asking for the API key.

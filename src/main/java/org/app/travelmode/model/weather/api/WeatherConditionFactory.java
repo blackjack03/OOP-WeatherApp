@@ -1,6 +1,10 @@
 package org.app.travelmode.model.weather.api;
 
-import org.app.travelmode.model.weather.impl.conditions.*;
+import org.app.travelmode.model.weather.impl.conditions.FreezingRisk;
+import org.app.travelmode.model.weather.impl.conditions.Precipitation;
+import org.app.travelmode.model.weather.impl.conditions.Snowfall;
+import org.app.travelmode.model.weather.impl.conditions.Visibility;
+import org.app.travelmode.model.weather.impl.conditions.WindGust;
 
 /**
  * Factory interface for creating various weather condition objects.

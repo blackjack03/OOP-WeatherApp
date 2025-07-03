@@ -27,7 +27,7 @@ public class WindGust extends AbstractWeatherCondition {
      * @param windGustSpeed the maximum wind gust speed in kilometers per hour (km/h) recorded at 10 m above ground
      *                      during the preceding hour
      */
-    public WindGust(double windGustSpeed) {
+    public WindGust(final double windGustSpeed) {
         super(NAME, WEIGHT);
         this.intensity = WindGustLevel.fromValue(windGustSpeed);
     }
@@ -55,7 +55,7 @@ public class WindGust extends AbstractWeatherCondition {
         private final double intensity;
         private final int intensityScore;
 
-        WindGustLevel(double intensity, int intensityScore) {
+        WindGustLevel(final double intensity, final int intensityScore) {
             this.intensity = intensity;
             this.intensityScore = intensityScore;
         }
@@ -66,7 +66,7 @@ public class WindGust extends AbstractWeatherCondition {
          * @param value the maximum wind gust speed in km/h from the preceding hour
          * @return the corresponding wind gust level, or NO_WIND_GUST if below all thresholds
          */
-        public static WindGustLevel fromValue(double value) {
+        public static WindGustLevel fromValue(final double value) {
             for (final WindGustLevel windGustLevel : WindGustLevel.values()) {
                 if (value >= windGustLevel.intensity) {
                     return windGustLevel;

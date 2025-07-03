@@ -3,7 +3,9 @@ package org.app.weathermode.controller;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+// CHECKSTYLE: AvoidStarImport OFF
 import java.util.*;
+// CHECKSTYLE: AvoidStarImport ON
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -83,13 +85,15 @@ public class AppController implements Controller {
     /**
      * Identificativo della città scelta.
      */
-    private int CITY_ID;
+    private int cityID;
     private LocationSelector selector;
-    private boolean city_changed = false;
+    private boolean cityChanged;
 
     private Timeline autoRefresh;
 
-    private final AbstractApp APP;
+    // CHECKSTYLE: LocalFinalVariableName OFF
+    private final AbstractApp mainAPP;
+    // CHECKSTYLE: LocalFinalVariableName ON
 
     /**
      * Crea il controller istanziando la vista {@link App} e memorizzando i
@@ -101,8 +105,8 @@ public class AppController implements Controller {
      * </p>
      */
     public AppController() {
-        this.APP = new App(this);
-        final Map<String, Label> labels = this.APP.getLabels();
+        this.mainAPP = new App(this);
+        final Map<String, Label> labels = this.mainAPP.getLabels();
         this.lblCity = labels.get("lblCity");
         this.lblCond = labels.get("lblCond");
         this.lblTemp = labels.get("lblTemp");
@@ -111,9 +115,9 @@ public class AppController implements Controller {
         this.lblMax = labels.get("lblMax");
         this.otherDetails = labels.get("otherDetails");
         this.windInfo = labels.get("windInfo");
-        this.hourlyEntries = this.APP.getHourlyEntries();
-        this.forecastStrip = this.APP.getForecastStrip();
-        this.todayIcon = this.APP.getTodayIcon();
+        this.hourlyEntries = this.mainAPP.getHourlyEntries();
+        this.forecastStrip = this.mainAPP.getForecastStrip();
+        this.todayIcon = this.mainAPP.getTodayIcon();
     }
 
     /**
@@ -144,11 +148,15 @@ public class AppController implements Controller {
 
         this.setCity();
 
-        this.cityInfo = selector.getByID(this.CITY_ID)
+        this.cityInfo = selector.getByID(this.cityID)
                 .orElseThrow(() -> new IllegalStateException("ID città non valido"));
 
         this.weatherObj = new AllWeather(this.cityInfo);
         if (!this.weatherObj.reqestsAllForecast()) {
+            CustomErrorGUI.showError("Non è stato possibile recuperare i dati meteo."
+            + "\nControlla la tua connessione."
+            + "\nSe il problema persiste, l'API potrebbe non essere disponibile.",
+            "Impossibile recuperare i dati meteo");
             throw new IllegalStateException("Impossibile scaricare i dati meteo iniziali");
         }
 
@@ -163,7 +171,7 @@ public class AppController implements Controller {
      */
     @Override
     public AbstractApp getApp() {
-        return this.APP;
+        return this.mainAPP;
     }
 
     /**
@@ -235,26 +243,26 @@ public class AppController implements Controller {
 
     /**
      * Recupera la città di default dalle preferenze utente e aggiorna i
-     * campi {@link #CITY_ID} e {@link #cityInfo} se l’utente ne ha scelta una
+     * campi {@link #cityID} e {@link #cityInfo} se l’utente ne ha scelta una
      * diversa rispetto alla precedente.
      * <p>
      * In caso di cambio città viene inoltre aggiornato l’oggetto
      * {@link #weatherObj} (se già inizializzato) affinché punti alla nuova
-     * località. Il flag {@link #city_changed} viene impostato per far sì che la
+     * località. Il flag {@link #cityChanged} viene impostato per far sì che la
      * successiva chiamata a {@link #refresh()} possa richiedere dati meteo con
      * eventuali parametri (es. “&amp;timezone=auto”) corretti.
      * </p>
      */
     private void setCity() {
-        final UserPreferences user_config =
+        final UserPreferences userConfig =
                 ConfigManager.getConfig().getUserPreferences();
-        final Optional<Integer> city = user_config.getDefaultCity();
+        final Optional<Integer> city = userConfig.getDefaultCity();
         if (city.isPresent()) {
             System.out.println("City: " + city.get());
-            if (this.CITY_ID != city.get()) {
-                this.city_changed = true;
-                this.CITY_ID = city.get();
-                this.cityInfo = selector.getByID(this.CITY_ID)
+            if (this.cityID != city.get()) {
+                this.cityChanged = true;
+                this.cityID = city.get();
+                this.cityInfo = selector.getByID(this.cityID)
                         .orElseThrow(() -> new IllegalStateException("ID città non valido"));
                 if (this.weatherObj != null) {
                     this.weatherObj.setLocation(this.cityInfo);
@@ -286,15 +294,15 @@ public class AppController implements Controller {
      * </ul>
      */
     private void refresh() {
-        final int MAX_ATTEMPTS = 3;
-        boolean err_flag = true;
-        for (int i = 0; i < MAX_ATTEMPTS; i++) {
+        final int maxAttempts = 3;
+        boolean errFlag = true;
+        for (int i = 0; i < maxAttempts; i++) {
             if (this.weatherObj.reqestsAllForecast()) {
-                err_flag = false;
+                errFlag = false;
                 break;
             }
         }
-        if (err_flag) {
+        if (errFlag) {
             System.out.println("ERRORE RICHIESTA DATI METEO!");
             CustomErrorGUI.showErrorJFX(
                     "Impossibile recuperare i dati meteo. Controlla la tua connessione internet e riprova.",
@@ -303,9 +311,9 @@ public class AppController implements Controller {
             return;
         }
         final Optional<Pair<String, Map<String, Number>>> nowOpt =
-                this.weatherObj.getWeatherNow(this.city_changed);
-        if (this.city_changed) {
-            this.city_changed = false;
+                this.weatherObj.getWeatherNow(this.cityChanged);
+        if (this.cityChanged) {
+            this.cityChanged = false;
         }
         final Optional<Map<String, Map<String, Number>>> dailyOpt =
                 this.weatherObj.getDailyGeneralForecast();
@@ -357,16 +365,18 @@ public class AppController implements Controller {
         weatherObj.getDailyGeneralForecast().ifPresent(map -> {
             if (map.containsKey(todayKey)) {
                 final Map<String, Number> today = map.get(todayKey);
-                lblMin.setText(String.format("Min: %.0f°C | %.0f°F", today.get("temperature_min_C").doubleValue(), today.get("temperature_min_F").doubleValue()));
-                lblMax.setText(String.format("Max: %.0f°C | %.0f°F", today.get("temperature_max_C").doubleValue(), today.get("temperature_max_F").doubleValue()));
+                lblMin.setText(String.format("Min: %.0f°C | %.0f°F",
+                    today.get("temperature_min_C").doubleValue(), today.get("temperature_min_F").doubleValue()));
+                lblMax.setText(String.format("Max: %.0f°C | %.0f°F",
+                    today.get("temperature_max_C").doubleValue(), today.get("temperature_max_F").doubleValue()));
             }
         });
 
         /* Wind info */
-        final double wind_kmh = now.get("wind_speed_kmh").doubleValue();
-        final double wind_mph = now.get("wind_speed_mph").doubleValue();
+        final double windKmh = now.get("wind_speed_kmh").doubleValue();
+        final double windMPH = now.get("wind_speed_mph").doubleValue();
         final String windDirection = weatherObj.getWindDirection(now.get("wind_direction").intValue());
-        windInfo.setText(String.format("Wind: %.1f km/h | %.1f mph - Direzione: %s", wind_kmh, wind_mph, windDirection));
+        windInfo.setText(String.format("Wind: %.1f km/h | %.1f mph - Direzione: %s", windKmh, windMPH, windDirection));
     }
 
     /**
@@ -375,11 +385,11 @@ public class AppController implements Controller {
      */
     private void updateOtherDetails() {
         final StringBuilder details = new StringBuilder();
-        final Optional<Map<String, Map<String, String>>> daily_info =
+        final Optional<Map<String, Map<String, String>>> dailyInfo =
                 this.weatherObj.getDailyInfo();
-        if (daily_info.isPresent()) {
+        if (dailyInfo.isPresent()) {
             final Map.Entry<String, Map<String, String>> entry =
-                    daily_info.get().entrySet().iterator().next();
+                    dailyInfo.get().entrySet().iterator().next();
             final Map<String, String> sunInfo = entry.getValue();
             final String sunrise = sunInfo.get("sunrise");
             final String sunset = sunInfo.get("sunset");
@@ -404,9 +414,9 @@ public class AppController implements Controller {
         if (dailyGeneral.isPresent()) {
             final Map.Entry<String, Map<String, Number>> entry =
                     dailyGeneral.get().entrySet().iterator().next();
-            final Number uv_max = entry.getValue().get("uv_max");
-            if (uv_max != null) {
-                details.append("\nUV massimo: ").append(uv_max);
+            final Number uvMax = entry.getValue().get("uv_max");
+            if (uvMax != null) {
+                details.append("\nUV massimo: ").append(uvMax);
             }
         }
         this.otherDetails.setText(details.toString());
@@ -422,7 +432,9 @@ public class AppController implements Controller {
      */
     private void updateHourly(final Map<String, Map<String, Map<String, Number>>> hourly) {
         final String todayKey = LocalDate.now().toString();
-        if (!hourly.containsKey(todayKey)) return;
+        if (!hourly.containsKey(todayKey)) {
+            return;
+        }
         final Map<String, Map<String, Number>> todayMap = hourly.get(todayKey);
 
         /* prossime 4 ore */
@@ -430,13 +442,15 @@ public class AppController implements Controller {
         final List<String> ordered = new ArrayList<>(todayMap.keySet());
         Collections.sort(ordered);
         final List<String> next = new ArrayList<>();
-        final int MAX_HOURS = 4;
+        final int maxHours = 4;
         for (final String h : ordered) {
             final LocalTime t = LocalTime.parse(h + ":00:00",
                     DateTimeFormatter.ofPattern("HH:mm:ss"));
-            if (t.isAfter(nowTime) && next.size() < MAX_HOURS) next.add(h);
+            if (t.isAfter(nowTime) && next.size() < maxHours) {
+                next.add(h);
+            }
         }
-        final int rest = MAX_HOURS - next.size();
+        final int rest = maxHours - next.size();
         if (next.isEmpty() || rest > 0) { // fallback domani
             final String tomorrowKey = LocalDate.now().plusDays(1).toString();
             if (hourly.containsKey(tomorrowKey)) {
@@ -529,9 +543,9 @@ public class AppController implements Controller {
         mini.setStyle("-fx-border-color:black;-fx-border-radius:10;-fx-background-radius:10;-fx-background-color:white;");
 
         final LocalDate date = LocalDate.parse(dayKey);
-        final String txt = date.equals(LocalDate.now()) ? "OGGI" :
-                date.equals(LocalDate.now().plusDays(1)) ? "DOMANI" :
-                        String.format("%02d/%02d", date.getDayOfMonth(), date.getMonthValue());
+        final String txt = date.equals(LocalDate.now()) ? "OGGI"
+                : date.equals(LocalDate.now().plusDays(1)) ? "DOMANI"
+                : String.format("%02d/%02d", date.getDayOfMonth(), date.getMonthValue());
         final Label lblDay = new Label(txt);
         lblDay.getStyleClass().add("subtitle");
 
@@ -575,7 +589,7 @@ public class AppController implements Controller {
      * @param code codice WMO.
      * @return descrizione leggibile (es. "Sereno", "Pioggia", …).
      */
-    @SuppressWarnings("checkstyle:MagicNumber")
+    // CHECKSTYLE: MagicNumber OFF
     private String codeToDescription(final int code) {
         return switch (code) {
             case 0 -> "Sereno";
@@ -591,5 +605,6 @@ public class AppController implements Controller {
             default -> "--";
         };
     }
+    // CHECKSTYLE: MagicNumber ON
 
 }

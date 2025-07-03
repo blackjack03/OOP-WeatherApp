@@ -12,7 +12,7 @@ public interface GoogleApiRequestBuilder {
      * @param value the parameter value
      * @return this builder instance for method chaining
      */
-    GoogleApiRequestBuilder addParameter(final String key, final String value);
+    GoogleApiRequestBuilder addParameter(String key, String value);
 
     /**
      * Resets the builder to its initial state.

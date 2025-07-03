@@ -8,6 +8,9 @@ bin/
 .gradle/
 build/
 
+# Ignore app config folder
+app_config/
+
 # Ignore macOS specific file
 .DS_Store
 

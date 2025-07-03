@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 public class SettingsWindow extends Stage {
 
-    private static final String CONFIG_PATH = "src/main/java/org/files/configuration.json";
+    private static final String CONFIG_PATH = "app_config/configuration.json";
     private final Controller controller;
 
     public SettingsWindow(final Controller controller) {

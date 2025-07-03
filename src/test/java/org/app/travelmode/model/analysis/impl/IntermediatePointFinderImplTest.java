@@ -48,13 +48,13 @@ public class IntermediatePointFinderImplTest {
 
         assertEquals(expectedDuration, step.getDuration().getValue(), 60,
                 message + " - Durata non corretta");
-        assertEquals(expectedEnd.getLat(), step.getEnd_location().getLat(),
+        assertEquals(expectedEnd.getLat(), step.getEndLocation().getLat(),
                 message + " - Latitudine del punto di arrivo non corretta");
-        assertEquals(expectedEnd.getLng(), step.getEnd_location().getLng(),
+        assertEquals(expectedEnd.getLng(), step.getEndLocation().getLng(),
                 message + " - Longitudine del punto di arrivo non corretta");
-        assertEquals(expectedStart.getLat(), step.getStart_location().getLat(),
+        assertEquals(expectedStart.getLat(), step.getStartLocation().getLat(),
                 message + " - Latitudine del punto di partenza non corretta");
-        assertEquals(expectedStart.getLng(), step.getStart_location().getLng(),
+        assertEquals(expectedStart.getLng(), step.getStartLocation().getLng(),
                 message + " - Longitudine del punto di partenza non corretta");
         assertEquals(expectedDistance, step.getDistance().getValue(), 500,
                 message + " - Distanza non corretta");

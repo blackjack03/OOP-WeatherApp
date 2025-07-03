@@ -19,7 +19,8 @@ import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePr
 import org.app.travelmode.model.weather.impl.WeatherConditionFactoryImpl;
 
 import java.io.IOException;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,8 @@ public class TravelModeModelImpl implements TravelModeModel {
      *
      * <p>Note: The {@link #start()} method must be called after construction
      * to initialize the place predictions API client.
+     *
+     * @param weatherDataProvider the {@link WeatherDataProvider} to use for weather information.
      */
     public TravelModeModelImpl(final WeatherDataProvider weatherDataProvider) {
         this.weatherInformationService = new WeatherInformationServiceImpl(new WeatherConditionFactoryImpl(),

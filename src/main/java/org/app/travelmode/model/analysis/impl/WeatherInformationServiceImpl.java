@@ -29,6 +29,7 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
      * Constructs a new {@link WeatherInformationServiceImpl} with the specified factory.
      *
      * @param weatherConditionFactory factory for creating different types of weather conditions
+     * @param weatherDataProvider     data provider for retrieving weather data
      */
     public WeatherInformationServiceImpl(final WeatherConditionFactory weatherConditionFactory,
                                          final WeatherDataProvider weatherDataProvider) {
@@ -47,8 +48,8 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
             return new CheckpointWithMeteoImpl(checkpoint, weatherReport);
         } catch (final IllegalArgumentException e) {
             throw new WeatherDataException(
-                    String.format("Non è stato possibile ottenere tutte le informazioni meteo necessarie " +
-                                    "per il checkpoint %f, %f, o alcune di esse non sono realistiche.",
+                    String.format("Non è stato possibile ottenere tutte le informazioni meteo necessarie "
+                                    + "per il checkpoint %f, %f, o alcune di esse non sono realistiche.",
                             +checkpoint.getLatitude(), checkpoint.getLongitude()));
         }
     }

@@ -28,6 +28,8 @@ import java.util.Optional;
  */
 public class TravelModeResultImpl implements TravelModeResult {
 
+    private static final int MINUTE_IN_HOURS = 60;
+
     private final List<CheckpointWithMeteo> checkpoints;
     private final String summary;
     private final Duration duration;
@@ -46,7 +48,8 @@ public class TravelModeResultImpl implements TravelModeResult {
      * @param polyline    encoded polyline string representing the route
      * @param duration    total duration of the trip
      */
-    public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary, final String polyline, final Duration duration) {
+    public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary,
+                                final String polyline, final Duration duration) {
         this.checkpoints = checkpoints;
         this.arrivalTime = checkpoints.get(checkpoints.size() - 1).getArrivalDateTime().toLocalDateTime();
         this.summary = summary;
@@ -136,17 +139,17 @@ public class TravelModeResultImpl implements TravelModeResult {
      * @param duration the {@link Duration} object to format.
      * @return a {@link String} representing the duration of the trip in the format "hh ore mm minuti".
      */
-    @SuppressWarnings("checkstyle:MagicNumber")
     private String formatDuration(final Duration duration) {
         final long hours = duration.toHours();
-        final long minutes = duration.toMinutes() % 60;
+        final long minutes = duration.toMinutes() % MINUTE_IN_HOURS;
         return hours + " ore " + minutes + " minuti";
     }
 
     /**
      * Calculate the average weather score for the entire route.
      *
-     * @param checkpoints A list of {@link CheckpointWithMeteo} representing the points along the route where weather conditions have been verified.
+     * @param checkpoints A list of {@link CheckpointWithMeteo} representing the points along the route
+     *                    where weather conditions have been verified.
      * @return an integer representing the average weather score.
      */
     private Integer calculateMeteoScore(final List<CheckpointWithMeteo> checkpoints) {

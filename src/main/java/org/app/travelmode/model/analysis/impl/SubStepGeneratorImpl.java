@@ -55,15 +55,17 @@ public class SubStepGeneratorImpl implements SubStepGenerator {
             final BigDecimal segmentDistance = GeographicDistanceCalculator.computeDistance(startPoint, actualPoint);
 
             if (segmentDistance.compareTo(SUBSTEP_DISTANCE) >= 0) {
-                subSteps.add(new SimpleDirectionsStep(calculateSubStepDuration(step, segmentDistance), actualPoint, startPoint, segmentDistance.doubleValue()));
+                subSteps.add(new SimpleDirectionsStep(calculateSubStepDuration(step, segmentDistance),
+                        actualPoint, startPoint, segmentDistance.doubleValue()));
                 startPoint = actualPoint;
             }
         }
 
         final LatLng finalPoint = decodedPoints.get(decodedPoints.size() - 1);
         if (!startPoint.equals(finalPoint)) {
-            BigDecimal finalSegmentDistance = GeographicDistanceCalculator.computeDistance(startPoint, finalPoint);
-            subSteps.add(new SimpleDirectionsStep(calculateSubStepDuration(step, finalSegmentDistance), finalPoint, startPoint, finalSegmentDistance.doubleValue()));
+            final BigDecimal finalSegmentDistance = GeographicDistanceCalculator.computeDistance(startPoint, finalPoint);
+            subSteps.add(new SimpleDirectionsStep(calculateSubStepDuration(step, finalSegmentDistance),
+                    finalPoint, startPoint, finalSegmentDistance.doubleValue()));
         }
 
         return subSteps;

@@ -22,10 +22,12 @@ public interface AbstractApp {
     /* ================= configurazione iniziale ================ */
 
     /**
-     * Inietta un {@link LocationSelector} che la vista potrà utilizzare — ad
-     * esempio — in finestre di ricerca o impostazioni.
+     * Inietta un {@link LocationSelector} che la vista potrà utilizzare —
+     * ad esempio — in finestre di ricerca o impostazioni.
+     *
+     * @param ls il {@link LocationSelector} da iniettare nella vista
      */
-    void setLocationSelector(LocationSelector LS);
+    void setLocationSelector(LocationSelector ls);
 
     /* ================= accessori runtime ===================== */
 
