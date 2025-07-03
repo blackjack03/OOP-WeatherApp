@@ -1,10 +1,12 @@
 package org.app.weathermode.view;
 
+// CHECKSTYLE: AvoidStarImport OFF
 import javafx.geometry.*;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
+// CHECKSTYLE: AvoidStarImport ON
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.beans.binding.DoubleExpression;
@@ -32,35 +34,12 @@ public class App implements AbstractApp {
     private final VBox hourlyEntries;
     private final HBox forecastStrip;
 
-    @Override
-    public void setLocationSelector(final LocationSelector LS) {
-        locationSelector = LS;
-    }
-
-    public static LocationSelector getLocationSelector() {
-        return locationSelector;
-    }
-
-    @Override
-    public Map<String, Label> getLabels() {
-        return labels;
-    }
-
-    @Override
-    public VBox getHourlyEntries() {
-        return hourlyEntries;
-    }
-
-    @Override
-    public HBox getForecastStrip() {
-        return forecastStrip;
-    }
-
-    @Override
-    public ImageView getTodayIcon() {
-        return todayIcon;
-    }
-
+    /**
+     * Costruisce l’intera scena JavaFX della dashboard meteo e la collega al
+     * controller fornito.
+     *
+     * @param appController il controller responsabile di popolare e aggiornare la vista
+     */
     public App(final Controller appController) {
         // Costanti locali per layout
         final double rootPadding = 20.0;
@@ -171,9 +150,10 @@ public class App implements AbstractApp {
         GridPane.setHgrow(forecastScroller, Priority.ALWAYS);
         GridPane.setVgrow(forecastScroller, Priority.ALWAYS);
         forecastScroller.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        for (final String day : new String[]{"OGGI","DOMANI","xx/xx","xx/xx","xx/xx","xx/xx","xx/xx"}) {
+        for (final String day : new String[]{"OGGI", "DOMANI", "xx/xx", "xx/xx", "xx/xx", "xx/xx", "xx/xx"}) {
             forecastStrip.getChildren().add(
-                    makeMiniForecast(day, "/logo.png", root.widthProperty().multiply(iconForecastRatio), miniSpacing, miniPrefWidth));
+                    makeMiniForecast(day, "/logo.png",
+                    root.widthProperty().multiply(iconForecastRatio), miniSpacing, miniPrefWidth));
         }
         HBox.setHgrow(forecastStrip, Priority.ALWAYS);
 
@@ -207,6 +187,76 @@ public class App implements AbstractApp {
         root.add(bottomGrid, 0, 1);
     }
 
+    /**
+     * Imposta il {@link LocationSelector} usato dall’applicazione.
+     *
+     * @param ls il selettore di località da registrare
+     */
+    @Override
+    public void setLocationSelector(final LocationSelector ls) {
+        locationSelector = ls;
+    }
+
+    /**
+     * Restituisce il {@link LocationSelector} attualmente registrato
+     * (può essere {@code null} se non è stato ancora impostato).
+     *
+     * @return il selettore di località corrente
+     */
+    public static LocationSelector getLocationSelector() {
+        return locationSelector;
+    }
+
+    /**
+     * Espone la mappa di etichette (key → {@link Label}) che il controller
+     * andrà a popolare o aggiornare.
+     *
+     * @return la mappa delle label
+     */
+    @Override
+    public Map<String, Label> getLabels() {
+        return labels;
+    }
+
+    /**
+     * Restituisce il contenitore verticale che ospita le righe dell’andamento
+     * orario, permettendo al controller di aggiungere o sostituire voci.
+     *
+     * @return il {@link VBox} per le previsioni orarie
+     */
+    @Override
+    public VBox getHourlyEntries() {
+        return hourlyEntries;
+    }
+
+    /**
+     * Restituisce la strip orizzontale con la previsione su più giorni, così che
+     * il controller possa popolarla o aggiornarla.
+     *
+     * @return l’{@link HBox} con la previsione giornaliera
+     */
+    @Override
+    public HBox getForecastStrip() {
+        return forecastStrip;
+    }
+
+    /**
+     * Restituisce l’icona che rappresenta il meteo odierno, in modo che
+     * il controller possa sostituirne l’immagine.
+     *
+     * @return l’{@link ImageView} dell’icona odierna
+     */
+    @Override
+    public ImageView getTodayIcon() {
+        return todayIcon;
+    }
+
+    /**
+     * Restituisce il nodo radice della scena, pronto per essere
+     * impostato su uno {@link javafx.stage.Stage} o incorporato altrove.
+     *
+     * @return il nodo radice della vista
+     */
     @Override
     public Parent getRoot() {
         return root;

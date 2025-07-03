@@ -48,7 +48,7 @@ public final class ConfigManager {
      * @param filePath percorso del file JSON/YAML da leggere.
      * @throws RuntimeException se il file non è leggibile o il parsing fallisce.
      */
-    public static void loadConfig(String filePath) {
+    public static void loadConfig(final String filePath) {
         final ObjectMapper localMapper = new ObjectMapper().findAndRegisterModules();
         try {
             config = localMapper.readValue(new File(filePath), AppConfig.class);
@@ -79,7 +79,7 @@ public final class ConfigManager {
      * @param filePath destinazione del file.
      * @throws RuntimeException se si verifica un errore di I/O.
      */
-    public static void saveConfig(String filePath) {
+    public static void saveConfig(final String filePath) {
         try {
             mapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), config);
             System.out.println("Configuration saved successfully.");

@@ -1,26 +1,41 @@
 package org.app.weathermode.view;
 
+// CHECKSTYLE: AvoidStarImport OFF
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
+// CHECKSTYLE: AvoidStarImport ON
+
+import javax.swing.border.EmptyBorder;
 import java.net.URL;
 import javax.imageio.ImageIO;
 
-public class ImageFromURLSwing {
+/**
+ * <h2>ImageFromURLSwing</h2>
+ * <p>Utility finale che scarica e visualizza un'immagine da un URL in una
+ * finestra Swing ridimensionata automaticamente.</p>
+ * <p>Fornisce due soli metodi pubblici {@link #viewIMG(String)} e
+ * {@link #viewIMG(String, String, String)}. Tutta la logica di caricamento
+ * avviene su uno {@link SwingWorker} per non bloccare l'EDT.</p>
+ */
+public final class ImageFromURLSwing {
     // Limiti massimi, dimensioni minime e padding
     private static final int MAX_WIDTH     = 1080;
     private static final int MAX_HEIGHT    = 920;
     private static final int MIN_DIMENSION = 350;
     private static final int PADDING       = 10;
 
+    private ImageFromURLSwing() { }
+
     /**
-     * Visualizza immagine da URL senza titolo
+     * Mostra un'immagine recuperata da URL senza titolo né testo aggiuntivo.
+     *
+     * @param imageUrl URL dell'immagine da visualizzare.
      */
     public static void viewIMG(final String imageUrl) {
         viewIMG(imageUrl, null, null);
     }
 
-    @SuppressWarnings("checkstyle:MagicNumber")
+    // CHECKSTYLE: MagicNumber OFF
     private static double calcScale(final int origW, final int origH) {
         final double availableMaxW = MAX_WIDTH - 2 * PADDING;
         final double availableMaxH = MAX_HEIGHT - 2 * PADDING;
@@ -34,15 +49,21 @@ public class ImageFromURLSwing {
             return 1.0;
         }
     }
-
+    // CHECKSTYLE: MagicNumber ON
 
     /**
-     * Visualizza immagine da URL con titolo opzionale
-     * @param imageUrl URL dell'immagine
-     * @param title Titolo da mostrare sopra l'immagine
+     * Visualizza un'immagine da URL con titolo facoltativo sopra la figura e
+     * titolo finestra personalizzabile.
+     *
+     * @param imageUrl    URL dell'immagine.
+     * @param title       testo mostrato sopra l'immagine (può essere {@code null}).
+     * @param windowTitle titolo della finestra (se {@code null} diventa "Image Viewer").
      */
-    public static void viewIMG(final String imageUrl, final String title, String windowTitle) {
-        if (windowTitle == null) windowTitle = "Image Viewer";
+    public static void viewIMG(final String imageUrl, final String title, final String winTitle) {
+        String windowTitle = winTitle;
+        if (windowTitle == null) {
+            windowTitle = "Image Viewer";
+        }
         final String finalImageTitle = windowTitle;
 
         // Tutta la GUI viene preparata sull’EDT
@@ -53,7 +74,8 @@ public class ImageFromURLSwing {
 
             if (title != null && !title.isBlank()) {
                 final JLabel lbl = new JLabel(title, SwingConstants.CENTER);
-                lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 20f));
+                final float fontSize = 20f;
+                lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, fontSize));
                 lbl.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
                 frame.add(lbl, BorderLayout.NORTH);
             }
@@ -65,9 +87,9 @@ public class ImageFromURLSwing {
                     final Image original = ImageIO.read(new URL(imageUrl));
                     final int w = original.getWidth(null);
                     final int h = original.getHeight(null);
-                    final double scale = calcScale(w, h);           // tuo metodo di calcolo
+                    final double scale = calcScale(w, h);
                     final Image scaled = original.getScaledInstance(
-                            (int)(w*scale), (int)(h*scale), Image.SCALE_SMOOTH);
+                            (int) (w * scale), (int) (h * scale), Image.SCALE_SMOOTH);
                     return new ImageIcon(scaled);
                 }
 
@@ -84,7 +106,7 @@ public class ImageFromURLSwing {
                         frame.setResizable(false);
                         frame.setLocationRelativeTo(null);
                         frame.setVisible(true);
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         showErrorOnEDT("Errore nel recupero dell'immagine", "Impossibile visualizzare l'immagine");
                     }
                 }
