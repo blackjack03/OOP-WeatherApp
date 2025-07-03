@@ -153,6 +153,10 @@ public class AppController implements Controller {
 
         this.weatherObj = new AllWeather(this.cityInfo);
         if (!this.weatherObj.reqestsAllForecast()) {
+            CustomErrorGUI.showError("Non è stato possibile recuperare i dati meteo."
+            + "\nControlla la tua connessione."
+            + "\nSe il problema persiste, l'API potrebbe non essere disponibile.",
+            "Impossibile recuperare i dati meteo");
             throw new IllegalStateException("Impossibile scaricare i dati meteo iniziali");
         }
 

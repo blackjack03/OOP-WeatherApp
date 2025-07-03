@@ -6,6 +6,7 @@ import com.opencsv.exceptions.CsvException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
@@ -24,9 +25,10 @@ import java.util.Collections;
  *   <li>{@link #getHeader()} – restituisce l’intestazione del file come lista
  *       di stringhe.</li>
  * </ul>
- * <p>Il costruttore apre in sola lettura il percorso specificato e delega la
- * gestione a {@link CSVReader}. Eventuali eccezioni di I/O vengono propagate
- * affinché il chiamante possa gestirle.</p>
+ * <p>Oltre al costruttore classico che accetta un percorso di file, è stato
+ * aggiunto un costruttore che riceve qualunque {@link Reader}. Questo permette
+ * di parsare CSV provenienti da risorse di class‑path, stream di rete o altre
+ * fonti senza dover prima materializzare un file su disco.</p>
  */
 public class CSVStdParser extends CSVReader implements CSVParser {
 
@@ -42,17 +44,20 @@ public class CSVStdParser extends CSVReader implements CSVParser {
         super(new FileReader(csvFilePath));
     }
 
+    /**
+     * Costruisce il parser a partire da un {@link Reader}. Da usare quando il
+     * CSV proviene da uno {@link InputStream} (ad esempio una risorsa
+     * all’interno del <em>jar</em>) o qualsiasi altra fonte che possa fornire
+     * un Reader.
+     *
+     * @param reader sorgente dei dati CSV già incapsulata in un Reader.
+     */
+    public CSVStdParser(final Reader reader) {
+        super(reader);
+    }
+
     /* ======================= API CSVParser ==================== */
 
-    /**
-     * Legge l’intero file e crea per ogni riga una {@link Map} in cui le chiavi
-     * sono i nomi di colonna (prima riga del file) e i valori le celle
-     * corrispondenti.
-     *
-     * @return lista di mappe, vuota se il CSV non contiene righe.
-     * @throws IOException  problemi di lettura dal filesystem.
-     * @throws CsvException problemi di parsing (malformed CSV, etc.).
-     */
     @Override
     public List<Map<String, String>> readCSVToMap() throws IOException, CsvException {
         final List<Map<String, String>> resultList = new ArrayList<>();
@@ -76,10 +81,6 @@ public class CSVStdParser extends CSVReader implements CSVParser {
         return resultList;
     }
 
-    /**
-     * @return la lista dei nomi di colonna presenti nella prima riga del file;
-     *         se il file è vuoto restituisce una lista vuota.
-     */
     @Override
     public List<String> getHeader() throws IOException, CsvException {
         final List<String[]> allRows = this.readAll();
