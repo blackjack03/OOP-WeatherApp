@@ -36,21 +36,23 @@ import org.jsoup.nodes.*;
 public class AllWeather implements Weather {
 
     /* ======================== endpoint ========================== */
+    /* ===== previsioni complete 8 giorni ===== */
     private static final String FORECAST_API_URL =
         "https://api.open-meteo.com/v1/forecast?latitude=%LAT&longitude=%LNG"
-        + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover"
-        + "&wind_speed_10m,wind_direction_10m"
-        + "&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability"
-        + "&precipitation,weather_code,wind_speed_10m,wind_direction_10m"
-        + "&pressure_msl,soil_temperature_0cm"
+        + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,"
+        + "precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m"
+        + "&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,"
+        + "precipitation_probability,precipitation,weather_code,wind_speed_10m,"
+        + "wind_direction_10m,pressure_msl,soil_temperature_0cm"
         + "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,"
         + "daylight_duration,sunshine_duration,uv_index_max"
         + "&timezone=auto&forecast_days=8";
 
+    /* ===== condizioni correnti ===== */
     private static final String NOW_API_URL =
         "https://api.open-meteo.com/v1/forecast?latitude=%LAT&longitude=%LNG"
-        + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover"
-        + "&wind_speed_10m,wind_direction_10m"
+        + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,"
+        + "precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m"
         + "&timezone=auto&forecast_days=1";
 
     private static final String DETAILS_API_URL =

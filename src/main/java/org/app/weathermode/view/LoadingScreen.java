@@ -43,7 +43,7 @@ import javafx.stage.Stage;
 public class LoadingScreen {
 
     /** Percorso del file di configurazione utente. */
-    private static final String CONFIG_PATH = "src/main/java/org/files/configuration.json";
+    private static final String CONFIG_PATH = "app_config/configuration.json";
 
     private final Stage splashStage;
 
