@@ -32,7 +32,7 @@ public interface WeatherReport {
     void addCondition(WeatherCondition condition);
 
     /**
-     * Adds a {@link List} of conditions to the report
+     * Adds a {@link List} of conditions to the report.
      *
      * @param conditions the list of {@link WeatherCondition} to be added.
      */

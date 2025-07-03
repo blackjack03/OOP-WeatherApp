@@ -3,6 +3,17 @@ package org.app.travelmode.view;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+/**
+ * {@code CityInputBox} defines the interface for a user input component
+ * that allows the selection or entry of a city or address.
+ * <p>
+ * It provides access to the main input UI elements (label and text field)
+ * and allows the input to be enabled or disabled programmatically.
+ * </p>
+ *
+ * <p>This interface is typically implemented by JavaFX components
+ * that support city search or autocomplete functionalities.</p>
+ */
 public interface CityInputBox {
 
     /**

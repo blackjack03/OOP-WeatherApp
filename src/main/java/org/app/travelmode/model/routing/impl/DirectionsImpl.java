@@ -3,13 +3,19 @@ package org.app.travelmode.model.routing.impl;
 import org.app.travelmode.model.analysis.api.CheckpointGenerator;
 import org.app.travelmode.model.analysis.api.RouteAnalyzer;
 import org.app.travelmode.model.analysis.api.WeatherInformationService;
-import org.app.travelmode.model.analysis.impl.*;
+import org.app.travelmode.model.analysis.impl.CheckpointGeneratorImpl;
+import org.app.travelmode.model.analysis.impl.IntermediatePointFinderImpl;
+import org.app.travelmode.model.analysis.impl.RouteAnalyzerImpl;
+import org.app.travelmode.model.analysis.impl.SubStepGeneratorImpl;
 import org.app.travelmode.model.exception.DirectionsApiException;
 import org.app.travelmode.model.exception.WeatherDataException;
+import org.app.travelmode.model.google.dto.directions.DirectionsResponse;
+import org.app.travelmode.model.google.dto.directions.DirectionsRoute;
+import org.app.travelmode.model.google.dto.directions.SimpleDirectionsStep;
 import org.app.travelmode.model.google.impl.DirectionApiClientImpl;
 import org.app.travelmode.model.google.api.GoogleApiClientFactory;
 import org.app.travelmode.model.google.impl.GoogleApiClientFactoryImpl;
-import org.app.travelmode.model.google.dto.directions.*;
+
 
 import org.app.travelmode.model.checkpoint.api.Checkpoint;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
@@ -21,7 +27,9 @@ import org.app.travelmode.model.travel.api.TravelRequest;
 
 
 import java.time.Duration;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * Implementation of the {@link Directions} interface that handles route calculations
@@ -37,6 +45,9 @@ import java.util.*;
  */
 public class DirectionsImpl implements Directions {
 
+    private static final String NO_TRAVEL_REQUEST =
+            "Per ottenere una risposta dall'api Directions è necessario impostare una TravelRequest";
+
     private final WeatherInformationService weatherInformationService;
     private TravelRequest travelRequest;
     private Optional<TravelModeResult> mainResult;
@@ -46,6 +57,8 @@ public class DirectionsImpl implements Directions {
 
     /**
      * Creates a new DirectionsImpl instance with empty state.
+     *
+     * @param weatherInformationService the service used to retrieve weather information.
      */
     public DirectionsImpl(final WeatherInformationService weatherInformationService) {
         this.weatherInformationService = weatherInformationService;
@@ -57,7 +70,8 @@ public class DirectionsImpl implements Directions {
     /**
      * Creates a new DirectionsImpl instance with a specific travel request.
      *
-     * @param travelRequest the initial travel request to process
+     * @param weatherInformationService the service used to retrieve weather information.
+     * @param travelRequest             the initial travel request to process
      */
     public DirectionsImpl(final WeatherInformationService weatherInformationService,
                           final TravelRequest travelRequest) {
@@ -82,7 +96,7 @@ public class DirectionsImpl implements Directions {
     @Override
     public void askForDirections() throws DirectionsApiException {
         if (travelRequest == null) {
-            throw new IllegalStateException("Per ottenere una risposta dall'api Directions è necessario impostare una TravelRequest");
+            throw new IllegalStateException(NO_TRAVEL_REQUEST);
         }
         this.askForDirections(this.travelRequest);
     }
@@ -101,7 +115,6 @@ public class DirectionsImpl implements Directions {
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("checkstyle:MagicNumber")
     public TravelModeResult getMainResult() throws WeatherDataException {
         if (this.mainResult.isEmpty()) {
             final DirectionsResponse directionResult = getDirectionsResponse();
@@ -163,7 +176,8 @@ public class DirectionsImpl implements Directions {
 
         final List<SimpleDirectionsStep> intermediatePoints = routeAnalyzer.calculateIntermediatePoints(route);
 
-        final List<Checkpoint> checkpoints = checkpointGenerator.generateCheckpoints(intermediatePoints, this.travelRequest.getDepartureDateTime());
+        final List<Checkpoint> checkpoints = checkpointGenerator
+                .generateCheckpoints(intermediatePoints, this.travelRequest.getDepartureDateTime());
 
         final List<CheckpointWithMeteo> checkpointsWithMeteo = new ArrayList<>();
         for (final Checkpoint checkpoint : checkpoints) {
@@ -173,7 +187,7 @@ public class DirectionsImpl implements Directions {
         return new TravelModeResultImpl(
                 checkpointsWithMeteo,
                 route.getSummary(),
-                route.getOverview_polyline().getPoints(),
+                route.getOverviewPolyline().getPoints(),
                 calculateRouteDuration(route)
         );
     }

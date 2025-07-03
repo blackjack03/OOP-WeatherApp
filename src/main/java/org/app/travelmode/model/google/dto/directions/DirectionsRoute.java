@@ -9,24 +9,26 @@ import java.util.List;
  */
 public class DirectionsRoute {
 
+    // CHECKSTYLE: MemberName OFF
     private final Bounds bounds;
     private final List<DirectionsLeg> legs;
     private final DirectionsPolyline overview_polyline;
     private final String summary;
+    // CHECKSTYLE: MemberName ON
 
     /**
      * Constructs a new DirectionsRoute with the specified parameters.
      *
-     * @param bounds            The geographical bounds containing the entire route
-     * @param legs              The list of route segments
-     * @param overview_polyline The encoded polyline representation of the route
-     * @param summary           A textual description of the route
+     * @param bounds           The geographical bounds containing the entire route
+     * @param legs             The list of route segments
+     * @param overviewPolyline The encoded polyline representation of the route
+     * @param summary          A textual description of the route
      */
     public DirectionsRoute(final Bounds bounds, final List<DirectionsLeg> legs,
-                           final DirectionsPolyline overview_polyline, final String summary) {
+                           final DirectionsPolyline overviewPolyline, final String summary) {
         this.bounds = bounds;
         this.legs = legs;
-        this.overview_polyline = overview_polyline;
+        this.overview_polyline = overviewPolyline;
         this.summary = summary;
     }
 
@@ -53,7 +55,7 @@ public class DirectionsRoute {
      *
      * @return The polyline object for this route
      */
-    public DirectionsPolyline getOverview_polyline() {
+    public DirectionsPolyline getOverviewPolyline() {
         return this.overview_polyline;
     }
 
@@ -71,8 +73,8 @@ public class DirectionsRoute {
      */
     @Override
     public String toString() {
-        return "{Bounds: " + bounds + "\nOverview Polyline: " + overview_polyline +
-                "\nSummary: " + summary + "\nLegs: " + legs + "}";
+        return "{Bounds: " + bounds + "\nOverview Polyline: " + overview_polyline
+                + "\nSummary: " + summary + "\nLegs: " + legs + "}";
     }
 
 

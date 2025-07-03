@@ -18,7 +18,7 @@ public class TextValueObject {
      * @param text  A human-readable string (e.g., "5 min", "1.2 km")
      * @param value The corresponding numeric value (e.g., 300 seconds, 1200 meters)
      */
-    public TextValueObject(final String text, double value) {
+    public TextValueObject(final String text, final double value) {
         this.text = text;
         this.value = value;
     }

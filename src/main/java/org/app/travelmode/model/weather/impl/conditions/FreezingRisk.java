@@ -26,7 +26,7 @@ public class FreezingRisk extends AbstractWeatherCondition {
      *
      * @param freezingHeightMetres the altitude above sea level where 0°C (freezing level) is reached
      */
-    public FreezingRisk(double freezingHeightMetres) {
+    public FreezingRisk(final double freezingHeightMetres) {
         super(NAME, WEIGHT);
         this.intensity = FreezingLevel.fromValue(freezingHeightMetres);
     }
@@ -53,7 +53,7 @@ public class FreezingRisk extends AbstractWeatherCondition {
         private final double intensity;
         private final int intensityScore;
 
-        FreezingLevel(double intensity, int intensityScore) {
+        FreezingLevel(final double intensity, final int intensityScore) {
             this.intensity = intensity;
             this.intensityScore = intensityScore;
         }
@@ -64,7 +64,7 @@ public class FreezingRisk extends AbstractWeatherCondition {
          * @param value the altitude of the 0°C level in meters above sea level
          * @return the corresponding freezing risk level, or EXTREME_RISK if below all thresholds
          */
-        public static FreezingLevel fromValue(double value) {
+        public static FreezingLevel fromValue(final double value) {
             for (final FreezingLevel freezingLevel : FreezingLevel.values()) {
                 if (value >= freezingLevel.intensity) {
                     return freezingLevel;

@@ -10,9 +10,11 @@ package org.app.travelmode.model.google.dto.placeautocomplete;
  *
  */
 public class PlaceAutocompletePrediction {
+    // CHECKSTYLE: MemberName OFF
     private String description;
     private PlaceAutocompleteStructuredFormat structured_formatting;
     private String place_id;
+    // CHECKSTYLE: MemberName OFF
 
     /**
      * Constructs an empty {@code PlaceAutocompletePrediction}.
@@ -54,7 +56,9 @@ public class PlaceAutocompletePrediction {
      */
     @Override
     public String toString() {
-        return "PlaceAutocompletePrediction [description=" + description + ", structuredFormatting=" + structured_formatting + ", placeId=" + place_id + "]\n";
+        return "PlaceAutocompletePrediction [description=" + description
+                + ", structuredFormatting=" + structured_formatting
+                + ", placeId=" + place_id + "]\n";
     }
 
     /**
@@ -66,8 +70,10 @@ public class PlaceAutocompletePrediction {
      * </p>
      */
     public static class PlaceAutocompleteStructuredFormat {
+        // CHECKSTYLE: MemberName OFF
         private String main_text;
         private String secondary_text;
+        // CHECKSTYLE: MemberName OFF
 
         /**
          * Constructs an empty {@code PlaceAutocompleteStructuredFormat}.

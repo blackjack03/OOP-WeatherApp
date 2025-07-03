@@ -35,7 +35,9 @@ public final class TravelRequestImpl implements TravelRequest {
      * @param departureDate     the departure date.
      * @param departureTimeZone the time zone of the departure location.
      */
-    private TravelRequestImpl(final String departureLocation, final String departurePlaceId, final String arrivalLocation, final String arrivalPlaceId, final LocalTime departureTime, final LocalDate departureDate, final ZoneId departureTimeZone) {
+    private TravelRequestImpl(final String departureLocation, final String departurePlaceId,
+                              final String arrivalLocation, final String arrivalPlaceId, final LocalTime departureTime,
+                              final LocalDate departureDate, final ZoneId departureTimeZone) {
         this.departureLocation = departureLocation;
         this.departurePlaceId = departurePlaceId;
         this.arrivalLocation = arrivalLocation;
@@ -110,22 +112,26 @@ public final class TravelRequestImpl implements TravelRequest {
         return this.departureDateTime;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
-        return "{\n[Partenza: " + this.departureLocation + ", PlaceId:" + this.departurePlaceId +
-                "\tOra: " + this.departureTime + ", Date: " + this.departureDate + "]\n" +
-                "[Arrivo: " + this.arrivalLocation + ", PalceId: " + this.arrivalPlaceId + "]\n" +
-                "}";
+        return "{\n[Partenza: " + this.departureLocation + ", PlaceId:" + this.departurePlaceId
+                + "\tOra: " + this.departureTime + ", Date: " + this.departureDate + "]\n"
+                + "[Arrivo: " + this.arrivalLocation + ", PalceId: " + this.arrivalPlaceId + "]\n" + "}";
     }
 
     /**
-     * Builder class of a TravelRequestImpl object
+     * Builder class of a TravelRequestImpl object.
      */
     public static class Builder {
 
         private static final LocalTime DEPARTURE_TIME = LocalTime.now();
         private static final LocalDate DEPARTURE_DATE = LocalDate.now();
         private static final ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
+        private static final String INCOMPLETE_REQUEST =
+                "Non sono stati inseriti tutti i parametri necessari per il calcolo del percorso";
 
         private String departureLocation;
         private String departurePlaceId;
@@ -136,7 +142,7 @@ public final class TravelRequestImpl implements TravelRequest {
         private ZoneId departureZoneId = DEFAULT_ZONE_ID;
 
         /**
-         * Set the departure location
+         * Set the departure location.
          *
          * @param departureLocation the name of the departure location
          * @return this builder, for method chaining
@@ -147,7 +153,7 @@ public final class TravelRequestImpl implements TravelRequest {
         }
 
         /**
-         * Set the PlaceId associated with the starting location
+         * Set the PlaceId associated with the starting location.
          *
          * @param departurePlaceId the PlaceId associated with the starting location
          * @return this builder, for method chaining
@@ -158,7 +164,7 @@ public final class TravelRequestImpl implements TravelRequest {
         }
 
         /**
-         * Set the arrival location
+         * Set the arrival location.
          *
          * @param arrivalLocation the name of the arrival location
          * @return this builder, for method chaining
@@ -169,7 +175,7 @@ public final class TravelRequestImpl implements TravelRequest {
         }
 
         /**
-         * Set the PlaceId associated with the arrival location
+         * Set the PlaceId associated with the arrival location.
          *
          * @param arrivalPlaceId the PlaceId associated with the arrival location
          * @return this builder, for method chaining
@@ -180,7 +186,7 @@ public final class TravelRequestImpl implements TravelRequest {
         }
 
         /**
-         * Set the departure time
+         * Set the departure time.
          *
          * @param departureTime the departure time
          * @return this builder, for method chaining
@@ -191,7 +197,7 @@ public final class TravelRequestImpl implements TravelRequest {
         }
 
         /**
-         * Set the departure date
+         * Set the departure date.
          *
          * @param departureDate the departure date
          * @return this builder, for method chaining
@@ -202,7 +208,7 @@ public final class TravelRequestImpl implements TravelRequest {
         }
 
         /**
-         * Set the {@link ZoneId} of the departure location
+         * Set the {@link ZoneId} of the departure location.
          *
          * @param departureZoneId the {@link ZoneId} of the departure location
          * @return this builder, for method chaining
@@ -220,13 +226,14 @@ public final class TravelRequestImpl implements TravelRequest {
          */
         public final TravelRequestImpl build() throws TravelRequestException {
             if (!this.isReady()) {
-                throw new TravelRequestException("Non sono stati inseriti tutti i parametri necessari per il calcolo del percorso");
+                throw new TravelRequestException(INCOMPLETE_REQUEST);
             }
-            return new TravelRequestImpl(departureLocation, departurePlaceId, arrivalLocation, arrivalPlaceId, departureTime, departureDate, departureZoneId);
+            return new TravelRequestImpl(departureLocation, departurePlaceId,
+                    arrivalLocation, arrivalPlaceId, departureTime, departureDate, departureZoneId);
         }
 
         /**
-         * Lets you know if the builder is ready to be used
+         * Lets you know if the builder is ready to be used.
          *
          * @return true if all necessary parameters have been configured correctly
          */

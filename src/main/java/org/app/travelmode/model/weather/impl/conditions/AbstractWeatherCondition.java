@@ -20,7 +20,7 @@ public abstract class AbstractWeatherCondition implements WeatherCondition {
      * @param conditionName the name of the weather condition
      * @param weight        the weight factor to be applied to this condition's intensity scores
      */
-    public AbstractWeatherCondition(final String conditionName, double weight) {
+    public AbstractWeatherCondition(final String conditionName, final double weight) {
         this.conditionName = conditionName;
         this.weight = weight;
     }

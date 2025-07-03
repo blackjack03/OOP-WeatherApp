@@ -25,7 +25,7 @@ public class Visibility extends AbstractWeatherCondition {
      *
      * @param visibilityMeter the viewing distance in meters
      */
-    public Visibility(double visibilityMeter) {
+    public Visibility(final double visibilityMeter) {
         super(NAME, WEIGHT);
         this.intensity = VisibilityLevel.fromValue(visibilityMeter);
     }
@@ -52,7 +52,7 @@ public class Visibility extends AbstractWeatherCondition {
         private final double intensity;
         private final int intensityScore;
 
-        VisibilityLevel(double intensity, int intensityScore) {
+        VisibilityLevel(final double intensity, final int intensityScore) {
             this.intensity = intensity;
             this.intensityScore = intensityScore;
         }
@@ -63,7 +63,7 @@ public class Visibility extends AbstractWeatherCondition {
          * @param value the measured visibility distance in meters
          * @return the corresponding visibility level, or VERY_BAD_VISIBILITY if below all thresholds
          */
-        public static VisibilityLevel fromValue(double value) {
+        public static VisibilityLevel fromValue(final double value) {
             for (final VisibilityLevel visibilityLevel : VisibilityLevel.values()) {
                 if (value >= visibilityLevel.intensity) {
                     return visibilityLevel;

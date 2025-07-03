@@ -28,7 +28,8 @@ public interface StaticMapApiClient {
      *     <li>Italian language labels and interface</li>
      * </ul>
      *
-     * @param checkpoints A list of {@link CheckpointWithMeteo} representing the points along the route where weather conditions have been verified
+     * @param checkpoints A list of {@link CheckpointWithMeteo} representing the points along the route
+     *                    where weather conditions have been verified
      * @param polyline    An encoded polyline representing the route path to be displayed
      * @return a JavaFX {@link Image} object containing the generated map.
      * @throws MapGenerationException if any of the following errors occur:

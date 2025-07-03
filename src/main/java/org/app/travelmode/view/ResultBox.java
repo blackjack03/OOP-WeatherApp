@@ -5,7 +5,11 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
@@ -41,6 +45,16 @@ public class ResultBox extends HBox {
     private static final double METEO_SCORE_SIZE = 100;
     private static final double DISPLAY_SCALE_FACTOR = 0.8;
     private static final double MAX_WIDTH_FACTOR = 0.65;
+    private static final double IMAGE_MAX_WIDTH_FACTOR = 0.65;
+    private static final int CLIP_ARC_WIDTH = 50;
+    private static final int CLIP_ARC_HEIGHT = 50;
+    private static final int BORDER_ARC_WIDTH = 55;
+    private static final int BORDER_ARC_HEIGHT = 55;
+    private static final int SPACING = 50;
+
+    private static final int EXCELLENT_SCORE = 76;
+    private static final int GOOD_SCORE = 51;
+    private static final int BAD_SCORE = 26;
 
     private final Label meteoScore;
     private final Label description1;
@@ -64,7 +78,7 @@ public class ResultBox extends HBox {
      * @param mapImage    A static image of the route or map.
      * @param window      The window in which this component is displayed (used for sizing).
      */
-    public ResultBox(int meteoScore, final String description, final String duration, final String arrivalDate,
+    public ResultBox(final int meteoScore, final String description, final String duration, final String arrivalDate,
                      final String arrivalTime, final Image mapImage, final Window window) {
         this.meteoScore = new Label(String.valueOf(meteoScore));
         this.description1 = new Label(DESCRIPTION_TEXT);
@@ -102,7 +116,8 @@ public class ResultBox extends HBox {
 
         final ImageView mapImageView = new ImageView(mapImage);
         mapImageView.setSmooth(true);
-        mapImageView.fitWidthProperty().bind(Bindings.createDoubleBinding(() -> this.getWidth() * 0.65, this.widthProperty()));
+        mapImageView.fitWidthProperty().bind(Bindings.createDoubleBinding(
+                () -> this.getWidth() * IMAGE_MAX_WIDTH_FACTOR, this.widthProperty()));
         mapImageView.fitHeightProperty().bind(Bindings.createDoubleBinding(
                 () -> mapImageView.getFitWidth() / IMAGE_WIDTH_RATIO * IMAGE_HEIGHT_RATIO,
                 mapImageView.fitWidthProperty()
@@ -111,8 +126,8 @@ public class ResultBox extends HBox {
         final Rectangle clip = new Rectangle();
         clip.widthProperty().bind(mapImageView.fitWidthProperty());
         clip.heightProperty().bind(mapImageView.fitHeightProperty());
-        clip.setArcWidth(50);
-        clip.setArcHeight(50);
+        clip.setArcWidth(CLIP_ARC_WIDTH);
+        clip.setArcHeight(CLIP_ARC_HEIGHT);
         clip.setX(0);
         clip.setY(0);
         mapImageView.setClip(clip);
@@ -120,8 +135,8 @@ public class ResultBox extends HBox {
         final Rectangle border = new Rectangle();
         border.widthProperty().bind(mapImageView.fitWidthProperty().add(10));
         border.heightProperty().bind(mapImageView.fitHeightProperty().add(10));
-        border.setArcWidth(55);
-        border.setArcHeight(55);
+        border.setArcWidth(BORDER_ARC_WIDTH);
+        border.setArcHeight(BORDER_ARC_HEIGHT);
         border.setFill(Color.LIGHTBLUE);
 
         final StackPane mapContainer = new StackPane(border, mapImageView);
@@ -137,7 +152,7 @@ public class ResultBox extends HBox {
                 actualWindow.yProperty().addListener((obs, oldVal, newVal) -> updateMaxWidth(actualWindow));
             }
         });
-        this.setSpacing(50);
+        this.setSpacing(SPACING);
         this.setAlignment(Pos.CENTER);
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         this.getStyleClass().add("result-box");
@@ -153,7 +168,8 @@ public class ResultBox extends HBox {
      * @param window The current window used to calculate responsive layout constraints.
      */
     private void updateMaxWidth(final Window window) {
-        final Screen screen = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth() * DISPLAY_SCALE_FACTOR, window.getHeight() * DISPLAY_SCALE_FACTOR).get(0);
+        final Screen screen = Screen.getScreensForRectangle(window.getX(), window.getY(),
+                window.getWidth() * DISPLAY_SCALE_FACTOR, window.getHeight() * DISPLAY_SCALE_FACTOR).get(0);
         this.maxWidth = screen.getBounds().getWidth() * MAX_WIDTH_FACTOR;
         this.setMaxWidth(maxWidth);
         this.setMaxHeight(maxWidth * HEIGHT_RATIO / WIDTH_RATIO);
@@ -165,14 +181,14 @@ public class ResultBox extends HBox {
      *
      * @param meteoScore An integer score used to determine the color class (0–100).
      */
-    private void addColor(int meteoScore) {
-        if (meteoScore >= 76) {
+    private void addColor(final int meteoScore) {
+        if (meteoScore >= EXCELLENT_SCORE) {
             this.getStyleClass().add("result-box-green");
             this.meteoScore.getStyleClass().add("meteo-score-green");
-        } else if (meteoScore >= 51) {
+        } else if (meteoScore >= GOOD_SCORE) {
             this.getStyleClass().add("result-box-yellow");
             this.meteoScore.getStyleClass().add("meteo-score-yellow");
-        } else if (meteoScore >= 26) {
+        } else if (meteoScore >= BAD_SCORE) {
             this.getStyleClass().add("result-box-orange");
             this.meteoScore.getStyleClass().add("meteo-score-orange");
         } else {

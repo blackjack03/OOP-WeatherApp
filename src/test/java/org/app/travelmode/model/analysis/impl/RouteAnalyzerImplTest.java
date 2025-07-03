@@ -32,8 +32,8 @@ public class RouteAnalyzerImplTest {
             final List<SimpleDirectionsStep> result = new ArrayList<>();
             for (final DirectionsStep step : leg.getSteps()) {
                 final TextValueObject duration = step.getDuration();
-                final LatLng start = step.getStart_location();
-                final LatLng end = step.getEnd_location();
+                final LatLng start = step.getStartLocation();
+                final LatLng end = step.getEndLocation();
                 final String polylineName = step.getPolyline().getPoints();
                 final TextValueObject distance = new TextValueObject(polylineName, step.getDistance().getValue());
 

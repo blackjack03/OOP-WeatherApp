@@ -42,7 +42,7 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
      * @param resize          If true, the component will resize to its preferred width and height.
      */
     public CityInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected,
-                            final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, boolean resize) {
+                            final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, final boolean resize) {
         super();
 
         this.label = new Label(title);
@@ -63,7 +63,8 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
         this.cityTextField.getStyleClass().add("city-input-text-field");
         this.cityTextField.setOnKeyTyped(event -> {
             final String inputChar = event.getCharacter();
-            if (!inputChar.equals("\r") && !inputChar.equals("\t")) { // aggiungere "!inputChar.equals("")" per evitare di eseguire il codice quando si cancella una lettera
+            // aggiungere "!inputChar.equals("")" per evitare di eseguire il codice quando si cancella una lettera
+            if (!"\r".equals(inputChar) && !"\t".equals(inputChar)) {
                 final String actualText = this.cityTextField.getText();
                 if (actualText.length() >= 3) {
                     final List<PlaceAutocompletePrediction> placePredictions = fetcPredictions.apply(actualText);
@@ -94,7 +95,8 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
      * @param predictions    The list of {@link PlaceAutocompletePrediction} to display.
      * @param onCitySelected The callback to execute when a prediction is selected.
      */
-    private void updateSuggestionsMenu(final List<PlaceAutocompletePrediction> predictions, final BiConsumer<String, String> onCitySelected) {
+    private void updateSuggestionsMenu(final List<PlaceAutocompletePrediction> predictions,
+                                       final BiConsumer<String, String> onCitySelected) {
         this.suggestionsMenu.getItems().clear();
         for (final PlaceAutocompletePrediction prediction : predictions) {
             final MenuItem menuItem = new MenuItem(prediction.getDescription());
@@ -161,7 +163,7 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
      *
      * @param disable If true, disables the inputs; otherwise, enables them.
      */
-    protected void setDisableAllInputs(boolean disable) {
+    protected void setDisableAllInputs(final boolean disable) {
         this.cityTextField.setDisable(disable);
     }
 }

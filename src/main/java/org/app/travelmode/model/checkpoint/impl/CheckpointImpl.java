@@ -29,7 +29,7 @@ public class CheckpointImpl implements Checkpoint {
      *                        </ul>
      * @param arrivalDateTime the expected or actual arrival date and time at this checkpoint
      */
-    public CheckpointImpl(double latitude, double longitude, final ZonedDateTime arrivalDateTime) {
+    public CheckpointImpl(final double latitude, final double longitude, final ZonedDateTime arrivalDateTime) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.arrivalDateTime = arrivalDateTime;
@@ -66,10 +66,10 @@ public class CheckpointImpl implements Checkpoint {
      */
     @Override
     public String toString() {
-        return "GeoPoint{" +
-                "latitude=" + this.latitude +
-                ", longitude=" + this.longitude +
-                ", timestamp=" + arrivalDateTime +
-                '}';
+        return "GeoPoint{"
+                + "latitude=" + this.latitude
+                + ", longitude=" + this.longitude
+                + ", timestamp=" + arrivalDateTime
+                + '}';
     }
 }

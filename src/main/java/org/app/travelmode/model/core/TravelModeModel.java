@@ -46,14 +46,14 @@ public interface TravelModeModel {
      * @throws IOException if an error occurs while communicating with the service providing the predictions,
      *                     or if an error occurs while decoding the response.
      */
-    List<PlaceAutocompletePrediction> getPlacePredictions(final String input) throws IOException;
+    List<PlaceAutocompletePrediction> getPlacePredictions(String input) throws IOException;
 
     /**
      * Set the departure location for the travel request.
      *
      * @param departureLocation the name of the departure location
      */
-    void setDepartureLocation(final String departureLocation);
+    void setDepartureLocation(String departureLocation);
 
     /**
      * Set the PlaceId associated with the starting location and automatically retrieves its timezone.
@@ -61,35 +61,35 @@ public interface TravelModeModel {
      * @param departurePlaceId the PlaceId associated with the starting location
      * @throws IOException if the time zone of the starting location cannot be obtained.
      */
-    void setDeparturePlaceId(final String departurePlaceId) throws IOException;
+    void setDeparturePlaceId(String departurePlaceId) throws IOException;
 
     /**
      * Set the arrival location for the travel request.
      *
      * @param arrivalLocation the name of the arrival location
      */
-    void setArrivalLocation(final String arrivalLocation);
+    void setArrivalLocation(String arrivalLocation);
 
     /**
      * Set the PlaceId associated with the arrival location for the travel request.
      *
      * @param arrivalPlaceId the PlaceId associated with the arrival location
      */
-    void setArrivalPlaceId(final String arrivalPlaceId);
+    void setArrivalPlaceId(String arrivalPlaceId);
 
     /**
      * Set the departure time for the travel request.
      *
      * @param departureTime the local time of departure
      */
-    void setDepartureTime(final LocalTime departureTime);
+    void setDepartureTime(LocalTime departureTime);
 
     /**
      * Set the departure date for the travel request.
      *
      * @param departureDate the departure date
      */
-    void setDepartureDate(final LocalDate departureDate);
+    void setDepartureDate(LocalDate departureDate);
 
     /**
      * Initiates the analysis of directions based on the provided travel request.
@@ -102,7 +102,8 @@ public interface TravelModeModel {
     /**
      * Retrieves the main travel mode result.
      *
-     * @return a {@link TravelModeResult} object representing the results from analyzing the first route recommended by the routing service
+     * @return a {@link TravelModeResult} object representing the results from analyzing the
+     * first route recommended by the routing service
      * @throws WeatherDataException if there is an error getting weather information for route analysis.
      */
     TravelModeResult getTravelModeMainResult() throws WeatherDataException;

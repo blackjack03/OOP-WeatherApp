@@ -20,7 +20,7 @@ public class LatLng {
      * @param lat The latitude component of the coordinate
      * @param lng The longitude component of the coordinate
      */
-    public LatLng(double lat, double lng) {
+    public LatLng(final double lat, final double lng) {
         this.lat = lat;
         this.lng = lng;
     }

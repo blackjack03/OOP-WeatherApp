@@ -24,7 +24,7 @@ public class WeatherReportImpl implements WeatherReport {
     private Optional<Integer> weatherScore;
 
     /**
-     * Constructs a new {@link WeatherReportImpl}
+     * Constructs a new {@link WeatherReportImpl}.
      */
     public WeatherReportImpl() {
         this.weatherConditions = new ArrayList<>();
@@ -76,11 +76,11 @@ public class WeatherReportImpl implements WeatherReport {
         }
 
         if (this.weatherScore.isEmpty()) {
-            double totalImpact = this.weatherConditions.stream()
+            final double totalImpact = this.weatherConditions.stream()
                     .mapToDouble(WeatherCondition::getWeightedIntensityScore)
                     .sum();
-            long normalizedImpact = Math.round(MULTIPLIER * Math.log(totalImpact + HORIZONTAL_SHIFT) - VERTICAL_SHIFT);
-            int score = (int) Math.min(MAX_SCORE, Math.max(MIN_SCORE, MAX_SCORE - normalizedImpact));
+            final long normalizedImpact = Math.round(MULTIPLIER * Math.log(totalImpact + HORIZONTAL_SHIFT) - VERTICAL_SHIFT);
+            final int score = (int) Math.min(MAX_SCORE, Math.max(MIN_SCORE, MAX_SCORE - normalizedImpact));
             this.weatherScore = Optional.of(score);
         }
 

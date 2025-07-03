@@ -28,7 +28,8 @@ public class CheckpointWithMeteoImpl extends CheckpointImpl implements Checkpoin
      * @param arrivalDateTime the expected arrival time at this checkpoint
      * @param weatherReport   the weather conditions report for this location and time
      */
-    public CheckpointWithMeteoImpl(double latitude, double longitude, final ZonedDateTime arrivalDateTime, final WeatherReport weatherReport) {
+    public CheckpointWithMeteoImpl(final double latitude, final double longitude, final ZonedDateTime arrivalDateTime,
+                                   final WeatherReport weatherReport) {
         super(latitude, longitude, arrivalDateTime);
         this.weatherReport = weatherReport;
     }

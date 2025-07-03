@@ -14,9 +14,24 @@ package org.app.travelmode.model.weather.impl.conditions;
  */
 public enum WeatherScoreCategory {
 
+    /**
+     * Represents excellent weather conditions (score: 76–100).
+     */
     EXCELLENT(76, 100),
+
+    /**
+     * Represents good weather conditions (score: 51–75).
+     */
     GOOD(51, 75),
+
+    /**
+     * Represents bad weather conditions (score: 26–50).
+     */
     BAD(26, 50),
+
+    /**
+     * Represents terrible weather conditions (score: 0–25).
+     */
     TERRIBLE(0, 25);
 
     private final int minScore;
@@ -28,7 +43,7 @@ public enum WeatherScoreCategory {
      * @param minScore the minimum score for this category (inclusive)
      * @param maxScore the maximum score for this category (inclusive)
      */
-    WeatherScoreCategory(int minScore, int maxScore) {
+    WeatherScoreCategory(final int minScore, final int maxScore) {
         this.minScore = minScore;
         this.maxScore = maxScore;
     }
@@ -59,7 +74,7 @@ public enum WeatherScoreCategory {
      * @return the corresponding category
      * @throws IllegalArgumentException if the score is outside the range 0-100
      */
-    public static WeatherScoreCategory fromScore(int score) {
+    public static WeatherScoreCategory fromScore(final int score) {
         if (score < 0 || score > 100) {
             throw new IllegalArgumentException("Il punteggio deve essere compreso tra 0 e 100");
         }

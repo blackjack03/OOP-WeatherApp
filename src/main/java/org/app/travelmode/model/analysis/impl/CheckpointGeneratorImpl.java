@@ -40,7 +40,6 @@ public class CheckpointGeneratorImpl implements CheckpointGenerator {
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("checkstyle:MagicNumber")
     public List<Checkpoint> generateCheckpoints(final List<SimpleDirectionsStep> steps, final ZonedDateTime departureDateTime) {
         final List<Checkpoint> checkpoints = new ArrayList<>();
         final SimpleDirectionsStep firstStep = steps.get(0);

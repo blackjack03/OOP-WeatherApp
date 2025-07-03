@@ -26,7 +26,7 @@ public class Precipitation extends AbstractWeatherCondition {
      *
      * @param precipitationMm the amount of precipitation in millimeters(mm)
      */
-    public Precipitation(double precipitationMm) {
+    public Precipitation(final double precipitationMm) {
         super(NAME, WEIGHT);
         this.intensity = PrecipitationLevel.fromValue(precipitationMm);
     }
@@ -53,7 +53,7 @@ public class Precipitation extends AbstractWeatherCondition {
         private final double intensity;
         private final int intensityScore;
 
-        PrecipitationLevel(double intensity, int intensityScore) {
+        PrecipitationLevel(final double intensity, final int intensityScore) {
             this.intensity = intensity;
             this.intensityScore = intensityScore;
         }
@@ -64,7 +64,7 @@ public class Precipitation extends AbstractWeatherCondition {
          * @param value the measured precipitation in millimeters
          * @return the corresponding precipitation level, or NO_PRECIPITATION if no threshold is met
          */
-        public static PrecipitationLevel fromValue(double value) {
+        public static PrecipitationLevel fromValue(final double value) {
             for (final PrecipitationLevel precipitation : PrecipitationLevel.values()) {
                 if (value >= precipitation.intensity) {
                     return precipitation;

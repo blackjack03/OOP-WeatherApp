@@ -11,14 +11,14 @@ import java.time.ZonedDateTime;
 public interface Checkpoint {
 
     /**
-     * Allows you to get the latitude of this checkpoint
+     * Allows you to get the latitude of this checkpoint.
      *
      * @return the latitude of this checkpoint in decimal degrees
      */
     double getLatitude();
 
     /**
-     * Allows you to get the longitude of this checkpoint
+     * Allows you to get the longitude of this checkpoint.
      *
      * @return the longitude of this checkpoint in decimal degrees
      */

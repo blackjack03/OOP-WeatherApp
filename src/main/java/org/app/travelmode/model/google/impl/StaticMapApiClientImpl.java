@@ -48,7 +48,8 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
      *                                </ul>
      */
     @Override
-    public Image generateMapImage(final List<CheckpointWithMeteo> checkpoints, final String polyline) throws MapGenerationException {
+    public Image generateMapImage(final List<CheckpointWithMeteo> checkpoints,
+                                  final String polyline) throws MapGenerationException {
         try {
             final String url = buildMapUrl(checkpoints, polyline);
             final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -61,9 +62,9 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
 
             final InputStream inputStream = connection.getInputStream();
             return new Image(inputStream);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new MapGenerationException("Errore I/O durante la generazione della mappa.", e);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new MapGenerationException("Errore inatteso durante la generazione della mappa.", e);
         }
     }
@@ -80,7 +81,6 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
                 .addParameter("scale", DEFAULT_SCALE)
                 .addParameter("language", DEFAULT_LANGUAGE)
                 .addParameter("path", "enc:" + polyline);
-        
         checkpoints.forEach(this::addCheckpointMarker);
         return this.requestBuilder.build();
     }
@@ -108,7 +108,7 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
      * @param weatherScore the weather score to evaluate
      * @return the color string to use for the marker, or null if no color is applicable
      */
-    private String selectMarkerColor(int weatherScore) {
+    private String selectMarkerColor(final int weatherScore) {
         return switch (WeatherScoreCategory.fromScore(weatherScore)) {
             case GOOD -> "yellow";
             case BAD -> "orange";
