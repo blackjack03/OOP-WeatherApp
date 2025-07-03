@@ -5,21 +5,52 @@ import org.app.travelmode.model.checkpoint.impl.CheckpointImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-
 import org.app.travelmode.model.google.dto.directions.LatLng;
 import org.app.travelmode.model.google.dto.directions.SimpleDirectionsStep;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * Unit tests for the {@link CheckpointGeneratorImpl} class.
+ * <p>
+ * This test suite verifies the correct generation of checkpoints from a list of {@link SimpleDirectionsStep},
+ * based on a given departure time.
+ * </p>
+ *
+ * <p>Tested behaviors include:</p>
+ * <ul>
+ *   <li>Correct number and content of checkpoints for single and multiple steps</li>
+ *   <li>Accurate time calculations based on cumulative durations</li>
+ *   <li>Immutability of the returned list</li>
+ *   <li>Correct handling of steps with zero duration</li>
+ * </ul>
+ */
 public class CheckpointGeneratorImplTest {
+
+    private static final double SINGLE_DURATION_SEC = 600.0;  // 10 minutes
+    private static final double STEP1_DURATION_SEC = 1800.0;  // 30 minutes
+    private static final double STEP2_DURATION_SEC = 1200.0;  // 20 minutes
+    private static final double ZERO_DURATION_SEC = 0.0;
+
+    private static final double SINGLE_DISTANCE_METRES = 1500.0;
+    private static final double STEP1_DISTANCE_METRES = 25000.0;
+    private static final double STEP2_DISTANCE_METRES = 15000.0;
+    private static final double ZERO_STEP_DISTANCE_M = 100.0;
+
+    private static final double LAT_ZERO = 0.0;
+    private static final double LNG_ZERO = 0.0;
+
 
     private CheckpointGeneratorImpl generator;
     private ZonedDateTime departureTime;
 
+    /**
+     * Initializes the checkpoint generator and sets the departure time before each test.
+     */
     @BeforeEach
     void setUp() {
         generator = new CheckpointGeneratorImpl();
@@ -27,15 +58,16 @@ public class CheckpointGeneratorImplTest {
     }
 
     /**
-     * Utility method to verify the correctness of a checkpoint
+     * Utility method that checks the coordinates and arrival time of a generated checkpoint
+     * against expected values.
      *
-     * @param expectedLat  expected latitude
-     * @param expectedLng  expected longitude
-     * @param expectedTime expected arrival time
-     * @param checkpoint   checkpoint to verify
-     * @param locationName location name for error messages
+     * @param expectedLat  the expected latitude
+     * @param expectedLng  the expected longitude
+     * @param expectedTime the expected arrival time
+     * @param checkpoint   the generated checkpoint to validate
+     * @param locationName a label used in assertion messages
      */
-    private void assertCheckpoint(double expectedLat, double expectedLng, final ZonedDateTime expectedTime,
+    private void assertCheckpoint(final double expectedLat, final double expectedLng, final ZonedDateTime expectedTime,
                                   final Checkpoint checkpoint, final String locationName) {
         assertEquals(expectedLat, checkpoint.getLatitude(),
                 String.format("La latitudine del checkpoint di %s non corrisponde", locationName));
@@ -45,14 +77,16 @@ public class CheckpointGeneratorImplTest {
                 String.format("L'orario di arrivo a %s non è corretto", locationName));
     }
 
+    /**
+     * Verifies that a single-step route generates exactly two checkpoints:
+     * the start and the end.
+     */
     @Test
     void testGenerateCheckpointsWithSingleStep() {
-        final LatLng start = new LatLng(41.9028, 12.4964);  // Roma
-        final LatLng end = new LatLng(41.9109, 12.4818);    // Villa Borghese
-        double duration = 600.0;  // 10 minuti
-        double distance = 1500.0; // 1.5 km in metri
+        final LatLng start = new LatLng(41.9028, 12.4964);
+        final LatLng end = new LatLng(41.9109, 12.4818);
 
-        final SimpleDirectionsStep step = new SimpleDirectionsStep(duration, end, start, distance);
+        final SimpleDirectionsStep step = new SimpleDirectionsStep(SINGLE_DURATION_SEC, end, start, SINGLE_DISTANCE_METRES);
         final List<SimpleDirectionsStep> steps = List.of(step);
 
         final List<Checkpoint> checkpoints = generator.generateCheckpoints(steps, departureTime);
@@ -63,10 +97,14 @@ public class CheckpointGeneratorImplTest {
         this.assertCheckpoint(start.getLat(), start.getLng(), departureTime,
                 checkpoints.get(0), "punto di partenza");
 
-        this.assertCheckpoint(end.getLat(), end.getLng(), departureTime.plusSeconds((long) duration),
+        this.assertCheckpoint(end.getLat(), end.getLng(), departureTime.plusSeconds((long) SINGLE_DURATION_SEC),
                 checkpoints.get(1), "punto di arrivo");
     }
 
+    /**
+     * Verifies that a multi-step route generates the correct number of checkpoints
+     * and that arrival times accumulate correctly across steps.
+     */
     @Test
     void testGenerateCheckpointsWithMultipleSteps() {
         // Prima tappa: Roma -> Tivoli -> Frascati
@@ -74,8 +112,8 @@ public class CheckpointGeneratorImplTest {
         final LatLng tivoli = new LatLng(41.9633, 12.7958);
         final LatLng frascati = new LatLng(41.8089, 12.6799);
 
-        final SimpleDirectionsStep step1 = new SimpleDirectionsStep(1800.0, tivoli, roma, 25000.0);
-        final SimpleDirectionsStep step2 = new SimpleDirectionsStep(1200.0, frascati, tivoli, 15000.0);
+        final SimpleDirectionsStep step1 = new SimpleDirectionsStep(STEP1_DURATION_SEC, tivoli, roma, STEP1_DISTANCE_METRES);
+        final SimpleDirectionsStep step2 = new SimpleDirectionsStep(STEP2_DURATION_SEC, frascati, tivoli, STEP2_DISTANCE_METRES);
 
         final List<SimpleDirectionsStep> steps = List.of(step1, step2);
         final List<Checkpoint> checkpoints = generator.generateCheckpoints(steps, departureTime);
@@ -85,35 +123,42 @@ public class CheckpointGeneratorImplTest {
 
         this.assertCheckpoint(roma.getLat(), roma.getLng(), departureTime, checkpoints.get(0), "Roma");
 
-        this.assertCheckpoint(tivoli.getLat(), tivoli.getLng(), departureTime.plusSeconds(1800),
+        this.assertCheckpoint(tivoli.getLat(), tivoli.getLng(), departureTime.plusSeconds((long) STEP1_DURATION_SEC),
                 checkpoints.get(1), "Tivoli");
 
-        this.assertCheckpoint(frascati.getLat(), frascati.getLng(), departureTime.plusSeconds(3000),
+        this.assertCheckpoint(frascati.getLat(), frascati.getLng(),
+                departureTime.plusSeconds((long) (STEP1_DURATION_SEC + STEP2_DURATION_SEC)),
                 checkpoints.get(2), "Frascati");
 
     }
 
+    /**
+     * Verifies that the list of generated checkpoints is immutable.
+     */
     @Test
     void testGenerateCheckpointsReturnsImmutableList() {
         final LatLng start = new LatLng(41.9028, 12.4964);
         final LatLng end = new LatLng(41.9109, 12.4818);
 
-        final SimpleDirectionsStep step = new SimpleDirectionsStep(600.0, end, start, 1500.0);
+        final SimpleDirectionsStep step = new SimpleDirectionsStep(SINGLE_DURATION_SEC, end, start, SINGLE_DISTANCE_METRES);
 
         final List<SimpleDirectionsStep> steps = List.of(step);
         final List<Checkpoint> checkpoints = generator.generateCheckpoints(steps, departureTime);
 
         assertThrows(UnsupportedOperationException.class,
-                () -> checkpoints.add(new CheckpointImpl(0.0, 0.0, ZonedDateTime.now())),
+                () -> checkpoints.add(new CheckpointImpl(LAT_ZERO, LNG_ZERO, ZonedDateTime.now())),
                 "La lista di checkpoint dovrebbe essere immutabile");
     }
 
+    /**
+     * Verifies that a step with zero duration results in two checkpoints with identical arrival times.
+     */
     @Test
     void testGenerateCheckpointsWithZeroDuration() {
         final LatLng start = new LatLng(41.9028, 12.4964);
         final LatLng end = new LatLng(41.9109, 12.4818);
 
-        final SimpleDirectionsStep step = new SimpleDirectionsStep(0.0, end, start, 100.0);
+        final SimpleDirectionsStep step = new SimpleDirectionsStep(ZERO_DURATION_SEC, end, start, ZERO_STEP_DISTANCE_M);
 
         final List<SimpleDirectionsStep> steps = List.of(step);
         final List<Checkpoint> checkpoints = generator.generateCheckpoints(steps, departureTime);

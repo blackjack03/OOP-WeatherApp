@@ -2,22 +2,67 @@ package org.app.travelmode.model.analysis.impl;
 
 import com.google.gson.Gson;
 import org.app.travelmode.model.analysis.api.SubStepGenerator;
+import org.app.travelmode.model.google.dto.directions.DirectionsLeg;
+import org.app.travelmode.model.google.dto.directions.DirectionsResponse;
+import org.app.travelmode.model.google.dto.directions.LatLng;
+import org.app.travelmode.model.google.dto.directions.SimpleDirectionsStep;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.app.travelmode.model.google.dto.directions.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/**
+ * Unit tests for {@link IntermediatePointFinderImpl}, which computes intermediate steps
+ * from a {@link DirectionsLeg} using a {@link SubStepGenerator}.
+ * <p>
+ * This test class verifies:
+ * <ul>
+ *   <li>Correct generation of multiple intermediate steps</li>
+ *   <li>Correct handling of a single short or long step</li>
+ *   <li>Correct content of each step (duration, distance, coordinates)</li>
+ *   <li>That the returned list is immutable</li>
+ * </ul>
+ *
+ * <p>Test data is loaded from static JSON files that simulate real responses
+ * from the Google Directions API.</p>
+ */
 public class IntermediatePointFinderImplTest {
+
+    private static final double DURATION_TOLERANCE_SECONDS = 60.0;
+    private static final double DISTANCE_TOLERANCE_METERS = 500.0;
+
+    private static final int EXPECTED_STEPS_FULL_ROUTE = 3;
+    private static final int EXPECTED_STEPS_LONG_ROUTE = 3;
+
+    private static final double STEP1_DURATION_FULL = 1468.3;
+    private static final double STEP1_DISTANCE_FULL = 28735;
+    private static final double STEP2_DURATION_FULL = 930;
+    private static final double STEP2_DISTANCE_FULL = 28180;
+    private static final double STEP3_DURATION_FULL = 1754;
+    private static final double STEP3_DISTANCE_FULL = 21385;
+
+    private static final double SINGLE_STEP_DURATION = 44;
+    private static final double SINGLE_STEP_DISTANCE = 172;
+
+    private static final double STEP1_DURATION_LONG = 935.8;
+    private static final double STEP1_DISTANCE_LONG = 28216.1;
+    private static final double STEP2_DURATION_LONG = 929.3;
+    private static final double STEP2_DISTANCE_LONG = 28017.7;
+    private static final double STEP3_DURATION_LONG = 80.9;
+    private static final double STEP3_DISTANCE_LONG = 2439.2;
+
     private IntermediatePointFinderImpl finder;
     private SubStepGenerator subStepGenerator;
 
+    /**
+     * Initializes the test environment before each test case.
+     */
     @BeforeEach
     void setUp() {
         finder = new IntermediatePointFinderImpl();
@@ -41,12 +86,20 @@ public class IntermediatePointFinderImplTest {
     }
 
     /**
-     * Utility method to check a SimpleDirectionsStep
+     * Asserts that the given {@link SimpleDirectionsStep} has expected values
+     * for duration, distance, and coordinates.
+     *
+     * @param step             the step to verify
+     * @param expectedDuration expected duration in seconds
+     * @param expectedEnd      expected end location
+     * @param expectedStart    expected start location
+     * @param expectedDistance expected distance in meters
+     * @param message          message used for assertion failure details
      */
-    private void assertStep(final SimpleDirectionsStep step, double expectedDuration, final LatLng expectedEnd,
-                            final LatLng expectedStart, double expectedDistance, final String message) {
+    private void assertStep(final SimpleDirectionsStep step, final double expectedDuration, final LatLng expectedEnd,
+                            final LatLng expectedStart, final double expectedDistance, final String message) {
 
-        assertEquals(expectedDuration, step.getDuration().getValue(), 60,
+        assertEquals(expectedDuration, step.getDuration().getValue(), DURATION_TOLERANCE_SECONDS,
                 message + " - Durata non corretta");
         assertEquals(expectedEnd.getLat(), step.getEndLocation().getLat(),
                 message + " - Latitudine del punto di arrivo non corretta");
@@ -56,10 +109,13 @@ public class IntermediatePointFinderImplTest {
                 message + " - Latitudine del punto di partenza non corretta");
         assertEquals(expectedStart.getLng(), step.getStartLocation().getLng(),
                 message + " - Longitudine del punto di partenza non corretta");
-        assertEquals(expectedDistance, step.getDistance().getValue(), 500,
+        assertEquals(expectedDistance, step.getDistance().getValue(), DISTANCE_TOLERANCE_METERS,
                 message + " - Distanza non corretta");
     }
 
+    /**
+     * Tests that intermediate points are correctly generated from a full route.
+     */
     @Test
     void testFindIntermediatePointsWithValidJson() throws IOException {
         final LatLng forli = new LatLng(44.222008, 12.0408666);
@@ -71,17 +127,20 @@ public class IntermediatePointFinderImplTest {
 
         final List<SimpleDirectionsStep> result = finder.findIntermediatePoints(leg, subStepGenerator);
 
-        assertEquals(3, result.size(),
+        assertEquals(EXPECTED_STEPS_FULL_ROUTE, result.size(),
                 "Dovrebbero essere generati 3 step");
 
-        assertStep(result.get(0), 1468.3, p1, forli, 28735,
+        assertStep(result.get(0), STEP1_DURATION_FULL, p1, forli, STEP1_DISTANCE_FULL,
                 "Primo step");
-        assertStep(result.get(1), 930, p2, p1, 28180,
+        assertStep(result.get(1), STEP2_DURATION_FULL, p2, p1, STEP2_DISTANCE_FULL,
                 "Secondo step");
-        assertStep(result.get(2), 1754, bologna, p2, 21385,
+        assertStep(result.get(2), STEP3_DURATION_FULL, bologna, p2, STEP3_DISTANCE_FULL,
                 "Terzo step");
     }
 
+    /**
+     * Tests that a single step is generated when the route consists of a short path.
+     */
     @Test
     void testFindIntermediatePointsWithOneSteps() throws IOException {
         final LatLng start = new LatLng(44.14727329999999, 12.2366031);
@@ -94,10 +153,13 @@ public class IntermediatePointFinderImplTest {
         assertEquals(1, result.size(),
                 "Dovrebbe essere generato un solo step");
 
-        assertStep(result.get(0), 44, end, start, 172,
+        assertStep(result.get(0), SINGLE_STEP_DURATION, end, start, SINGLE_STEP_DISTANCE,
                 "Singolo step");
     }
 
+    /**
+     * Tests that a long single step is properly split into multiple intermediate steps.
+     */
     @Test
     void testFindIntermediatePointsWithOneLongSteps() throws IOException {
         final LatLng start = new LatLng(44.2519312, 12.0918587);
@@ -109,17 +171,20 @@ public class IntermediatePointFinderImplTest {
 
         final List<SimpleDirectionsStep> result = finder.findIntermediatePoints(leg, subStepGenerator);
 
-        assertEquals(3, result.size(),
+        assertEquals(EXPECTED_STEPS_LONG_ROUTE, result.size(),
                 "Dovrebbero essere generati 3 step");
 
-        assertStep(result.get(0), 935.8, p1, start, 28216.1,
+        assertStep(result.get(0), STEP1_DURATION_LONG, p1, start, STEP1_DISTANCE_LONG,
                 "Primo step");
-        assertStep(result.get(1), 929.3, p2, p1, 28017.7,
+        assertStep(result.get(1), STEP2_DURATION_LONG, p2, p1, STEP2_DISTANCE_LONG,
                 "Secondo step");
-        assertStep(result.get(2), 80.9, end, p2, 2439.2,
+        assertStep(result.get(2), STEP3_DURATION_LONG, end, p2, STEP3_DISTANCE_LONG,
                 "Terzo step");
     }
 
+    /**
+     * Tests that the result list returned by {@code findIntermediatePoints} is immutable.
+     */
     @Test
     void testFindIntermediatePointsReturnsImmutableList() throws IOException {
         final LatLng p1 = new LatLng(12.34, 43.21);

@@ -25,7 +25,6 @@ public final class GeographicDistanceCalculator {
      * @param p2 second point
      * @return a {@link BigDecimal} representing the distance of two points on earth in meters
      */
-    @SuppressWarnings("checkstyle:MagicNumber")
     public static BigDecimal computeDistance(final LatLng p1, final LatLng p2) {
         if (p1.equals(p2)) {
             return BigDecimal.ZERO.setScale(1, RoundingMode.HALF_UP);
