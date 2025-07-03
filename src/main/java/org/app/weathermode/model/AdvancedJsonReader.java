@@ -19,9 +19,9 @@ import java.io.IOException;
  *   <li>estrarre valori tipizzati evitando il casting esplicito;</li>
  *   <li>fare checking rapido dell’esistenza di un nodo.</li>
  * </ul>
- * I metodi che accedono al contenuto possono lanciare <code>Exception</code>
- * generiche per raggruppare errori di path e di tipo — l’implementazione è
- * responsabile di specificare le eccezioni concrete.
+ * <p>I metodi che accedono al contenuto possono lanciare
+ * <code>Exception</code> generiche per raggruppare errori di path e di tipo —
+ * l’implementazione è responsabile di specificare le eccezioni concrete.</p>
  */
 public interface AdvancedJsonReader {
 
@@ -31,26 +31,30 @@ public interface AdvancedJsonReader {
      * Scarica il JSON da una URL effettuando una richiesta <em>HTTP GET</em>
      * sincrona; sostituisce eventuali dati precedenti presenti nell’istanza.
      *
-     * @param jsonURL endpoint assoluto (http/https) del documento.
-     * @throws IOException problemi di rete o se il server restituisce un errore.
+     * @param jsonURL endpoint assoluto (http/https) del documento JSON.
+     * @throws IOException in caso di problemi di rete o se il server restituisce un errore.
      */
     void requestJSON(String jsonURL) throws IOException;
 
     /**
      * Imposta il JSON a partire da una stringa grezza.
+     *
      * @param jsonString payload completo (deve essere un JSON valido).
-     * @return <code>this</code> per abilitare il <em>method-chaining</em>.
+     * @return questa istanza per abilitare il <em>method-chaining</em>.
      */
     AdvancedJsonReaderImpl setJSON(String jsonString);
 
     /**
      * Variante che accetta direttamente un {@link JsonObject} già deserializzato.
-     * @param jsonObj oggetto radice.
+     *
+     * @param jsonObj oggetto radice JSON.
      */
     void setJSON(JsonObject jsonObj);
 
     /**
-     * @return la stringa JSON originale così come caricata o scaricata.
+     * Restituisce la stringa JSON originale così come caricata o scaricata.
+     *
+     * @return testo JSON non formattato o grezzo.
      */
     String getRawJSON();
 
@@ -62,15 +66,17 @@ public interface AdvancedJsonReader {
      * individuato.
      *
      * @param path dot-notation verso un nodo <strong>JsonObject</strong>.
-     * @return l’oggetto trovato.
-     * @throws Exception se uno dei segmenti non esiste o non è un oggetto.
+     * @return {@link JsonObject} individuato.
+     * @throws Exception se uno dei segmenti non esiste o non rappresenta un oggetto JSON.
      */
     JsonObject walkthroughBody(String path) throws Exception;
 
     /**
-     * Recupera un {@link JsonArray} localizzato dal path.
-     * @param path dot-notation che termina su un array.
-     * @throws Exception path non valido o nodo non array.
+     * Recupera un {@link JsonArray} localizzato dal path specificato.
+     *
+     * @param path dot-notation che termina su un array JSON.
+     * @return {@link JsonArray} corrispondente al percorso.
+     * @throws Exception se il path non è valido o il nodo non è un array.
      */
     JsonArray getJsonArray(String path) throws Exception;
 
@@ -80,32 +86,80 @@ public interface AdvancedJsonReader {
      * delle primitive, {@link String}, {@link JsonObject}, {@link JsonArray},
      * {@link JsonElement} e {@link Number}.</p>
      *
+     * @param <T> tipo di ritorno desiderato.
      * @param path dot-notation verso il valore finale.
-     * @param type classe di destinazione.
-     * @return valore convertito.
-     * @throws Exception se il path è errato o la conversione impossibile.
+     * @param type classe di destinazione del valore.
+     * @return valore convertito nel tipo specificato.
+     * @throws Exception se il path è errato o la conversione non è possibile.
      */
     <T> T getFromJson(String path, Class<T> type) throws Exception;
 
     /**
-     * Versione non tipizzata che restituisce il {@link JsonElement} grezzo.
+     * Versione non tipizzata che restituisce il {@link JsonElement} grezzo
+     * individuato dal path.
+     *
+     * @param path dot-notation verso l’elemento.
+     * @return {@link JsonElement} corrispondente al percorso.
+     * @throws Exception se il path non è valido o l’elemento non esiste.
      */
     JsonElement getFromJson(String path) throws Exception;
 
     /**
      * Verifica la presenza di un nodo senza sollevare eccezioni.
-     * @param path dot-notation.
-     * @return <code>true</code> se esiste, altrimenti <code>false</code>.
+     *
+     * @param path dot-notation verso il nodo da controllare.
+     * @return <code>true</code> se il nodo esiste, <code>false</code> altrimenti.
      */
     boolean elementExists(String path);
 
     /* =================== helper tipizzati ===================== */
 
-    String  getString(String path);
+    /**
+     * Shortcut per ottenere un valore {@link String} dal JSON.
+     *
+     * @param path dot-notation verso un elemento stringa.
+     * @return valore stringa.
+     */
+    String getString(String path);
+
+    /**
+     * Shortcut per ottenere un valore {@link Integer} dal JSON.
+     *
+     * @param path dot-notation verso un elemento numerico intero.
+     * @return valore intero.
+     */
     Integer getInt(String path);
-    Long    getLong(String path);
-    Double  getDouble(String path);
-    Float   getFloat(String path);
+
+    /**
+     * Shortcut per ottenere un valore {@link Long} dal JSON.
+     *
+     * @param path dot-notation verso un elemento numerico long.
+     * @return valore long.
+     */
+    Long getLong(String path);
+
+    /**
+     * Shortcut per ottenere un valore {@link Double} dal JSON.
+     *
+     * @param path dot-notation verso un elemento numerico double.
+     * @return valore double.
+     */
+    Double getDouble(String path);
+
+    /**
+     * Shortcut per ottenere un valore {@link Float} dal JSON.
+     *
+     * @param path dot-notation verso un elemento numerico float.
+     * @return valore float.
+     */
+    Float getFloat(String path);
+
+    /**
+     * Shortcut per ottenere un valore booleano dal JSON.
+     *
+     * @param path dot-notation verso un elemento booleano.
+     * @return valore booleano.
+     */
     boolean getBool(String path);
 
 }

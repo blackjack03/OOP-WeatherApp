@@ -33,9 +33,7 @@ public class IPLookUp implements LookUp {
     private String city = "";
     private String zipCode = "";
     private String timeZone = "";
-    private Pair<Double, Double> coords = null; // lat, lng
-
-    /* ========================= ctor =========================== */
+    private Pair<Double, Double> coords; // lat, lng
 
     /** Costruttore vuoto: la lookup vera e propria avviene su {@link #lookup()}. */
     public IPLookUp() { /* empty body */ }
@@ -62,40 +60,104 @@ public class IPLookUp implements LookUp {
 
     /* ==================== getter semplici ===================== */
 
-    @Override public String getIP()          { return this.ip; }
-    @Override public String getCountryCode() { return this.countryCode; }
-    @Override public String getCountry()     { return this.countryName; }
-    @Override public String getRegion()      { return this.regionName; }
-    @Override public String getCity()        { return this.city; }
-    @Override public String getZipCode()     { return this.zipCode; }
-    @Override public String getTimeZone()    { return this.timeZone; }
-    @Override public Pair<Double, Double> getCoords() { return this.coords; }
+    /**
+     * @return l'indirizzo IP pubblico rilevato.
+     */
+    @Override
+    public String getIP() {
+        return this.ip;
+    }
+
+    /**
+     * @return il codice ISO del Paese (es. "IT" per Italia).
+     */
+    @Override
+    public String getCountryCode() {
+        return this.countryCode;
+    }
+
+    /**
+     * @return il nome esteso del Paese (es. "Italy").
+     */
+    @Override
+    public String getCountry() {
+        return this.countryName;
+    }
+
+    /**
+     * @return il nome della regione o provincia di appartenenza.
+     */
+    @Override
+    public String getRegion() {
+        return this.regionName;
+    }
+
+    /**
+     * @return il nome della città associata all'IP.
+     */
+    @Override public String getCity() {
+        return this.city;
+    }
+
+    /**
+     * @return il codice postale (ZIP) se disponibile, altrimenti stringa vuota.
+     */
+    @Override
+    public String getZipCode() {
+        return this.zipCode;
+    }
+
+    /**
+     * @return il fuso orario in formato IANA/Olson (es. "Europe/Rome").
+     */
+    @Override
+    public String getTimeZone() {
+        return this.timeZone;
+    }
+
+    /**
+     * @return coppia latitudine/longitudine (in gradi decimali) oppure {@code null}
+     *         se non disponibile.
+     */
+    @Override
+    public Pair<Double, Double> getCoords() {
+        return this.coords;
+    }
 
     /* ======================== debug =========================== */
 
     /**
-     * @return stringa leggibile con tutti i campi ottenuti dalla lookup.
+     * Rappresentazione testuale di tutti i campi ottenuti dalla lookup.
+     *
+     * @return stringa formattata con i valori correnti.
      */
     @Override
     public String toString() {
-        return "IPLookUp{" +
-                "ip='" + ip + '\'' +
-                ", countryCode='" + countryCode + '\'' +
-                ", countryName='" + countryName + '\'' +
-                ", regionName='" + regionName + '\'' +
-                ", city='" + city + '\'' +
-                ", zipCode='" + zipCode + '\'' +
-                ", timeZone='" + timeZone + '\'' +
-                ", coords=" + coords +
-                '}';
+        return "IPLookUp{"
+                + "ip='" + ip + '\''
+                + ", countryCode='" + countryCode + '\''
+                + ", countryName='" + countryName + '\''
+                + ", regionName='" + regionName + '\''
+                + ", city='" + city + '\''
+                + ", zipCode='" + zipCode + '\''
+                + ", timeZone='" + timeZone + '\''
+                + ", coords=" + coords
+                + '}';
     }
 
     /* ==================== helper privati ===================== */
 
-    /** Reimposta tutti i campi prima di un nuovo tentativo di lookup. */
+    /**
+     * Reimposta tutti i campi prima di un nuovo tentativo di lookup.
+     */
     private void clear() {
-        this.ip = this.countryCode = this.countryName = this.regionName = "";
-        this.city = this.zipCode = this.timeZone = "";
+        this.ip = "";
+        this.countryCode = "";
+        this.countryName = "";
+        this.regionName = "";
+        this.city = "";
+        this.zipCode = "";
+        this.timeZone = "";
         this.coords = null;
     }
 

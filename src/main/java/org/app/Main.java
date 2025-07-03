@@ -10,6 +10,7 @@ import org.app.config.ConfigBuilder;
 import org.app.config.ConfigManager;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 
 public class Main {
 
@@ -25,7 +26,8 @@ public class Main {
                 + e.getMessage());
             CustomErrorGUI.showError("Errore durante la creazione del file di configurazione",
                 "Errore File Configurazione");
-            return;
+            Platform.exit();
+            System.exit(1);
         }
 
         // 1) carico subito la config
