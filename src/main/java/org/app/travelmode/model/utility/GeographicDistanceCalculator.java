@@ -27,6 +27,10 @@ public final class GeographicDistanceCalculator {
      */
     @SuppressWarnings("checkstyle:MagicNumber")
     public static BigDecimal computeDistance(final LatLng p1, final LatLng p2) {
+        if (p1.equals(p2)) {
+            return BigDecimal.ZERO.setScale(1, RoundingMode.HALF_UP);
+        }
+
         final double radiantLat1 = Math.toRadians(p1.getLat());
         final double radiantLng1 = Math.toRadians(p1.getLng());
         final double radiantLat2 = Math.toRadians(p2.getLat());
