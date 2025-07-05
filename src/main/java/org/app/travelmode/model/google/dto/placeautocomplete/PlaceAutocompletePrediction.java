@@ -9,8 +9,10 @@ package org.app.travelmode.model.google.dto.placeautocomplete;
  * </p>
  *
  */
+@SuppressWarnings("PMD.FieldNamingConventions")
 public class PlaceAutocompletePrediction {
     // CHECKSTYLE: MemberName OFF
+    // Fields used by Gson: names must match exactly the received JSON
     private String description;
     private PlaceAutocompleteStructuredFormat structured_formatting;
     private String place_id;
@@ -20,6 +22,7 @@ public class PlaceAutocompletePrediction {
      * Constructs an empty {@code PlaceAutocompletePrediction}.
      */
     public PlaceAutocompletePrediction() {
+        // This constructor is intentionally empty. Nothing special is needed here.
     }
 
     /**
@@ -69,8 +72,10 @@ public class PlaceAutocompletePrediction {
      * (e.g., main: "Milan", secondary: "Italy").
      * </p>
      */
+    @SuppressWarnings("PMD.FieldNamingConventions")
     public static class PlaceAutocompleteStructuredFormat {
         // CHECKSTYLE: MemberName OFF
+        // Fields used by Gson: names must match exactly the received JSON
         private String main_text;
         private String secondary_text;
         // CHECKSTYLE: MemberName OFF
@@ -79,7 +84,7 @@ public class PlaceAutocompletePrediction {
          * Constructs an empty {@code PlaceAutocompleteStructuredFormat}.
          */
         public PlaceAutocompleteStructuredFormat() {
-
+            // This constructor is intentionally empty. Nothing special is needed here.
         }
 
         /**

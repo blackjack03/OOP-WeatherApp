@@ -15,9 +15,11 @@ import java.util.Objects;
  *     <li>Any error messages</li>
  * </ul>
  */
+@SuppressWarnings("PMD.FieldNamingConventions")
 public class DirectionsResponse {
 
     // CHECKSTYLE: MemberName OFF
+    // Fields used by Gson: names must match exactly the received JSON
     private final List<DirectionsRoute> routes;
     private final String status;
     private final String error_message;

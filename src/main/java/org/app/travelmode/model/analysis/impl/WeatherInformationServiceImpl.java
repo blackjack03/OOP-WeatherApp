@@ -50,7 +50,7 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
             throw new WeatherDataException(
                     String.format("Non è stato possibile ottenere tutte le informazioni meteo necessarie "
                                     + "per il checkpoint %f, %f, o alcune di esse non sono realistiche.",
-                            +checkpoint.getLatitude(), checkpoint.getLongitude()));
+                            +checkpoint.getLatitude(), checkpoint.getLongitude()), e);
         }
     }
 

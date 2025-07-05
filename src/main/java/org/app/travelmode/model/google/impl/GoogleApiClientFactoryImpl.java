@@ -19,7 +19,7 @@ public class GoogleApiClientFactoryImpl implements GoogleApiClientFactory {
      * @throws IllegalStateException if the configuration file has not been previously loaded
      *                               with the {@code ConfigManager.loadConfig} method.
      */
-    public GoogleApiClientFactoryImpl() throws IllegalStateException {
+    public GoogleApiClientFactoryImpl() {
         this.googleApiConfig = ConfigManager.getConfig().getApi();
     }
 

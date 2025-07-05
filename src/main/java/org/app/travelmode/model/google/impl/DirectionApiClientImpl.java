@@ -66,7 +66,7 @@ public class DirectionApiClientImpl extends AbstractGoogleApiClient implements D
                 throw new DirectionsApiException("La chiamata all'API Directions ha restituito un risultato nullo.");
             }
 
-            if (!directionsResponse.getStatus().equals("OK")) {
+            if (!"OK".equals(directionsResponse.getStatus())) {
                 throw new DirectionsApiException(String.format("Errore nella ricerca del percorso: %s\n%s",
                         directionsResponse.getStatus(), directionsResponse.getErrorMessage()));
             }

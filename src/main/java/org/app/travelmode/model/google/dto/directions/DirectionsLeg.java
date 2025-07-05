@@ -15,9 +15,11 @@ import java.util.List;
  *     <li>Optional real-time traffic duration data</li>
  * </ul>
  */
+@SuppressWarnings("PMD.FieldNamingConventions")
 public class DirectionsLeg {
 
     // CHECKSTYLE: MemberName OFF
+    // Fields used by Gson: names must match exactly the received JSON
     private final String end_address;
     private final LatLng end_location;
     private final String start_address;

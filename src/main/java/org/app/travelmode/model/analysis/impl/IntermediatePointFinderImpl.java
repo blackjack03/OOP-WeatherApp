@@ -26,7 +26,7 @@ import java.util.List;
 public class IntermediatePointFinderImpl implements IntermediatePointFinder {
 
     private static final BigDecimal DELTA = BigDecimal.valueOf(2000.0);
-    private static final BigDecimal TARGET_DISTANCE = BigDecimal.valueOf(30000.0);
+    private static final BigDecimal TARGET_DISTANCE = BigDecimal.valueOf(30_000.0);
 
     private BigDecimal distanceCounter;
     private BigDecimal durationCounter;

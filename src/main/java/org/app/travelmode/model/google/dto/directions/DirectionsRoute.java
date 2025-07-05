@@ -7,9 +7,11 @@ import java.util.List;
  * This class contains detailed information about a specific route, including its bounds,
  * legs (segments), polyline representation, and summary description.
  */
+@SuppressWarnings("PMD.FieldNamingConventions")
 public class DirectionsRoute {
 
     // CHECKSTYLE: MemberName OFF
+    // Fields used by Gson: names must match exactly the received JSON
     private final Bounds bounds;
     private final List<DirectionsLeg> legs;
     private final DirectionsPolyline overview_polyline;

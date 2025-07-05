@@ -81,7 +81,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setDepartureLocation(final String departureLocation) {
-        this.requestBuilder.setDepartureLocation(departureLocation);
+        this.requestBuilder.addDepartureLocation(departureLocation);
     }
 
     /**
@@ -92,8 +92,8 @@ public class TravelModeModelImpl implements TravelModeModel {
     @Override
     public void setDeparturePlaceId(final String departurePlaceId) throws IOException {
         final PlaceDetailsApiClient placeDetailsApiClient = this.apiClientFactory.createPlaceDetailsApiClient();
-        this.requestBuilder.setDeparturePlaceId(departurePlaceId)
-                .setDepartureZoneId(placeDetailsApiClient.getTimezone(departurePlaceId));
+        this.requestBuilder.addDeparturePlaceId(departurePlaceId)
+                .addDepartureZoneId(placeDetailsApiClient.getTimezone(departurePlaceId));
     }
 
     /**
@@ -101,7 +101,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setArrivalLocation(final String arrivalLocation) {
-        this.requestBuilder.setArrivalLocation(arrivalLocation);
+        this.requestBuilder.addArrivalLocation(arrivalLocation);
     }
 
     /**
@@ -109,7 +109,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setArrivalPlaceId(final String arrivalPlaceId) {
-        this.requestBuilder.setArrivalPlaceId(arrivalPlaceId);
+        this.requestBuilder.addArrivalPlaceId(arrivalPlaceId);
     }
 
     /**
@@ -117,7 +117,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setDepartureTime(final LocalTime departureTime) {
-        this.requestBuilder.setDepartureTime(departureTime);
+        this.requestBuilder.addDepartureTime(departureTime);
     }
 
     /**
@@ -125,7 +125,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setDepartureDate(final LocalDate departureDate) {
-        this.requestBuilder.setDepartureDate(departureDate);
+        this.requestBuilder.addDepartureDate(departureDate);
     }
 
     /**

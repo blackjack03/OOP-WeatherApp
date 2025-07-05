@@ -21,7 +21,7 @@ public class PlaceAutocompleteResponse {
      * Constructs an empty {@code PlaceAutocompleteResponse}.
      */
     public PlaceAutocompleteResponse() {
-
+        // This constructor is intentionally empty. Nothing special is needed here.
     }
 
     /**

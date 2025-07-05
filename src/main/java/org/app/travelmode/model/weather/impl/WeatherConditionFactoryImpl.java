@@ -23,6 +23,7 @@ public class WeatherConditionFactoryImpl implements WeatherConditionFactory {
      * Constructs a new {@link WeatherConditionFactoryImpl} instance.
      */
     public WeatherConditionFactoryImpl() {
+        // This constructor is intentionally empty. Nothing special is needed here.
     }
 
     /**

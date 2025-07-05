@@ -14,9 +14,11 @@ package org.app.travelmode.model.google.dto.directions;
  *   <li>{@code String} travel_mode – the mode of transportation (e.g., "DRIVING", "WALKING")</li>
  * </ul>
  */
+@SuppressWarnings("PMD.FieldNamingConventions")
 public class DirectionsStep extends SimpleDirectionsStep {
 
     // CHECKSTYLE: MemberName OFF
+    // Fields used by Gson: names must match exactly the received JSON
     private final DirectionsPolyline polyline;
     private final String travel_mode;
     // CHECKSTYLE: MemberName ON

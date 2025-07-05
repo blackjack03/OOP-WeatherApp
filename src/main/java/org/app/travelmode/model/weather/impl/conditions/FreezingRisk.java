@@ -65,7 +65,7 @@ public class FreezingRisk extends AbstractWeatherCondition {
          * @return the corresponding freezing risk level, or EXTREME_RISK if below all thresholds
          */
         public static FreezingLevel fromValue(final double value) {
-            for (final FreezingLevel freezingLevel : FreezingLevel.values()) {
+            for (final FreezingLevel freezingLevel : values()) {
                 if (value >= freezingLevel.intensity) {
                     return freezingLevel;
                 }

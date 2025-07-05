@@ -1,9 +1,14 @@
 package org.app.travelmode.model.exception;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when errors occur during the static map generation process.
  */
 public class MapGenerationException extends Exception {
+
+    @Serial
+    private static final long serialVersionUID = -6218593020920459707L;
 
     /**
      * Constructs a new map generation exception with the specified detail message.

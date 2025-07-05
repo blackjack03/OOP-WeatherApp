@@ -67,7 +67,7 @@ public class WindGust extends AbstractWeatherCondition {
          * @return the corresponding wind gust level, or NO_WIND_GUST if below all thresholds
          */
         public static WindGustLevel fromValue(final double value) {
-            for (final WindGustLevel windGustLevel : WindGustLevel.values()) {
+            for (final WindGustLevel windGustLevel : values()) {
                 if (value >= windGustLevel.intensity) {
                     return windGustLevel;
                 }

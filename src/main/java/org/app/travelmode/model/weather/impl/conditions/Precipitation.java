@@ -65,7 +65,7 @@ public class Precipitation extends AbstractWeatherCondition {
          * @return the corresponding precipitation level, or NO_PRECIPITATION if no threshold is met
          */
         public static PrecipitationLevel fromValue(final double value) {
-            for (final PrecipitationLevel precipitation : PrecipitationLevel.values()) {
+            for (final PrecipitationLevel precipitation : values()) {
                 if (value >= precipitation.intensity) {
                     return precipitation;
                 }

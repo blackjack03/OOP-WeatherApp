@@ -34,6 +34,7 @@ public class CheckpointGeneratorImpl implements CheckpointGenerator {
      * Constructs a new checkpoint generator.
      */
     public CheckpointGeneratorImpl() {
+        // This constructor is intentionally empty. Nothing special is needed here.
     }
 
     /**

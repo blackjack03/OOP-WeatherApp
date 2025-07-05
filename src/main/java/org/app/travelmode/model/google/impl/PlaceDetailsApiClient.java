@@ -47,9 +47,7 @@ public class PlaceDetailsApiClient extends AbstractGoogleApiClient implements Pl
 
         final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl(url);
         final int utcOffset = jsonReader.getInt("result.utc_offset");
-        final ZoneId zoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
 
-        System.out.println(zoneId);
-        return zoneId;
+        return ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
     }
 }

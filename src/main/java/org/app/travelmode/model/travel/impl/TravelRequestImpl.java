@@ -147,7 +147,7 @@ public final class TravelRequestImpl implements TravelRequest {
          * @param departureLocation the name of the departure location
          * @return this builder, for method chaining
          */
-        public Builder setDepartureLocation(final String departureLocation) {
+        public Builder addDepartureLocation(final String departureLocation) {
             this.departureLocation = departureLocation;
             return this;
         }
@@ -158,7 +158,7 @@ public final class TravelRequestImpl implements TravelRequest {
          * @param departurePlaceId the PlaceId associated with the starting location
          * @return this builder, for method chaining
          */
-        public Builder setDeparturePlaceId(final String departurePlaceId) {
+        public Builder addDeparturePlaceId(final String departurePlaceId) {
             this.departurePlaceId = departurePlaceId;
             return this;
         }
@@ -169,7 +169,7 @@ public final class TravelRequestImpl implements TravelRequest {
          * @param arrivalLocation the name of the arrival location
          * @return this builder, for method chaining
          */
-        public Builder setArrivalLocation(final String arrivalLocation) {
+        public Builder addArrivalLocation(final String arrivalLocation) {
             this.arrivalLocation = arrivalLocation;
             return this;
         }
@@ -180,7 +180,7 @@ public final class TravelRequestImpl implements TravelRequest {
          * @param arrivalPlaceId the PlaceId associated with the arrival location
          * @return this builder, for method chaining
          */
-        public Builder setArrivalPlaceId(final String arrivalPlaceId) {
+        public Builder addArrivalPlaceId(final String arrivalPlaceId) {
             this.arrivalPlaceId = arrivalPlaceId;
             return this;
         }
@@ -191,7 +191,7 @@ public final class TravelRequestImpl implements TravelRequest {
          * @param departureTime the departure time
          * @return this builder, for method chaining
          */
-        public Builder setDepartureTime(final LocalTime departureTime) {
+        public Builder addDepartureTime(final LocalTime departureTime) {
             this.departureTime = departureTime;
             return this;
         }
@@ -202,7 +202,7 @@ public final class TravelRequestImpl implements TravelRequest {
          * @param departureDate the departure date
          * @return this builder, for method chaining
          */
-        public Builder setDepartureDate(final LocalDate departureDate) {
+        public Builder addDepartureDate(final LocalDate departureDate) {
             this.departureDate = departureDate;
             return this;
         }
@@ -213,7 +213,7 @@ public final class TravelRequestImpl implements TravelRequest {
          * @param departureZoneId the {@link ZoneId} of the departure location
          * @return this builder, for method chaining
          */
-        public Builder setDepartureZoneId(final ZoneId departureZoneId) {
+        public Builder addDepartureZoneId(final ZoneId departureZoneId) {
             this.departureZoneId = departureZoneId;
             return this;
         }

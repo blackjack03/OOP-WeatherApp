@@ -46,7 +46,7 @@ public final class PolylineDecoder {
                 result |= (b & 0x1F) << shift;
                 shift += 5;
             } while (b >= 0x20);
-            final int deltaLat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            final int deltaLat = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
             lat += deltaLat;
 
             shift = 0;
@@ -56,7 +56,7 @@ public final class PolylineDecoder {
                 result |= (b & 0x1F) << shift;
                 shift += 5;
             } while (b >= 0x20);
-            final int deltaLng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            final int deltaLng = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
             lng += deltaLng;
 
             polyline.add(new LatLng(lat / 1e5, lng / 1e5));
