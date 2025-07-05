@@ -13,8 +13,11 @@ import org.app.weathermode.model.AdvancedJsonReaderImpl;
 import org.app.weathermode.model.LookUp;
 import org.app.weathermode.model.IPLookUp;
 
+// CHECKSTYLE: AvoidStarImport OFF
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+// CHECKSTYLE: AvoidStarImport ON
 
 /**
  * Test JUnit 5 per {@link IPLookUp}. Tutti i test evitano traffico di rete
@@ -33,7 +36,7 @@ class IPLookUpTest {
 
     @Test
     void lookupShouldReturnEmptyWhenAllAttemptsFail() {
-        try (final MockedConstruction<AdvancedJsonReaderImpl> mocked =
+        try (MockedConstruction<AdvancedJsonReaderImpl> mocked =
                 mockConstruction(AdvancedJsonReaderImpl.class,
                 (mock, ctx) -> when(mock.getString(anyString()))
                 .thenThrow(new RuntimeException("fail")))) {
@@ -56,7 +59,8 @@ class IPLookUpTest {
         final String expectedCountry = "Italy";
         final String expectedCity = "Rome";
 
-        try (final MockedConstruction<AdvancedJsonReaderImpl> mocked =
+        // CHECKSTYLE: MagicNumber OFF
+        try (MockedConstruction<AdvancedJsonReaderImpl> mocked =
                 mockConstruction(AdvancedJsonReaderImpl.class, (mock, ctx) -> {
             when(mock.getString("ip")).thenReturn(expectedIP);
             when(mock.getString("country_code")).thenReturn("IT");
@@ -83,6 +87,7 @@ class IPLookUpTest {
             // deve chiamare una sola volta il costruttore perché già al primo tentativo ha successo
             assertEquals(1, mocked.constructed().size());
         }
+        // CHECKSTYLE: MagicNumber ON
     }
 
     /* ---------------------------------------------------------- */
@@ -90,24 +95,31 @@ class IPLookUpTest {
     /* ---------------------------------------------------------- */
 
     @Test
-    void clearShouldResetAllFields() throws Exception {
-        // Imposta manualmente valori privati
-        final Field ip = IPLookUp.class.getDeclaredField("ip");
-        final Field coords = IPLookUp.class.getDeclaredField("coords");
-        ip.setAccessible(true);
-        coords.setAccessible(true);
-        ip.set(underTest, "1.2.3.4");
-        coords.set(underTest, new Pair<>(10.0, 20.0));
+    void clearShouldResetAllFields() {
+        assertDoesNotThrow(() -> {
+            // Imposta manualmente i campi privati
+            final Field ip = IPLookUp.class.getDeclaredField("ip");
+            final Field coords = IPLookUp.class.getDeclaredField("coords");
+            ip.setAccessible(true);
+            coords.setAccessible(true);
+            ip.set(underTest, "1.2.3.4");
 
-        // Invoca clear() via reflection
-        final Method clearM = IPLookUp.class.getDeclaredMethod("clear");
-        clearM.setAccessible(true);
-        clearM.invoke(underTest);
+            // CHECKSTYLE: MagicNumber OFF
+            final double lat = 10.0;
+            final double lng = 20.0;
+            // CHECKSTYLE: MagicNumber ON
+            coords.set(underTest, new Pair<>(lat, lng));
 
-        assertAll(
-                () -> assertEquals("", underTest.getIP()),
-                () -> assertNull(underTest.getCoords())
-        );
+            // Invoca clear() via reflection
+            final Method clearM = IPLookUp.class.getDeclaredMethod("clear");
+            clearM.setAccessible(true);
+            clearM.invoke(underTest);
+
+            assertAll(
+                    () -> assertEquals("", underTest.getIP()),
+                    () -> assertNull(underTest.getCoords())
+            );
+        });
     }
 
 }

@@ -2,6 +2,8 @@ package org.app.weathermode.model;
 
 import java.util.Optional;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * <h2>IPLookUp</h2>
  * <p>Servizio di <strong>geo‑localizzazione IP</strong> che interroga l’endpoint
@@ -166,6 +168,10 @@ public class IPLookUp implements LookUp {
      *
      * @return <code>true</code> se il parsing e l’assegnazione vanno a buon fine.
      */
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION",
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+    )
     private boolean doLookUpReq() {
         try {
             final AdvancedJsonReader ipinfo = new AdvancedJsonReaderImpl(API_URL);
@@ -178,7 +184,7 @@ public class IPLookUp implements LookUp {
             this.timeZone = ipinfo.getString("time_zone");
             this.coords = new Pair<>(ipinfo.getDouble("latitude"), ipinfo.getDouble("longitude"));
             return true;
-        } catch (final Exception e) {
+        } catch (final Exception e) { // NOPMD
             return false;
         }
     }

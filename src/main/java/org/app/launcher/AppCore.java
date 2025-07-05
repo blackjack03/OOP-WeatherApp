@@ -8,7 +8,9 @@ import org.app.appcore.MainController;
 import org.app.appcore.MainControllerImpl;
 import org.app.config.ConfigManager;
 import org.app.weathermode.view.LoadingScreen;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 /**
@@ -31,7 +33,7 @@ public class AppCore extends Application {
         final int minWidth = 1100;
         final int minHeight = 700;
         final Image icon = new Image(Objects.requireNonNull(
-            getClass().getResourceAsStream("/logo.png")
+            AppCore.class.getResourceAsStream("/logo.png")
         ));
         final MainController mainController = new MainControllerImpl();
         final Scene scene = new Scene(mainController.getRootView(), minWidth, minHeight);
@@ -62,15 +64,20 @@ public class AppCore extends Application {
      */
     @Override
     public void stop() {
-        // CHECKSTYLE: EmptyCatchBlock OFF
         try {
             javax.swing.SwingUtilities.invokeAndWait(() -> {
                 for (final java.awt.Window w : java.awt.Window.getWindows()) {
                     w.dispose();
                 }
             });
-        } catch (final Exception ignored) { }
-        // CHECKSTYLE: EmptyCatchBlock ON
+        } catch (final InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            LoggerFactory.getLogger(AppCore.class)
+                .warn("Interruzione durante lo shutdown AWT", ie);
+        } catch (final InvocationTargetException ite) {
+            LoggerFactory.getLogger(AppCore.class)
+                .error("Errore eseguendo invokeAndWait in stop()", ite);
+        }
     }
 
 }

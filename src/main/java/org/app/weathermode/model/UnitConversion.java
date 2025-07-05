@@ -1,7 +1,19 @@
 package org.app.weathermode.model;
 
-@SuppressWarnings("checkstyle:MagicNumber")
-public class UnitConversion {
+/**
+ * Utility per la conversione di unità di misura comunemente usate
+ * nel contesto meteorologico e di viaggio. Fornisce metodi statici
+ * per trasformare:
+ * <ul>
+ *   <li>temperature da Celsius a Fahrenheit;</li>
+ *   <li>lunghezze da millimetri a pollici;</li>
+ *   <li>velocità da km/h a mph.</li>
+ * </ul>
+ */
+// CHECKSTYLE: MagicNumber OFF
+public final class UnitConversion {
+
+    private UnitConversion() { }
 
     /**
      * Converte una temperatura da gradi Celsius a Fahrenheit.
@@ -30,7 +42,8 @@ public class UnitConversion {
      * @return La velocità convertita in miglia orarie.
      */
     public static double kmhToMph(final double kmPerHour) {
-        return kmPerHour * 0.621371;
+        return kmPerHour * 0.621_371;
     }
 
 }
+// CHECKSTYLE: MagicNumber ON

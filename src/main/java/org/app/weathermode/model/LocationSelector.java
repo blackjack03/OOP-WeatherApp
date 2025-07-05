@@ -1,6 +1,8 @@
 package org.app.weathermode.model;
 
+// CHECKSTYLE: AvoidStarImport OFF
 import java.util.*;
+// CHECKSTYLE: AvoidStarImport ON
 
 /**
  * <h2>LocationSelector</h2>
@@ -23,10 +25,10 @@ public interface LocationSelector {
     /**
      * Recupera i dettagli della località a partire dal suo identificativo.
      *
-     * @param ID chiave primaria del record città.
+     * @param id chiave primaria del record città.
      * @return mappa <code>campo→valore</code> o {@link Optional#empty()} se non trovato.
      */
-    Optional<Map<String, String>> getByID(int ID);
+    Optional<Map<String, String>> getByID(int id);
 
     /**
      * Tenta di mappare i dati derivanti da un {@link LookUp} (es. IP

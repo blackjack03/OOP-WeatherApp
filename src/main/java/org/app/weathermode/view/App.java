@@ -15,6 +15,8 @@ import javafx.beans.value.ObservableValue;
 import org.app.weathermode.controller.Controller;
 import org.app.weathermode.model.LocationSelector;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +27,10 @@ import java.util.Map;
  * con righe 65% / 35% e colonne 60% / 40% (top),
  * 85% / 15% (bottom).
  */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP",
+    justification = "Intentional exposure of private fields for external interaction"
+)
 public class App implements AbstractApp {
 
     private static LocationSelector locationSelector;
@@ -150,7 +156,12 @@ public class App implements AbstractApp {
         GridPane.setHgrow(forecastScroller, Priority.ALWAYS);
         GridPane.setVgrow(forecastScroller, Priority.ALWAYS);
         forecastScroller.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        for (final String day : new String[]{"OGGI", "DOMANI", "xx/xx", "xx/xx", "xx/xx", "xx/xx", "xx/xx"}) {
+        final String defaultPlaceHolder = "xx/xx";
+        for (final String day : new String[]{"OGGI", "DOMANI", defaultPlaceHolder,
+            defaultPlaceHolder,
+            defaultPlaceHolder,
+            defaultPlaceHolder,
+            defaultPlaceHolder}) {
             forecastStrip.getChildren().add(
                     makeMiniForecast(day, "/logo.png",
                     root.widthProperty().multiply(iconForecastRatio), miniSpacing, miniPrefWidth));
@@ -193,6 +204,11 @@ public class App implements AbstractApp {
      * @param ls il selettore di località da registrare
      */
     @Override
+    @SuppressFBWarnings(
+        value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
+        justification = "LocationSelector loads a large file into memory at startup"
+        + " and must be accessible statically from anywhere in the application"
+    )
     public void setLocationSelector(final LocationSelector ls) {
         locationSelector = ls;
     }
@@ -307,7 +323,7 @@ public class App implements AbstractApp {
     }
 
     private ImageView makeIcon(final String path, final ObservableValue<? extends Number> widthBinding) {
-        final Image img = new Image(getClass().getResourceAsStream(path));
+        final Image img = new Image(App.class.getResourceAsStream(path));
         final ImageView iv = new ImageView(img);
         iv.setPreserveRatio(true);
         iv.fitWidthProperty().bind((DoubleExpression) widthBinding);

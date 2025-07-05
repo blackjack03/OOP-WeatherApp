@@ -2,55 +2,88 @@ package org.app.weathermode.model;
 
 import java.util.Objects;
 
-/*
- *  A standard generic Pair<X, Y>, with getters, hashCode, equals, and toString well implemented.
+/**
+ * Implementazione concreta di {@link AbstractPair} che rappresenta
+ * una coppia di valori eterogenei.
+ *
+ * @param <X> tipo del primo elemento
+ * @param <Y> tipo del secondo elemento
  */
-
 public class Pair<X, Y> implements AbstractPair<X, Y> {
 
-	private final X X;
-	private final Y Y;
+    private final X x;
+    private final Y y;
 
-	public Pair(final X x, final Y y) {
-		super();
-		this.X = x;
-		this.Y = y;
-	}
+    /**
+     * Costruisce una coppia con i due valori specificati.
+     *
+     * @param x il primo elemento della coppia
+     * @param y il secondo elemento della coppia
+     */
+    public Pair(final X x, final Y y) {
+        super();
+        this.x = x;
+        this.y = y;
+    }
 
-	@Override
-	public X getX() {
-		return X;
-	}
+    /**
+     * Restituisce il primo elemento della coppia.
+     *
+     * @return il valore del primo elemento (X)
+     */
+    @Override
+    public X getX() {
+        return x;
+    }
 
-	@Override
-	public Y getY() {
-		return Y;
-	}
+    /**
+     * Restituisce il secondo elemento della coppia.
+     *
+     * @return il valore del secondo elemento (Y)
+     */
+    @Override
+    public Y getY() {
+        return y;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(X, Y);
-	}
+    /**
+     * Calcola l'hash code della coppia basato sui due elementi.
+     *
+     * @return hash code combinato di x e y
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
 
-	@Override
-	@SuppressWarnings("rawtypes")
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final Pair temp = (Pair) obj;
-		return Objects.equals(X, temp.X) && Objects.equals(Y, temp.Y);
-	}
+    /**
+     * Confronta questa coppia con un altro oggetto.
+     *
+     * @param obj l'oggetto da confrontare con questa coppia
+     * @return {@code true} se obj è una coppia con gli stessi valori di x e y
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pair temp = (Pair) obj;
+        return Objects.equals(x, temp.x) && Objects.equals(y, temp.y);
+    }
 
-	@Override
-	public String toString() {
-		return "[x=" + X + ", y=" + Y + "]";
-	}
+    /**
+     * Restituisce una rappresentazione in forma di stringa della coppia,
+     * nel formato {@code "[x=<valoreX>, y=<valoreY>]"}.
+     *
+     * @return la stringa che rappresenta la coppia
+     */
+    @Override
+    public String toString() {
+        return "[x=" + x + ", y=" + y + "]";
+    }
 
 }

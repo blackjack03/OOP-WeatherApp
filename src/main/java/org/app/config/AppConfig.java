@@ -1,5 +1,7 @@
 package org.app.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * <h2>AppConfig</h2>
  * <p>Root‑object del file di configurazione dell’applicazione. Riflette la
@@ -17,6 +19,13 @@ package org.app.config;
  * serializzazione di accedere tramite <em>reflection</em>; i consumer del
  * modello devono passare per i metodi <code>get*</code> pubblici.
  */
+@SuppressFBWarnings(
+    value = {
+        "UWF_UNWRITTEN_FIELD",
+        "EI_EXPOSE_REP"},
+    justification = "Field populated via reflection by Jackson"
+    + ", and Intentional exposure of private fields"
+)
 public class AppConfig {
     /** Sotto‑sezione “api” del config file. */
     private ApiConfig api;

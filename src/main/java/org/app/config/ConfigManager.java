@@ -2,9 +2,12 @@ package org.app.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * <h2>ConfigManager</h2>
@@ -21,6 +24,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
  */
 public final class ConfigManager {
 
+    private static final Logger LOG = Logger.getLogger(ConfigManager.class.getName());
+
     /** Istanza globale della configurazione. Popolata da {@link #loadConfig(String)}. */
     private static AppConfig config;
 
@@ -33,28 +38,33 @@ public final class ConfigManager {
      *       presenti sul classpath (Java Time, Kotlin, etc.).</li>
      * </ul>
      */
-    private static final ObjectMapper mapper = new ObjectMapper()
+    private static final ObjectMapper MAPPER = new ObjectMapper()
         .registerModule(new Jdk8Module())
         .findAndRegisterModules();
 
-    /* ======================== lifecycle ======================== */
+    /** Impedisce l’instanziazione accidentale. */
+    private ConfigManager() { }
 
     /**
      * Carica il file di configurazione nel contesto statico.
      * <p>Viene usato un nuovo <code>ObjectMapper</code> “fresco” per evitare
      * side‑effect di configurazioni custom sull’istanza statica
-     * {@link #mapper} destinata al salvataggio.</p>
+     * {@link #MAPPER} destinata al salvataggio.</p>
      *
      * @param filePath percorso del file JSON/YAML da leggere.
      * @throws RuntimeException se il file non è leggibile o il parsing fallisce.
      */
+    @SuppressFBWarnings(
+        value = "THROWS_METHOD_THROWS_RUNTIMEEXCEPTION",
+        justification = "Intentionally signalling fatal error to be handled at a higher level"
+    )
     public static void loadConfig(final String filePath) {
         final ObjectMapper localMapper = new ObjectMapper().findAndRegisterModules();
         try {
             config = localMapper.readValue(new File(filePath), AppConfig.class);
-            System.out.println("Configuration loaded successfully.");
-        } catch (final IOException e) {
-            throw new RuntimeException("ERROR! File cannot be loaded.", e);
+            LOG.fine("Configuration loaded successfully.");
+        } catch (final IOException e) { // NOPMD suppressed as it is a false positive
+            throw new RuntimeException("ERROR! File cannot be loaded.", e); // NOPMD
         }
     }
 
@@ -79,16 +89,17 @@ public final class ConfigManager {
      * @param filePath destinazione del file.
      * @throws RuntimeException se si verifica un errore di I/O.
      */
+    @SuppressFBWarnings(
+        value = "THROWS_METHOD_THROWS_RUNTIMEEXCEPTION",
+        justification = "Intentionally signalling fatal error to be handled at a higher level"
+    )
     public static void saveConfig(final String filePath) {
         try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), config);
-            System.out.println("Configuration saved successfully.");
-        } catch (final IOException e) {
-            throw new RuntimeException("ERROR! Save unsuccessful", e);
+            MAPPER.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), config);
+            LOG.fine("Configuration saved successfully.");
+        } catch (final IOException e) { // NOPMD suppressed as it is a false positive
+            throw new RuntimeException("ERROR! Save unsuccessful", e); // NOPMD
         }
     }
 
-    /* ===================== costruttore privato ==================== */
-    /** Impedisce l’instanziazione accidentale. */
-    private ConfigManager() {}
 }

@@ -9,7 +9,9 @@ import java.util.Map;
 
 import org.app.weathermode.model.AllWeather;
 
+// CHECKSTYLE: AvoidStarImport OFF
 import static org.junit.jupiter.api.Assertions.*;
+// CHECKSTYLE: AvoidStarImport ON
 
 /**
  * Unit‑tests di base per {@link AllWeather} che non richiedono chiamate HTTP
@@ -38,7 +40,8 @@ class AllWeatherTest {
     /* ---------------------------------------------------------- */
 
     @Test
-    void windDirection_shouldReturnExpectedItalianCompassNames() {
+    void windDirectionShouldReturnExpectedItalianCompassNames() {
+        // CHECKSTYLE: MagicNumber OFF
         assertAll("direzioni bussola",
                 () -> assertEquals("Nord",     underTest.getWindDirection(0)),
                 () -> assertEquals("Nord",     underTest.getWindDirection(360)),
@@ -48,10 +51,11 @@ class AllWeatherTest {
                 () -> assertEquals("Ovest",    underTest.getWindDirection(270)),
                 () -> assertEquals("Est",      underTest.getWindDirection(-270)) // normalizzazione valori negativi
         );
+        // CHECKSTYLE: MagicNumber ON
     }
 
     @Test
-    void setLocation_shouldResetInternalCaches() {
+    void setLocationShouldResetInternalCaches() {
         final Map<String, String> milano = Map.of(
                 "city", "Milano",
                 "city_ascii", "Milano",
@@ -72,29 +76,37 @@ class AllWeatherTest {
     /* ---------------------------------------------------------- */
 
     @Test
-    void roundToNearestQuarter_shouldRoundCorrectly() throws Exception {
-        final Method round = AllWeather.class.getDeclaredMethod("roundToNearestQuarter", String.class);
-        round.setAccessible(true);
+    void roundToNearestQuarterShouldRoundCorrectly() {
+        assertDoesNotThrow(() -> {
+            final Method round = AllWeather.class
+                    .getDeclaredMethod("roundToNearestQuarter", String.class);
+            round.setAccessible(true);
 
-        assertAll("arrotondamento 15′",
+            assertAll("arrotondamento 15′",
                 () -> assertEquals("13:30", round.invoke(underTest, "13:34")),
                 () -> assertEquals("13:30", round.invoke(underTest, "13:37")),
                 () -> assertEquals("14:00", round.invoke(underTest, "13:53")),
                 () -> assertEquals("00:00", round.invoke(underTest, "23:59"))
-        );
+            );
+        });
     }
 
     @Test
-    void checkMinutesPassed_shouldRespectThreshold() throws Exception {
-        final Method m = AllWeather.class.getDeclaredMethod("checkMinutesPassed", long.class, int.class);
-        m.setAccessible(true);
+    void checkMinutesPassedShouldRespectThreshold() {
+        assertDoesNotThrow(() -> {
+            final Method m = AllWeather.class.getDeclaredMethod(
+                    "checkMinutesPassed", long.class, int.class);
+            m.setAccessible(true);
 
-        final long now = System.currentTimeMillis() / 1000L;
-        final long tenMinutesAgo = now - 10 * 60;
-        final long thirtyMinutesAgo = now - 30 * 60;
+            // CHECKSTYLE: MagicNumber OFF
+            final long now = System.currentTimeMillis() / 1000L;
+            final long tenMinutesAgo = now - 10 * 60;
+            final long thirtyMinutesAgo = now - 30 * 60;
 
-        assertFalse((Boolean) m.invoke(underTest, tenMinutesAgo, 20));
-        assertTrue((Boolean) m.invoke(underTest, thirtyMinutesAgo, 20));
+            assertFalse((Boolean) m.invoke(underTest, tenMinutesAgo, 20));
+            assertTrue((Boolean) m.invoke(underTest, thirtyMinutesAgo, 20));
+            // CHECKSTYLE: MagicNumber ON
+        });
     }
 
 }

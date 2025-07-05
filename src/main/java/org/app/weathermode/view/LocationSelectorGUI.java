@@ -1,8 +1,12 @@
 package org.app.weathermode.view;
 
 import javafx.scene.Scene;
+
+// CHECKSTYLE: AvoidStarImport OFF
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+// CHECKSTYLE: AvoidStarImport ON
+
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
@@ -14,14 +18,27 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * GUI per la selezione di una località che restituisce un Optional<Integer>
- * contenente l'ID della città scelta o Optional.empty() se l'utente chiude
- * la finestra senza effettuare alcuna selezione.
+ * Classe che mostra un’interfaccia grafica modale per permettere all’utente
+ * di cercare e selezionare una località tra quelle disponibili tramite
+ * {@link LocationSelector}.
  */
 public class LocationSelectorGUI {
 
-    private Integer selectedId = null;
+    private Integer selectedId;
 
+    /**
+     * Avvia la finestra modale per la selezione di una località.
+     * Viene aperta una dialog in cui l’utente può digitare almeno due
+     * caratteri per filtrare l’elenco delle città; un clic sul nome
+     * seleziona la città e chiude la finestra.
+     *
+     * @param citySelector l’istanza di {@link LocationSelector} usata per
+     *                     recuperare le possibili località in base al testo
+     *                     inserito dall’utente
+     * @return un {@code Optional<Integer>} contenente l’ID della città
+     *         selezionata, oppure {@code Optional.empty()} se l’utente
+     *         chiude la finestra senza effettuare alcuna selezione
+     */
     public Optional<Integer> start(final LocationSelector citySelector) {
         final double rootSpacing = 10.0;
         final double rootPadding = 15.0;
@@ -40,7 +57,7 @@ public class LocationSelectorGUI {
         final String btnTextColor = "white";
 
         // Configura stage
-        final Stage stage = new Stage();  
+        final Stage stage = new Stage();
         stage.setTitle(stageTitle);
 
         // Contenitore radice
@@ -80,7 +97,9 @@ public class LocationSelectorGUI {
             for (final Pair<String, Integer> location : locations) {
                 final Button cityButton = new Button(location.getX());
                 cityButton.setMaxWidth(Double.MAX_VALUE);
-                cityButton.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: %s;", btnBgColor, btnTextColor));
+                cityButton.setStyle(String.format(
+                    "-fx-background-color: %s; -fx-text-fill: %s;", btnBgColor, btnTextColor
+                ));
                 cityButton.setOnAction(ev -> {
                     selectedId = location.getY();
                     stage.close();

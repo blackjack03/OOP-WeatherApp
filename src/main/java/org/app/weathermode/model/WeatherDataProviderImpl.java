@@ -14,14 +14,14 @@ public class WeatherDataProviderImpl implements WeatherDataProvider {
     /**
      * Constructs a new Weather data provider implementation.
      */
-    public WeatherDataProviderImpl() {
+    public WeatherDataProviderImpl() { // NOPMD
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<Map<String, Number>> getWeatherInfo(double lat, double lng, final LocalDateTime dateTime) {
+    public Optional<Map<String, Number>> getWeatherInfo(final double lat, final double lng, final LocalDateTime dateTime) {
         final Map<String, String> coordinates = Map.of(
                 "lat", String.valueOf(lat),
                 "lng", String.valueOf(lng)
