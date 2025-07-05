@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.*;
 // CHECKSTYLE: AvoidStarImport ON
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * <p>Implementazione concreta di {@link AdvancedJsonReader} in grado di:
  * <ul>
@@ -76,7 +78,8 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
      * @throws IOException problemi di I/O o rete.
      */
     @Override
-    public final void requestJSON(final String jsonURL) throws IOException, IllegalStateException {
+    public final void requestJSON(final String jsonURL)
+        throws IOException, IllegalStateException { // NOPMD
         assertNotAlreadySet();
 
         final URL url = new URL(jsonURL);
@@ -84,12 +87,12 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         connection.setRequestMethod("GET");
 
         try (InputStream in = connection.getInputStream();
-            final BufferedReader reader =
+            BufferedReader reader =
                 new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
             final StringBuilder jsonText = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) { // NOPMD
                 jsonText.append(line);
             }
             this.jsonRawText = jsonText.toString();
@@ -309,6 +312,10 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
      */
     @Override
     @SuppressWarnings("unused")
+    @SuppressFBWarnings(
+        value = "DLS_DEAD_LOCAL_STORE",
+        justification = "elem is used only to check existence"
+    )
     public boolean elementExists(final String path) {
         try {
             final var elem = this.getFromJson(path);

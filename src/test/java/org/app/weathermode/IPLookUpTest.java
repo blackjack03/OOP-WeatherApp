@@ -95,26 +95,31 @@ class IPLookUpTest {
     /* ---------------------------------------------------------- */
 
     @Test
-    void clearShouldResetAllFields() throws Exception {
-        // Imposta manualmente valori privati
-        final Field ip = IPLookUp.class.getDeclaredField("ip");
-        final Field coords = IPLookUp.class.getDeclaredField("coords");
-        ip.setAccessible(true);
-        coords.setAccessible(true);
-        ip.set(underTest, "1.2.3.4");
-        final double lat = 10.0;
-        final double lng = 20.0;
-        coords.set(underTest, new Pair<>(lat, lng));
+    void clearShouldResetAllFields() {
+        assertDoesNotThrow(() -> {
+            // Imposta manualmente i campi privati
+            final Field ip = IPLookUp.class.getDeclaredField("ip");
+            final Field coords = IPLookUp.class.getDeclaredField("coords");
+            ip.setAccessible(true);
+            coords.setAccessible(true);
+            ip.set(underTest, "1.2.3.4");
 
-        // Invoca clear() via reflection
-        final Method clearM = IPLookUp.class.getDeclaredMethod("clear");
-        clearM.setAccessible(true);
-        clearM.invoke(underTest);
+            // CHECKSTYLE: MagicNumber OFF
+            final double lat = 10.0;
+            final double lng = 20.0;
+            // CHECKSTYLE: MagicNumber ON
+            coords.set(underTest, new Pair<>(lat, lng));
 
-        assertAll(
-                () -> assertEquals("", underTest.getIP()),
-                () -> assertNull(underTest.getCoords())
-        );
+            // Invoca clear() via reflection
+            final Method clearM = IPLookUp.class.getDeclaredMethod("clear");
+            clearM.setAccessible(true);
+            clearM.invoke(underTest);
+
+            assertAll(
+                    () -> assertEquals("", underTest.getIP()),
+                    () -> assertNull(underTest.getCoords())
+            );
+        });
     }
 
 }

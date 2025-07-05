@@ -10,6 +10,7 @@ import org.app.weathermode.model.LocationSelector;
 import org.app.weathermode.model.LocationSelectorImpl;
 import org.app.weathermode.model.LookUp;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
@@ -136,6 +137,10 @@ public class LoadingScreen {
     }
 
     /* ===================== flusso post-load ==================== */
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION",
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+    )
     private void handlePostLoad(final Stage primaryStage, final Controller appController, final LocationSelector ls) {
         try {
             final AppConfig appConfig = ConfigManager.getConfig();

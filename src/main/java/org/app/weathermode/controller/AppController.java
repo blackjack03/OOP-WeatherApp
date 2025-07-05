@@ -36,6 +36,8 @@ import org.app.weathermode.view.ApiKeyForm;
 import org.app.weathermode.view.App;
 import org.app.weathermode.view.CustomErrorGUI;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * <p>Controller responsabile dellʼaggiornamento dinamico della GUI in base ai dati
  * meteorologici.</p>
@@ -53,6 +55,10 @@ import org.app.weathermode.view.CustomErrorGUI;
  * la thread‑safety.
  * </p>
  */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP",
+    justification = "Intentional exposure of private fields for external interaction"
+)
 public class AppController implements Controller {
 
     private static final Logger LOG = Logger.getLogger(ConfigManager.class.getName());
@@ -258,6 +264,10 @@ public class AppController implements Controller {
      * eventuali parametri (es. “&amp;timezone=auto”) corretti.
      * </p>
      */
+    @SuppressFBWarnings(
+        value = "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR",
+        justification = "Field selector is initialized in start() before any call to setCity()"
+    )
     private void setCity() {
         final UserPreferences userConfig =
                 ConfigManager.getConfig().getUserPreferences();

@@ -3,6 +3,9 @@ package org.app.weathermode.model;
 // CHECKSTYLE: AvoidStarImport OFF
 import org.jsoup.*;
 import org.jsoup.nodes.*;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.util.*;
 // CHECKSTYLE: AvoidStarImport ON
 
@@ -116,6 +119,10 @@ public class MoonPhasesImpl implements MoonPhases {
      * Effettua lo scraping della pagina HTML e popola {@link #moonInfo}.
      * @return <code>true</code> se tutti i campi richiesti sono stati estratti.
      */
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION",
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+    )
     private boolean retrieveMoonPhaseInfo() {
         try {
             final Document doc = Jsoup.connect(SITE_URL + this.date).get();

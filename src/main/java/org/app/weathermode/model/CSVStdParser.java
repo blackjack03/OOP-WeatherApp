@@ -3,10 +3,11 @@ package org.app.weathermode.model;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
@@ -38,10 +39,10 @@ public class CSVStdParser extends CSVReader implements CSVParser {
      * Costruisce un parser leggendo il CSV dal file specificato.
      *
      * @param csvFilePath percorso del file CSV da aprire
-     * @throws FileNotFoundException se il file non esiste o non è accessibile
+     * @throws IOException in caso di errori di I/O durante la lettura
      */
-    public CSVStdParser(final String csvFilePath) throws FileNotFoundException {
-        super(new FileReader(csvFilePath));
+    public CSVStdParser(final String csvFilePath) throws IOException {
+        super(Files.newBufferedReader(Paths.get(csvFilePath), StandardCharsets.UTF_8));
     }
 
     /**

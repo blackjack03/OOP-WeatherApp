@@ -8,6 +8,9 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import com.google.gson.*;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.jsoup.*;
 import org.jsoup.select.*;
 import org.jsoup.nodes.*;
@@ -112,6 +115,10 @@ public class AllWeather implements Weather {
      * @param locationInfo info della città correntemente selezionata.
      */
     @Override
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP2",
+        justification = "Deliberate exposure of a mutable Map to enable external management of location data"
+    )
     public final void setLocation(final Map<String, String> locationInfo) {
         this.locationInfo = locationInfo;
         this.coords = new Pair<>(locationInfo.get("lat"), locationInfo.get("lng"));
@@ -237,6 +244,10 @@ public class AllWeather implements Weather {
      * @return dati meteo o {@link Optional#empty()} in caso di errore.
      */
     @Override
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION", // NOPMD
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader" // NOPMD
+    )
     public Optional<Map<String, Number>> getWeatherOn(final int day, final int month, final int year, final String hour) {
         try {
             final String nearHour = this.roundToNearestQuarter(hour);
@@ -340,6 +351,10 @@ public class AllWeather implements Weather {
      * @return una {@code Pair} contenente l'ISO‑datetime dell'ultimo aggiornamento e la mappa {@link #NOW} con i dati correnti.
      */
     @Override
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION",
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+    )
     public Optional<Pair<String, Map<String, Number>>> getWeatherNow(final boolean avoidCheck) {
         if (this.lastUpdate == 0 || avoidCheck
             || this.checkMinutesPassed(this.lastUpdate, REFRESH_TIME)) {
@@ -408,6 +423,10 @@ public class AllWeather implements Weather {
      * @param reader reader JSON avanzato che fornisce i dati correnti.
      * @return <code>true</code> se tutti i campi essenziali sono presenti.
      */
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION",
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+    )
     private boolean setCurrentWeather(final AdvancedJsonReader reader) { // NOPMD
         try {
             this.lastUpdate = System.currentTimeMillis() / 1000L;
@@ -451,6 +470,10 @@ public class AllWeather implements Weather {
      * @param asciiCityName nome ASCII della città.
      * @return <code>Optional.empty()</code> se la pagina non è strutturata come previsto.
      */
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION",
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+    )
     private Optional<Integer> getCityInhabitants(final String asciiCityName) {
         try {
             final Document doc = Jsoup.connect(URL_CITY_INFO + asciiCityName).get();

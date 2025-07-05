@@ -76,31 +76,37 @@ class AllWeatherTest {
     /* ---------------------------------------------------------- */
 
     @Test
-    void roundToNearestQuarterShouldRoundCorrectly() throws Exception {
-        final Method round = AllWeather.class.getDeclaredMethod("roundToNearestQuarter", String.class);
-        round.setAccessible(true);
+    void roundToNearestQuarterShouldRoundCorrectly() {
+        assertDoesNotThrow(() -> {
+            final Method round = AllWeather.class
+                    .getDeclaredMethod("roundToNearestQuarter", String.class);
+            round.setAccessible(true);
 
-        assertAll("arrotondamento 15′",
+            assertAll("arrotondamento 15′",
                 () -> assertEquals("13:30", round.invoke(underTest, "13:34")),
                 () -> assertEquals("13:30", round.invoke(underTest, "13:37")),
                 () -> assertEquals("14:00", round.invoke(underTest, "13:53")),
                 () -> assertEquals("00:00", round.invoke(underTest, "23:59"))
-        );
+            );
+        });
     }
 
     @Test
-    void checkMinutesPassedShouldRespectThreshold() throws Exception {
-        final Method m = AllWeather.class.getDeclaredMethod("checkMinutesPassed", long.class, int.class);
-        m.setAccessible(true);
+    void checkMinutesPassedShouldRespectThreshold() {
+        assertDoesNotThrow(() -> {
+            final Method m = AllWeather.class.getDeclaredMethod(
+                    "checkMinutesPassed", long.class, int.class);
+            m.setAccessible(true);
 
-        // CHECKSTYLE: MagicNumber OFF
-        final long now = System.currentTimeMillis() / 1000L;
-        final long tenMinutesAgo = now - 10 * 60;
-        final long thirtyMinutesAgo = now - 30 * 60;
+            // CHECKSTYLE: MagicNumber OFF
+            final long now = System.currentTimeMillis() / 1000L;
+            final long tenMinutesAgo = now - 10 * 60;
+            final long thirtyMinutesAgo = now - 30 * 60;
 
-        assertFalse((Boolean) m.invoke(underTest, tenMinutesAgo, 20));
-        assertTrue((Boolean) m.invoke(underTest, thirtyMinutesAgo, 20));
-        // CHECKSTYLE: MagicNumber ON
+            assertFalse((Boolean) m.invoke(underTest, tenMinutesAgo, 20));
+            assertTrue((Boolean) m.invoke(underTest, thirtyMinutesAgo, 20));
+            // CHECKSTYLE: MagicNumber ON
+        });
     }
 
 }

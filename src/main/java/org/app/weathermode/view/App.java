@@ -15,6 +15,8 @@ import javafx.beans.value.ObservableValue;
 import org.app.weathermode.controller.Controller;
 import org.app.weathermode.model.LocationSelector;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +27,10 @@ import java.util.Map;
  * con righe 65% / 35% e colonne 60% / 40% (top),
  * 85% / 15% (bottom).
  */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP",
+    justification = "Intentional exposure of private fields for external interaction"
+)
 public class App implements AbstractApp {
 
     private static LocationSelector locationSelector;
@@ -198,6 +204,11 @@ public class App implements AbstractApp {
      * @param ls il selettore di località da registrare
      */
     @Override
+    @SuppressFBWarnings(
+        value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
+        justification = "LocationSelector loads a large file into memory at startup"
+        + " and must be accessible statically from anywhere in the application"
+    )
     public void setLocationSelector(final LocationSelector ls) {
         locationSelector = ls;
     }

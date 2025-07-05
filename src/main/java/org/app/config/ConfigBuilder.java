@@ -1,12 +1,13 @@
 package org.app.config;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
+import java.io.BufferedWriter;
 import java.util.logging.Logger;
 
 /**
@@ -59,10 +60,9 @@ public final class ConfigBuilder {
         final File file = new File(configPath);
 
         final File parent = file.getParentFile();
-        if (parent != null && !parent.exists()) {
-            if (!parent.mkdirs()) {
-                throw new IOException("Failed to create folder: " + parent.getAbsolutePath());
-            }
+        // Creo la cartella padre se non esiste
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw new IOException("Failed to create folder: " + parent.getAbsolutePath());
         }
 
         if (file.exists()) {
@@ -70,7 +70,10 @@ public final class ConfigBuilder {
             return;
         }
 
-        try (FileWriter writer = new FileWriter(file)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(
+                file.toPath(),
+                StandardCharsets.UTF_8
+        )) {
             writer.write(DEFAULT_CONFIG);
             LOG.fine("File creato: " + file.getAbsolutePath());
         }
@@ -85,7 +88,13 @@ public final class ConfigBuilder {
                     .getLocation()
                     .toURI()
         );
-        final Path jarDir = Files.isRegularFile(jarFile) ? jarFile.getParent() : jarFile;
+        final Path jarDir;
+        if (Files.isRegularFile(jarFile)) {
+            final Path parent = jarFile.getParent();
+            jarDir = (parent != null) ? parent : jarFile;
+        } else {
+            jarDir = jarFile;
+        }
 
         final Path targetDir = jarDir.resolve(folderName);
 

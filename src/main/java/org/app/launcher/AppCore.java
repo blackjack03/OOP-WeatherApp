@@ -8,9 +8,9 @@ import org.app.appcore.MainController;
 import org.app.appcore.MainControllerImpl;
 import org.app.config.ConfigManager;
 import org.app.weathermode.view.LoadingScreen;
+import org.slf4j.LoggerFactory;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 /**
@@ -64,15 +64,20 @@ public class AppCore extends Application {
      */
     @Override
     public void stop() {
-        // CHECKSTYLE: EmptyCatchBlock OFF
         try {
             javax.swing.SwingUtilities.invokeAndWait(() -> {
                 for (final java.awt.Window w : java.awt.Window.getWindows()) {
                     w.dispose();
                 }
             });
-        } catch (final Exception ignored) { } // NOPMD
-        // CHECKSTYLE: EmptyCatchBlock ON
+        } catch (final InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            LoggerFactory.getLogger(AppCore.class)
+                .warn("Interruzione durante lo shutdown AWT", ie);
+        } catch (final InvocationTargetException ite) {
+            LoggerFactory.getLogger(AppCore.class)
+                .error("Errore eseguendo invokeAndWait in stop()", ite);
+        }
     }
 
 }

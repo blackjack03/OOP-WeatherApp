@@ -6,6 +6,7 @@ import org.app.config.ConfigManager;
 import org.app.weathermode.model.MoonPhases;
 import org.app.weathermode.model.MoonPhasesImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,6 +28,11 @@ import java.util.logging.Logger;
 /**
  * Finestra modale con le impostazioni dell’app.
  */
+@SuppressFBWarnings(
+    value = "MC_OVERRIDABLE_METHOD_CALL_IN_CONSTRUCTOR",
+    justification = "Button handlers are set up in constructor but execute"
+    + "overridable methods only after construction via events"
+)
 public class SettingsWindow extends Stage {
 
     private static final String CONFIG_PATH = "app_config/configuration.json";

@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 // CHECKSTYLE: AvoidStarImport OFF
 import java.util.*;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 // CHECKSTYLE: AvoidStarImport ON
 
 /**
@@ -41,6 +43,10 @@ public class LocationSelectorImpl implements LocationSelector {
      * Solleva {@link Error} in caso di problemi non recuperabili (risorsa
      * assente o CSV malformato).
      */
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION",
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+    )
     public LocationSelectorImpl() {
         try (InputStream is = LocationSelector.class.getResourceAsStream(CSV_RESOURCE)) {
             if (is == null) {
