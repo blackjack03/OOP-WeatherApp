@@ -207,6 +207,14 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDateTimePersonalizationClosed() {
+        return !this.dateTimeTitledPane.isExpanded();
+    }
+
+    /**
      * Disables all input components (city field, spinners, and date picker).
      */
     @Override

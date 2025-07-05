@@ -59,4 +59,14 @@ public interface CityDateTimeInputBox extends CityInputBox {
      * @return The selected or current {@link LocalTime}.
      */
     LocalTime getSelectedTime();
+
+    /**
+     * Checks if the date/time customization section is closed (collapsed).
+     *
+     * <p>This method determines whether the user has access to the custom date and time selection.
+     *
+     * @return {@code true} if the date/time section is collapsed (not expanded),
+     *         {@code false} if it is expanded and available for user input
+     */
+    boolean isDateTimePersonalizationClosed();
 }
