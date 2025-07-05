@@ -78,8 +78,8 @@ public class ResultBox extends HBox {
      * @param mapImage    A static image of the route or map.
      * @param window      The window in which this component is displayed (used for sizing).
      */
-    private ResultBox(final int meteoScore, final String description, final String duration, final String arrivalDate,
-                      final String arrivalTime, final Image mapImage, final Window window) {
+    protected ResultBox(final int meteoScore, final String description, final String duration, final String arrivalDate,
+                        final String arrivalTime, final Image mapImage, final Window window) {
         this.meteoScore = new Label(String.valueOf(meteoScore));
         final Label description1 = new Label(DESCRIPTION_TEXT);
         final Label description2 = new Label(description);
@@ -163,7 +163,7 @@ public class ResultBox extends HBox {
      * <p>This method must be called exactly once after construction.
      * It is automatically invoked by the {@link #create} factory method.</p>
      */
-    private void initialize() {
+    protected void initialize() {
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         this.getChildren().addAll(infoPane, mapContainer);
         setHgrow(infoPane, Priority.ALWAYS);
