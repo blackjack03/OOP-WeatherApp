@@ -31,7 +31,7 @@ import javafx.stage.Window;
  * </p>
  *
  * <p>To create a new instance, use the static factory method
- * {@link #createResultBox(int, String, String, String, String, Image, Window)},
+ * {@link #create(int, String, String, String, String, Image, Window)},
  * which automatically handles initialization and layout configuration.</p>
  *
  */
@@ -68,7 +68,7 @@ public class ResultBox extends HBox {
     /**
      * Constructs a {@code ResultBox} instance containing a summary of a travel result.
      * This constructor prepares all components but does not finalize the layout.
-     * For correct usage, prefer {@link #createResultBox(int, String, String, String, String, Image, Window)}.
+     * For correct usage, prefer {@link #create(int, String, String, String, String, Image, Window)}.
      *
      * @param meteoScore  A numerical score from 0 to 100 representing the weather favorability.
      * @param description A textual description of the route.
@@ -161,7 +161,7 @@ public class ResultBox extends HBox {
      * Completes the layout of the component by attaching child nodes,
      * setting minimum size, and enabling proper horizontal growth behavior.
      * <p>This method must be called exactly once after construction.
-     * It is automatically invoked by the {@link #createResultBox} factory method.</p>
+     * It is automatically invoked by the {@link #create} factory method.</p>
      */
     private void initialize() {
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
@@ -181,8 +181,8 @@ public class ResultBox extends HBox {
      * @param window      The JavaFX {@link Window} used to calculate responsive size.
      * @return A fully configured {@code ResultBox} ready for display.
      */
-    public static ResultBox createResultBox(final int meteoScore, final String description, final String duration, final String arrivalDate,
-                                            final String arrivalTime, final Image mapImage, final Window window) {
+    public static ResultBox create(final int meteoScore, final String description, final String duration, final String arrivalDate,
+                                   final String arrivalTime, final Image mapImage, final Window window) {
         final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalDate, arrivalTime, mapImage, window);
         resultBox.initialize();
         return resultBox;
