@@ -40,7 +40,7 @@ public interface MainController {
      * @param title   the title of the error dialog
      * @param message the detailed error message to be displayed to the user
      */
-    void showErrorOnGUI(final String title, final String message);
+    void showErrorOnGUI(String title, String message);
 
     /**
      * Displays a warning message to the user through the GUI.
@@ -48,5 +48,5 @@ public interface MainController {
      * @param title   the title of the warning dialog
      * @param message the detailed warning message to be displayed to the user
      */
-    void showWarningOnGUI(final String title, final String message);
+    void showWarningOnGUI(String title, String message);
 }

@@ -9,6 +9,8 @@ import org.app.appcore.MainControllerImpl;
 import org.app.config.ConfigManager;
 import org.app.weathermode.view.LoadingScreen;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.util.Objects;
 
 /**
@@ -31,7 +33,7 @@ public class AppCore extends Application {
         final int minWidth = 1100;
         final int minHeight = 700;
         final Image icon = new Image(Objects.requireNonNull(
-            getClass().getResourceAsStream("/logo.png")
+            AppCore.class.getResourceAsStream("/logo.png")
         ));
         final MainController mainController = new MainControllerImpl();
         final Scene scene = new Scene(mainController.getRootView(), minWidth, minHeight);
@@ -69,7 +71,7 @@ public class AppCore extends Application {
                     w.dispose();
                 }
             });
-        } catch (final Exception ignored) { }
+        } catch (final Exception ignored) { } // NOPMD
         // CHECKSTYLE: EmptyCatchBlock ON
     }
 

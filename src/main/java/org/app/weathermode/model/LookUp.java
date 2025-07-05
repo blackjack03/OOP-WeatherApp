@@ -1,6 +1,6 @@
 package org.app.weathermode.model;
 
-import java.util.*;
+import java.util.Optional;
 
 /* ===================================================================== */
 

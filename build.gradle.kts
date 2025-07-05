@@ -1,3 +1,5 @@
+import com.github.spotbugs.snom.SpotBugsTask
+
 plugins {
     // Apply the java plugin to add support for Java
     java
@@ -15,6 +17,12 @@ plugins {
     id("org.danilopianini.gradle-java-qa") version "1.96.0"
 
     id("application")
+}
+
+tasks.withType<SpotBugsTask>().configureEach {
+    reports.apply {
+        create("html").required.set(true)
+    }
 }
 
 repositories { // Where to search for dependencies

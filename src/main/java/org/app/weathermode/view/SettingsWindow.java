@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * Finestra modale con le impostazioni dell’app.
@@ -29,8 +30,23 @@ import java.util.Optional;
 public class SettingsWindow extends Stage {
 
     private static final String CONFIG_PATH = "app_config/configuration.json";
+    private static final Logger LOG = Logger.getLogger(SettingsWindow.class.getName());
     private final Controller controller;
 
+        /**
+     * Costruisce e inizializza la finestra delle impostazioni dell’applicazione.
+     * Imposta titolo, modalità modale, dimensioni e layout con pulsanti per:
+     * <ul>
+     *   <li>visualizzare il grafico delle temperature;</li>
+     *   <li>mostrare le fasi lunari di oggi;</li>
+     *   <li>cambiare la città selezionata.</li>
+     * </ul>
+     * Le azioni sui pulsanti si appoggiano al {@link Controller} fornito.
+     *
+     * @param controller l’istanza di {@link Controller} che coordina le
+     *                   operazioni dell’applicazione (recupero dati meteo,
+     *                   gestione aggiornamenti, ecc.)
+     */
     public SettingsWindow(final Controller controller) {
         this.controller = controller;
 
@@ -39,7 +55,7 @@ public class SettingsWindow extends Stage {
         final double rootPadding = 20.0;
         final double vboxSpacing = 15.0;
         final String chartBtnText = "Visualizza Grafico Temperature";
-        final String moonBtnText = "Visualizza Luna di Oggi";
+
         final String changeCityBtnText = "Cambia Città";
         final String btnFontStyle = "-fx-font-size: 18px;";
         final double minWidth = 400.0;
@@ -58,6 +74,7 @@ public class SettingsWindow extends Stage {
         chartBtn.setMaxWidth(Double.MAX_VALUE);
         chartBtn.setOnAction(e -> openChart());
 
+        final String moonBtnText = "Visualizza Luna di Oggi";
         final Button moonBtn = new Button(moonBtnText);
         moonBtn.setStyle(btnFontStyle);
         moonBtn.setMaxWidth(Double.MAX_VALUE);
@@ -84,21 +101,12 @@ public class SettingsWindow extends Stage {
         setResizable(false);
     }
 
-    @SuppressWarnings({"unchecked","varargs"})
+    @SuppressWarnings({"unchecked", "varargs"})
     private void openChart() {
-        // Costanti locali
-        final String errorTitle = "Dati mancanti";
-        final String errorMessage = "Nessun dato di temperatura disponibile.";
-        final String dateAxisLabel = "Data";
-        final String tempAxisLabel = "Temperatura (°C)";
-        final String chartTitle = "Temperature Massime e Minime";
-        final String seriesMinName = "Minime";
-        final String seriesMaxName = "Massime";
-        final double chartWidth = 800.0;
-        final double chartHeight = 600.0;
-
         final Optional<Map<String, Map<String, Number>>> hourlyOpt =
             controller.getWeatherObj().getDailyGeneralForecast();
+        final String errorTitle = "Dati mancanti";
+        final String errorMessage = "Nessun dato di temperatura disponibile.";
         if (hourlyOpt.isEmpty()) {
             CustomErrorGUI.showError(errorMessage, errorTitle);
             return;
@@ -111,18 +119,23 @@ public class SettingsWindow extends Stage {
             extremes.put(date, new double[]{tempCMin, tempCMax});
         });
 
+        final String dateAxisLabel = "Data";
         final CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel(dateAxisLabel);
         final NumberAxis yAxis = new NumberAxis();
+        final String tempAxisLabel = "Temperatura (°C)";
         yAxis.setLabel(tempAxisLabel);
         final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        final String chartTitle = "Temperature Massime e Minime";
         lineChart.setTitle(chartTitle);
         lineChart.setCreateSymbols(true);
         lineChart.setAnimated(true);
 
         final XYChart.Series<String, Number> minSeries = new XYChart.Series<>();
+        final String seriesMinName = "Minime";
         minSeries.setName(seriesMinName);
         final XYChart.Series<String, Number> maxSeries = new XYChart.Series<>();
+        final String seriesMaxName = "Massime";
         maxSeries.setName(seriesMaxName);
         extremes.forEach((date, vals) -> {
             minSeries.getData().add(new XYChart.Data<>(date, vals[0]));
@@ -135,6 +148,8 @@ public class SettingsWindow extends Stage {
         chartStage.initOwner(this);
         chartStage.initModality(Modality.WINDOW_MODAL);
         chartStage.setTitle(chartTitle);
+        final double chartWidth = 800.0;
+        final double chartHeight = 600.0;
         chartStage.setScene(new Scene(lineChart, chartWidth, chartHeight));
         chartStage.show();
     }
@@ -150,7 +165,7 @@ public class SettingsWindow extends Stage {
             final MoonPhases moon = new MoonPhasesImpl();
             final Optional<Map<String, String>> moonInfo = moon.getMoonInfo();
             if (moonInfo.isEmpty()) {
-                System.err.println(errorLog);
+                LOG.fine(errorLog);
                 CustomErrorGUI.showError(errorMessage, errorTitle);
                 return;
             }
@@ -173,7 +188,7 @@ public class SettingsWindow extends Stage {
                 final AppConfig appConfig = ConfigManager.getConfig();
                 appConfig.getUserPreferences().setDefaultCity(id);
                 ConfigManager.saveConfig(CONFIG_PATH);
-                System.out.println("City ID = " + id);
+                LOG.fine("City ID = " + id);
                 controller.forceRefresh();
             });
         });

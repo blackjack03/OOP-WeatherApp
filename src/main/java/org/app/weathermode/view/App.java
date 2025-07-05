@@ -150,7 +150,12 @@ public class App implements AbstractApp {
         GridPane.setHgrow(forecastScroller, Priority.ALWAYS);
         GridPane.setVgrow(forecastScroller, Priority.ALWAYS);
         forecastScroller.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        for (final String day : new String[]{"OGGI", "DOMANI", "xx/xx", "xx/xx", "xx/xx", "xx/xx", "xx/xx"}) {
+        final String defaultPlaceHolder = "xx/xx";
+        for (final String day : new String[]{"OGGI", "DOMANI", defaultPlaceHolder,
+            defaultPlaceHolder,
+            defaultPlaceHolder,
+            defaultPlaceHolder,
+            defaultPlaceHolder}) {
             forecastStrip.getChildren().add(
                     makeMiniForecast(day, "/logo.png",
                     root.widthProperty().multiply(iconForecastRatio), miniSpacing, miniPrefWidth));
@@ -307,7 +312,7 @@ public class App implements AbstractApp {
     }
 
     private ImageView makeIcon(final String path, final ObservableValue<? extends Number> widthBinding) {
-        final Image img = new Image(getClass().getResourceAsStream(path));
+        final Image img = new Image(App.class.getResourceAsStream(path));
         final ImageView iv = new ImageView(img);
         iv.setPreserveRatio(true);
         iv.fitWidthProperty().bind((DoubleExpression) widthBinding);

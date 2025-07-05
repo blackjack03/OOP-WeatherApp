@@ -1,6 +1,7 @@
 package org.app.weathermode.model;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.Map;
 
 /**
  * <h2>Weather (contratto)</h2>
@@ -46,27 +47,30 @@ public interface Weather {
     Optional<Map<String, Map<String, String>>> getDailyInfo();
 
     /**
-     * Previsione puntuale (precisione implementazione‑specifica) per una data
+     * Previsione puntuale (precisione implementazione-specifica) per una data
      * e ora indicata.
      *
-     * @param day   giorno del mese (1‑31)
-     * @param month mese (1‑12)
+     * @param day   giorno del mese (1-31)
+     * @param month mese (1-12)
      * @param year  anno (4 cifre)
      * @param hour  stringa "HH:mm"; l’implementazione gestisce eventuali
      *              arrotondamenti al quarto d’ora/ora.
+     * @return un {@link Optional} con la mappa metrica→valore se disponibile.
      */
     Optional<Map<String, Number>> getWeatherOn(int day, int month, int year, String hour);
 
-    /** @return numero di giorni inclusi nell’ultima previsione scaricata. */
+    /**
+     * @return numero di giorni inclusi nell’ultima previsione scaricata.
+     */
     int getForecastDays();
 
     /**
-     * Condizioni meteo correnti con caching interno (timeout implementazione‑specifico).
+     * Condizioni meteo correnti con caching interno (timeout implementazione-specifico).
      *
-     * @param avoid_check se <code>true</code> forza il refresh ignorando la cache.
+     * @param avoidCheck se <code>true</code> forza il refresh ignorando la cache.
      * @return coppia { timestampISO, mapMetriche }.
      */
-    Optional<Pair<String, Map<String, Number>>> getWeatherNow(boolean avoid_check);
+    Optional<Pair<String, Map<String, Number>>> getWeatherNow(boolean avoidCheck);
 
     /**
      * @return informazioni statiche sulla città (altitudine, abitanti, ecc.).
@@ -75,9 +79,10 @@ public interface Weather {
 
     /**
      * Converte la direzione del vento espressa in gradi bussola in descrizione
-     * testuale (es. "Nord‑Est").
+     * testuale (es. "Nord-Est").
      *
-     * @param degrees valore 0‑359.
+     * @param degrees valore 0-359.
+     * @return descrizione testuale della direzione del vento.
      */
     String getWindDirection(int degrees);
 

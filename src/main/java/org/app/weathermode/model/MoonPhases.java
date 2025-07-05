@@ -1,6 +1,7 @@
 package org.app.weathermode.model;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.Map;
 
 /**
  * <h2>MoonPhases</h2>
@@ -43,9 +44,9 @@ public interface MoonPhases {
      * Utility di convenienza per ottenere l’URL completo dell’immagine
      * rappresentativa della fase lunare.
      *
-     * @param image_name nome file dell’immagine.
+     * @param imageName nome file dell’immagine.
      * @return URL assoluto.
      */
-    String getImageURL(String image_name);
+    String getImageURL(String imageName);
 
 }

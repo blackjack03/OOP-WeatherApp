@@ -71,7 +71,7 @@ public interface Controller {
      * @param title   the title of the error message dialog
      * @param message the detailed error message to be displayed
      */
-    void showError(final String title, final String message);
+    void showError(String title, String message);
 
     /**
      * Displays a warning message to the user through the GUI.
@@ -82,5 +82,5 @@ public interface Controller {
      * @param title   the title of the warning message dialog
      * @param message the detailed warning message to be displayed
      */
-    void showWarning(final String title, final String message);
+    void showWarning(String title, String message);
 }

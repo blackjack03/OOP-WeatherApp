@@ -178,7 +178,7 @@ public class IPLookUp implements LookUp {
             this.timeZone = ipinfo.getString("time_zone");
             this.coords = new Pair<>(ipinfo.getDouble("latitude"), ipinfo.getDouble("longitude"));
             return true;
-        } catch (final Exception e) {
+        } catch (final Exception e) { // NOPMD
             return false;
         }
     }

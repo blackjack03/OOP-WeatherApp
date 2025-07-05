@@ -4,12 +4,16 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+
+// CHECKSTYLE: AvoidStarImport OFF
 import java.util.*;
+
+// CHECKSTYLE: AvoidStarImport ON
 
 /**
  * <h2>LocationSelectorImpl</h2>
  * <p>Implementazione di {@link LocationSelector} basata sul CSV
- * <em>worldcities.csv</em> reso disponibile come risorsa di class‑path.
+ * <em>worldcities.csv</em> reso disponibile come risorsa di class-path.
  * La classe offre tre funzionalità principali:</p>
  * <ul>
  *   <li><strong>lookup testuale</strong> tramite {@link #getPossibleLocations(String)};</li>
@@ -23,51 +27,64 @@ import java.util.*;
  */
 public class LocationSelectorImpl implements LocationSelector {
 
-    /** Percorso della risorsa CSV nel class‑path. */
+    /** Percorso della risorsa CSV nel class-path. */
     private static final String CSV_RESOURCE = "/files/worldcities.csv";
 
     /** Copia completa del CSV in memoria. */
-    private final List<Map<String, String>> CSV;
+    private final List<Map<String, String>> csv;
 
     /** Indice <code>ID → riga</code> per accesso <em>O(1)</em>. */
-    private final Map<Integer, Map<String, String>> CITIES_MAP = new HashMap<>();
+    private final Map<Integer, Map<String, String>> citiesMap = new HashMap<>();
 
     /**
-     * Carica il CSV da class‑path e costruisce l’indice delle città.
+     * Carica il CSV da class-path e costruisce l’indice delle città.
      * Solleva {@link Error} in caso di problemi non recuperabili (risorsa
      * assente o CSV malformato).
      */
     public LocationSelectorImpl() {
-        try (InputStream is = getClass().getResourceAsStream(CSV_RESOURCE)) {
+        try (InputStream is = LocationSelector.class.getResourceAsStream(CSV_RESOURCE)) {
             if (is == null) {
                 throw new FileNotFoundException("Resource " + CSV_RESOURCE + " not found in classpath");
             }
 
             try (CSVStdParser parser = new CSVStdParser(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-                this.CSV = parser.readCSVToMap();
+                this.csv = parser.readCSVToMap();
             }
 
-            for (Map<String, String> row : CSV) {
-                int idx = Integer.parseInt(row.get("id"));
-                this.CITIES_MAP.put(idx, row);
+            for (final Map<String, String> row : csv) {
+                final int idx = Integer.parseInt(row.get("id"));
+                this.citiesMap.put(idx, row);
             }
-        } catch (Exception err) {
-            throw new Error("Unable to load city list", err);
+        } catch (final Exception err) { // NOPMD
+            throw new Error("Unable to load city list", err); // NOPMD
         }
     }
 
     /* ====================== API LocationSelector ===================== */
 
+    /**
+     * Restituisce l’elenco delle possibili corrispondenze per una stringa di
+     * ricerca parziale sui nomi di città (case-insensitive), includendo
+     * città ASCII e locale.
+     *
+     * @param txt la stringa di ricerca (o parte di essa)
+     * @return una {@link List} di {@link Pair} in cui:
+     *         <ul>
+     *           <li>la prima componente è la descrizione completa
+     *               "<em>città, regione, paese</em>"</li>
+     *           <li>la seconda è l’ID numerico corrispondente alla riga CSV</li>
+     *         </ul>
+     */
     @Override
     public List<Pair<String, Integer>> getPossibleLocations(final String txt) {
-        List<Pair<String, Integer>> possibleLocations = new ArrayList<>();
-        String query = txt.toLowerCase(Locale.ROOT);
+        final List<Pair<String, Integer>> possibleLocations = new ArrayList<>();
+        final String query = txt.toLowerCase(Locale.ROOT);
 
-        for (Map<String, String> entry : this.CSV) {
-            String cityName = entry.get("city").toLowerCase(Locale.ROOT);
-            String cityNameAscii = entry.get("city_ascii").toLowerCase(Locale.ROOT);
+        for (final Map<String, String> entry : this.csv) {
+            final String cityName = entry.get("city").toLowerCase(Locale.ROOT);
+            final String cityNameAscii = entry.get("city_ascii").toLowerCase(Locale.ROOT);
             if (cityName.contains(query) || cityNameAscii.contains(query)) {
-                String completeName = String.format("%s, %s, %s",
+                final String completeName = String.format("%s, %s, %s",
                         entry.get("city"), entry.get("admin_name"), entry.get("country"));
                 possibleLocations.add(new Pair<>(completeName, Integer.parseInt(entry.get("id"))));
             }
@@ -75,23 +92,42 @@ public class LocationSelectorImpl implements LocationSelector {
         return possibleLocations;
     }
 
+    /**
+     * Recupera direttamente la mappa di valori di una città dato il suo ID.
+     *
+     * @param id l’identificativo numerico della città (colonna "id" nel CSV)
+     * @return un {@link Optional} contenente la riga CSV come
+     *         {@code Map<String,String>} se esiste, altrimenti vuoto
+     */
     @Override
-    public Optional<Map<String, String>> getByID(final int ID) {
-        return Optional.ofNullable(this.CITIES_MAP.get(ID));
+    public Optional<Map<String, String>> getByID(final int id) {
+        return Optional.ofNullable(this.citiesMap.get(id));
     }
 
+    /**
+     * Cerca automaticamente l’ID di una città basandosi su un oggetto {@link LookUp}
+     * che contiene nome città e codice ISO del paese.
+     *
+     * @param lookUp l’oggetto {@link LookUp} con i campi {@code city}
+     *               e {@code countryCode} (ISO2)
+     * @return un {@link Optional} contenente l’ID numerico se trovato,
+     *         altrimenti vuoto
+     */
     @Override
     public Optional<Integer> searchByLookUp(final LookUp lookUp) {
-        if (lookUp == null) return Optional.empty();
-        String city = lookUp.getCity();
-        String countryCode = lookUp.getCountryCode();
-        for (var entry : this.CITIES_MAP.entrySet()) {
-            Map<String, String> cityData = entry.getValue();
-            if (cityData.get("city").equalsIgnoreCase(city) &&
-                cityData.get("iso2").equalsIgnoreCase(countryCode)) {
+        if (lookUp == null) {
+            return Optional.empty();
+        }
+        final String city = lookUp.getCity();
+        final String countryCode = lookUp.getCountryCode();
+        for (final var entry : this.citiesMap.entrySet()) {
+            final Map<String, String> cityData = entry.getValue();
+            if (cityData.get("city").equalsIgnoreCase(city)
+                && cityData.get("iso2").equalsIgnoreCase(countryCode)) {
                 return Optional.of(entry.getKey());
             }
         }
         return Optional.empty();
     }
+
 }

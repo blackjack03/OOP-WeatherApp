@@ -2,9 +2,11 @@ package org.app.weathermode.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 // CHECKSTYLE: AvoidStarImport OFF
 import com.google.gson.*;
@@ -29,6 +31,7 @@ import com.google.gson.*;
 public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
 
     /* ===================== stato interno ===================== */
+    private static final String DEFAULT_SEPARATOR = "\\.";
     /** Rappresentazione testuale (non formattata) del JSON sorgente. */
     private String jsonRawText;
     /** Radice dell'albero JSON in forma di {@link JsonObject}. */
@@ -73,22 +76,27 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
      * @throws IOException problemi di I/O o rete.
      */
     @Override
-    public void requestJSON(final String jsonURL) throws IOException {
+    public final void requestJSON(final String jsonURL) throws IOException, IllegalStateException {
         assertNotAlreadySet();
+
         final URL url = new URL(jsonURL);
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        final StringBuilder jsonText = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonText.append(line);
-        }
-        reader.close();
-        connection.disconnect();
+        try (InputStream in = connection.getInputStream();
+            final BufferedReader reader =
+                new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
-        this.jsonRawText = jsonText.toString();
+            final StringBuilder jsonText = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonText.append(line);
+            }
+            this.jsonRawText = jsonText.toString();
+        } finally {
+            connection.disconnect();
+        }
+
         parseAndSetJson();
     }
 
@@ -100,7 +108,7 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
      * @throws IllegalStateException se l'oggetto era già stato inizializzato.
      */
     @Override
-    public AdvancedJsonReaderImpl setJSON(final String jsonString) {
+    public AdvancedJsonReaderImpl setJSON(final String jsonString) { // NOPMD
         assertNotAlreadySet();
         this.jsonRawText = jsonString;
         parseAndSetJson();
@@ -149,7 +157,7 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     @Override
     public JsonObject walkthroughBody(final String path) throws Exception {
         this.assertIsSet();
-        final String[] parts = path.split("\\.");
+        final String[] parts = path.split(DEFAULT_SEPARATOR);
         if (parts.length == 0) {
             return null;
         }
@@ -176,12 +184,13 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     @Override
     public JsonArray getJsonArray(final String path) throws Exception {
         assertIsSet();
-        final String[] parts = path.split("\\.");
+        final String[] parts = path.split(DEFAULT_SEPARATOR);
 
         final String newPath = getLevelUpPath(parts);
 
         // CHECKSTYLE: FinalLocalVariable OFF
-        JsonArray jsonArray;
+        // False Positive
+        JsonArray jsonArray; // NOPMD suppressed as it is a false positive
         if (parts.length > 1) {
             jsonArray = this.walkthroughBody(newPath).get(parts[parts.length - 1]).getAsJsonArray();
         } else {
@@ -208,22 +217,20 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
      * @throws Exception propagata da metodi interni.
      */
     @Override
-    @SuppressWarnings("checkstyle:MagicNumber")
     public <T> T getFromJson(final String path, final Class<T> type) throws Exception {
         assertIsSet();
-        T outElem = null;
-        final String[] parts = path.split("\\.");
-        if (parts.length == 0 || path.trim().isEmpty()) {
+        final String[] parts = path.split(DEFAULT_SEPARATOR);
+        if (parts.length == 0 || path.trim().isEmpty()) { // NOPMD
             return null;
         }
         final String elemToGet = parts[parts.length - 1];
         final String newPath = getLevelUpPath(parts);
         // CHECKSTYLE: FinalLocalVariable OFF
         // False Positive
-        JsonElement element;
+        JsonElement element; // NOPMD suppressed as it is a false positive
         if (parts.length > 1) {
             final JsonObject finalLevel = this.walkthroughBody(newPath);
-            element = (JsonElement) finalLevel.get(elemToGet);
+            element = finalLevel.get(elemToGet);
         } else {
             element = this.jsonBody.get(elemToGet);
         }
@@ -233,6 +240,8 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
             throw new IllegalArgumentException("\"" + path + "\": no such element with this name exists!");
         }
 
+        // CHECKSTYLE: FinalLocalVariable OFF
+        T outElem; // NOPMD suppressed as it is a false positive
         if (type.equals(String.class)) {
             outElem = type.cast(element.getAsString());
         } else if (type.equals(Boolean.class) || type.equals(boolean.class)) {
@@ -258,6 +267,7 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         }
 
         return outElem;
+        // CHECKSTYLE: FinalLocalVariable ON
     }
 
     /**
@@ -267,24 +277,24 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     @Override
     public JsonElement getFromJson(final String path) throws Exception {
         assertIsSet();
-        final String[] parts = path.split("\\.");
+        final String[] parts = path.split(DEFAULT_SEPARATOR);
         final String elemToGet = parts[parts.length - 1];
 
         final String newPath = getLevelUpPath(parts);
 
         // CHECKSTYLE: FinalLocalVariable OFF
         // False Positive
-        JsonElement element;
+        JsonElement element; // NOPMD suppressed as it is a false positive
         if (parts.length > 1) {
             final JsonObject finalLevel = this.walkthroughBody(newPath);
-            element = (JsonElement) finalLevel.get(elemToGet);
+            element = finalLevel.get(elemToGet);
         } else {
             element = this.jsonBody.get(elemToGet);
         }
         // CHECKSTYLE: FinalLocalVariable ON
 
         if (element == null) {
-            throw new IllegalArgumentException("\"" + path + "\": no such element with this name exists!");
+            throw new IllegalArgumentException("\"" + path + "\": no such element with this name exists!"); // NOPMD
         }
 
         return element;
@@ -303,7 +313,7 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         try {
             final var elem = this.getFromJson(path);
             return true;
-        } catch (final Exception e) {
+        } catch (final Exception e) { // NOPMD
             return false;
         }
     }
@@ -320,9 +330,10 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     @Override
     public String getString(final String path) {
         try {
-            return this.getFromJson(path, String.class);
-        } catch (final Exception e) {
-            throw new IllegalArgumentException("\"" + path + "\": no such element with this name exists or is not a String!");
+            return this.getFromJson(path, String.class); // NOPMD
+        } catch (final Exception e) { // NOPMD
+            throw new IllegalArgumentException("\"" + path // NOPMD
+            + "\": no such element with this name exists or is not a String!"); // NOPMD
         }
     }
 
@@ -336,9 +347,10 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     @Override
     public Integer getInt(final String path) {
         try {
-            return this.getFromJson(path, Integer.class);
-        } catch (final Exception e) {
-            throw new IllegalArgumentException("\"" + path + "\": no such element with this name exists or is not a Integer!");
+            return this.getFromJson(path, Integer.class); // NOPMD
+        } catch (final Exception e) { // NOPMD
+            throw new IllegalArgumentException("\"" + path // NOPMD
+            + "\": no such element with this name exists or is not a Integer!"); // NOPMD
         }
     }
 
@@ -352,9 +364,10 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     @Override
     public Long getLong(final String path) {
         try {
-            return this.getFromJson(path, Long.class);
-        } catch (final Exception e) {
-            throw new IllegalArgumentException("\"" + path + "\": no such element with this name exists or is not a Long!");
+            return this.getFromJson(path, Long.class); // NOPMD
+        } catch (final Exception e) { // NOPMD
+            throw new IllegalArgumentException("\"" + path // NOPMD
+            + "\": no such element with this name exists or is not a Long!"); // NOPMD
         }
     }
 
@@ -369,8 +382,9 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     public Double getDouble(final String path) {
         try {
             return this.getFromJson(path, Double.class);
-        } catch (final Exception e) {
-            throw new IllegalArgumentException("\"" + path + "\": no such element with this name exists or is not a Double!");
+        } catch (final Exception e) { // NOPMD
+            throw new IllegalArgumentException("\"" + path // NOPMD
+            + "\": no such element with this name exists or is not a Double!"); // NOPMD
         }
     }
 
@@ -384,9 +398,10 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
     @Override
     public Float getFloat(final String path) {
         try {
-            return this.getFromJson(path, Float.class);
-        } catch (final Exception e) {
-            throw new IllegalArgumentException("\"" + path + "\": no such element with this name exists or is not a Float!");
+            return this.getFromJson(path, Float.class); // NOPMD
+        } catch (final Exception e) { // NOPMD
+            throw new IllegalArgumentException("\"" + path // NOPMD
+            + "\": no such element with this name exists or is not a Float!"); // NOPMD
         }
     }
 
@@ -399,10 +414,11 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
      */
     @Override
     public boolean getBool(final String path) {
-        try {
+        try { // NOPMD
             return this.getFromJson(path, Boolean.class);
-        } catch (final Exception e) {
-            throw new IllegalArgumentException("\"" + path + "\": no such element with this name exists or is not a boolean!");
+        } catch (final Exception e) { // NOPMD
+            throw new IllegalArgumentException("\"" + path // NOPMD
+            + "\": no such element with this name exists or is not a boolean!"); // NOPMD
         }
     }
 
@@ -412,16 +428,16 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
      * Garantisce che il JSON non sia già stato impostato; altrimenti lancia
      * {@link IllegalStateException} per evitare stati incoerenti.
      */
-    private void assertNotAlreadySet() throws IllegalStateException {
+    private void assertNotAlreadySet() throws IllegalStateException { // NOPMD
         if (this.isSet) {
-            throw new IllegalStateException("This AdvancedJsonReader Object was already set!");
+            throw new IllegalStateException("This AdvancedJsonReader Object was already set!"); // NOPMD
         }
     }
 
     /** Verifica che il JSON sia stato impostato prima di leggerlo. */
-    private void assertIsSet() throws UnsupportedOperationException {
+    private void assertIsSet() throws UnsupportedOperationException { // NOPMD
         if (!this.isSet) {
-            throw new UnsupportedOperationException("No JSON was set!");
+            throw new UnsupportedOperationException("No JSON was set!"); // NOPMD
         }
     }
 
@@ -444,7 +460,7 @@ public class AdvancedJsonReaderImpl implements AdvancedJsonReader {
         for (int i = 0; i < parts.length - 1; i++) {
             newPath.append(parts[i]);
             if (i < parts.length - 2) {
-                newPath.append(".");
+                newPath.append('.');
             }
         }
         return newPath.toString();

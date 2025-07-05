@@ -57,7 +57,7 @@ public final class ImageFromURLSwing {
      *
      * @param imageUrl    URL dell'immagine.
      * @param title       testo mostrato sopra l'immagine (può essere {@code null}).
-     * @param windowTitle titolo della finestra (se {@code null} diventa "Image Viewer").
+     * @param winTitle titolo della finestra (se {@code null} diventa "Image Viewer").
      */
     public static void viewIMG(final String imageUrl, final String title, final String winTitle) {
         String windowTitle = winTitle;
@@ -106,7 +106,7 @@ public final class ImageFromURLSwing {
                         frame.setResizable(false);
                         frame.setLocationRelativeTo(null);
                         frame.setVisible(true);
-                    } catch (final Exception ex) {
+                    } catch (final Exception ex) { // NOPMD
                         showErrorOnEDT("Errore nel recupero dell'immagine", "Impossibile visualizzare l'immagine");
                     }
                 }

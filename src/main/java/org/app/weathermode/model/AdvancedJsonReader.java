@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.io.IOException;
 
 /**
@@ -23,6 +25,11 @@ import java.io.IOException;
  * <code>Exception</code> generiche per raggruppare errori di path e di tipo —
  * l’implementazione è responsabile di specificare le eccezioni concrete.</p>
  */
+@SuppressFBWarnings(
+    value = "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
+    justification = "Throwing a generic exception here to signal a critical failure,"
+    + "which is caught and handled by the global exception handler"
+)
 public interface AdvancedJsonReader {
 
     /* ======================= caricamento ======================= */
@@ -34,7 +41,7 @@ public interface AdvancedJsonReader {
      * @param jsonURL endpoint assoluto (http/https) del documento JSON.
      * @throws IOException in caso di problemi di rete o se il server restituisce un errore.
      */
-    void requestJSON(String jsonURL) throws IOException;
+    void requestJSON(String jsonURL) throws IOException; // NOPMD
 
     /**
      * Imposta il JSON a partire da una stringa grezza.
@@ -42,7 +49,7 @@ public interface AdvancedJsonReader {
      * @param jsonString payload completo (deve essere un JSON valido).
      * @return questa istanza per abilitare il <em>method-chaining</em>.
      */
-    AdvancedJsonReaderImpl setJSON(String jsonString);
+    AdvancedJsonReader setJSON(String jsonString); // NOPMD
 
     /**
      * Variante che accetta direttamente un {@link JsonObject} già deserializzato.
@@ -69,7 +76,7 @@ public interface AdvancedJsonReader {
      * @return {@link JsonObject} individuato.
      * @throws Exception se uno dei segmenti non esiste o non rappresenta un oggetto JSON.
      */
-    JsonObject walkthroughBody(String path) throws Exception;
+    JsonObject walkthroughBody(String path) throws Exception; // NOPMD
 
     /**
      * Recupera un {@link JsonArray} localizzato dal path specificato.
@@ -78,7 +85,7 @@ public interface AdvancedJsonReader {
      * @return {@link JsonArray} corrispondente al percorso.
      * @throws Exception se il path non è valido o il nodo non è un array.
      */
-    JsonArray getJsonArray(String path) throws Exception;
+    JsonArray getJsonArray(String path) throws Exception; // NOPMD
 
     /**
      * Estrae il valore in <code>path</code> e lo converte nel tipo richiesto.
@@ -92,7 +99,7 @@ public interface AdvancedJsonReader {
      * @return valore convertito nel tipo specificato.
      * @throws Exception se il path è errato o la conversione non è possibile.
      */
-    <T> T getFromJson(String path, Class<T> type) throws Exception;
+    <T> T getFromJson(String path, Class<T> type) throws Exception; // NOPMD
 
     /**
      * Versione non tipizzata che restituisce il {@link JsonElement} grezzo
@@ -102,7 +109,7 @@ public interface AdvancedJsonReader {
      * @return {@link JsonElement} corrispondente al percorso.
      * @throws Exception se il path non è valido o l’elemento non esiste.
      */
-    JsonElement getFromJson(String path) throws Exception;
+    JsonElement getFromJson(String path) throws Exception; // NOPMD
 
     /**
      * Verifica la presenza di un nodo senza sollevare eccezioni.

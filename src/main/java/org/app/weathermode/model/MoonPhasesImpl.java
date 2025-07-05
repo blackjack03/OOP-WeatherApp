@@ -1,9 +1,11 @@
 package org.app.weathermode.model;
 
+// CHECKSTYLE: AvoidStarImport OFF
 import org.jsoup.*;
 import org.jsoup.nodes.*;
-
 import java.util.*;
+// CHECKSTYLE: AvoidStarImport ON
+
 import java.time.LocalDate;
 
 /**
@@ -34,9 +36,9 @@ public class MoonPhasesImpl implements MoonPhases {
     private static final String BASE_IMG_URL = "https://www.moongiant.com/images/today_phase/";
 
     /** Mappa con le info relative all’ultima data richiesta. */
-    private final Map<String, String> MOON_INFO = new HashMap<>();
+    private final Map<String, String> moonInfo = new HashMap<>();
     /** Cache per evitare ripetuti scraping della stessa data. */
-    private final Map<String, Map<String, String>> CACHE = new HashMap<>();
+    private final Map<String, Map<String, String>> cache = new HashMap<>();
     /** Data corrente in formato <code>dd/MM/yyyy</code>. */
     private String date = "";
 
@@ -60,10 +62,10 @@ public class MoonPhasesImpl implements MoonPhases {
      * (<code>dd/MM/yyyy</code>) e aggiorna <code>MOON_INFO</code> di base.
      */
     @Override
-    public void setDate(final int year, final int month, final int day) {
+    public final void setDate(final int year, final int month, final int day) {
         final String formatted = String.format("%02d/%02d/%d", day, month, year);
         this.date = formatted;
-        this.MOON_INFO.put("date", formatted);
+        this.moonInfo.put("date", formatted);
     }
 
     /**
@@ -82,57 +84,60 @@ public class MoonPhasesImpl implements MoonPhases {
             final LocalDate now = LocalDate.now();
             this.setDate(now.getYear(), now.getMonthValue(), now.getDayOfMonth());
         }
-        if (this.CACHE.containsKey(this.date)) {
-            return Optional.of(this.CACHE.get(this.date));
+        if (this.cache.containsKey(this.date)) {
+            return Optional.of(this.cache.get(this.date));
         }
         if (!this.retrieveMoonPhaseInfo()) {
             return Optional.empty();
         }
         // Salva una copia immutabile per evitare side-effect futuri
-        this.CACHE.put(this.date, new HashMap<>(MOON_INFO));
-        return Optional.of(this.MOON_INFO);
+        this.cache.put(this.date, new HashMap<>(moonInfo));
+        return Optional.of(this.moonInfo);
     }
 
     /** @return la data attualmente impostata (formato <code>dd/MM/yyyy</code>). */
     @Override
-    public String getDate() { return this.date; }
+    public String getDate() {
+        return this.date;
+    }
 
     /**
      * Componi URL completo dell’immagine fase lunare.
-     * @param image_name nome file PNG (es. "waxing_gibbous.png").
+     * @param imageName nome file PNG (es. "waxing_gibbous.png").
      */
     @Override
-    public String getImageURL(final String image_name) {
-        return BASE_IMG_URL + image_name;
+    public String getImageURL(final String imageName) {
+        return BASE_IMG_URL + imageName;
     }
 
     /* ===================== metodi privati ================= */
 
     /**
-     * Effettua lo scraping della pagina HTML e popola {@link #MOON_INFO}.
+     * Effettua lo scraping della pagina HTML e popola {@link #moonInfo}.
      * @return <code>true</code> se tutti i campi richiesti sono stati estratti.
      */
     private boolean retrieveMoonPhaseInfo() {
         try {
-            final Document DOC = Jsoup.connect(SITE_URL + this.date).get();
-            final Element all_info = DOC.getElementById("today_");
-            if (all_info == null) return false;
+            final Document doc = Jsoup.connect(SITE_URL + this.date).get();
+            final Element allInfo = doc.getElementById("today_");
+            if (allInfo == null) {
+                return false;
+            }
 
             // Fase lunare (penultima riga di testo dentro il div)
-            final String[] lines = all_info.html().trim().split("<br>");
-            this.MOON_INFO.put("state", lines[lines.length - 2].trim());
+            final String[] lines = allInfo.html().trim().split("<br>");
+            this.moonInfo.put("state", lines[lines.length - 2].trim());
 
             // Percentuale di illuminazione (primo <span>)
-            final String percIllumination = all_info.getElementsByTag("span").first().text().trim();
-            this.MOON_INFO.put("illumination", percIllumination);
+            final String percIllumination = allInfo.getElementsByTag("span").first().text().trim();
+            this.moonInfo.put("illumination", percIllumination);
 
             // Nome immagine (src dell'<img>)
-            final Element img = all_info.getElementsByTag("img").first();
+            final Element img = allInfo.getElementsByTag("img").first();
             final String[] imgNameSplitted = img.attr("src").split("/");
-            this.MOON_INFO.put("image_name", imgNameSplitted[imgNameSplitted.length - 1]);
+            this.moonInfo.put("image_name", imgNameSplitted[imgNameSplitted.length - 1]);
             return true;
-        } catch (final Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) { // NOPMD
             return false;
         }
     }
