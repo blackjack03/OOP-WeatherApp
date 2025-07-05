@@ -181,8 +181,9 @@ public class ResultBox extends HBox {
      * @param window      The JavaFX {@link Window} used to calculate responsive size.
      * @return A fully configured {@code ResultBox} ready for display.
      */
-    public static ResultBox create(final int meteoScore, final String description, final String duration, final String arrivalDate,
-                                   final String arrivalTime, final Image mapImage, final Window window) {
+    public static ResultBox create(final int meteoScore, final String description, final String duration,
+                                   final String arrivalDate, final String arrivalTime,
+                                   final Image mapImage, final Window window) {
         final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalDate, arrivalTime, mapImage, window);
         resultBox.initialize();
         return resultBox;

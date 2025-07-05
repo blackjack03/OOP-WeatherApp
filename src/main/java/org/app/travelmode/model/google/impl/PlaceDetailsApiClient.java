@@ -16,6 +16,7 @@ import java.time.ZoneOffset;
 public class PlaceDetailsApiClient extends AbstractGoogleApiClient implements PlaceDetails {
 
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/details/json";
+    private static final int SECONDS_PER_MINUTE = 60;
 
     /**
      * Constructs a new PlaceDetailsApiClient with the specified API key.
@@ -48,6 +49,6 @@ public class PlaceDetailsApiClient extends AbstractGoogleApiClient implements Pl
         final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl(url);
         final int utcOffset = jsonReader.getInt("result.utc_offset");
 
-        return ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
+        return ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * SECONDS_PER_MINUTE));
     }
 }
