@@ -89,6 +89,10 @@ public class TravelModeViewImpl implements TravelModeView {
         final Button requestAlternatives = new Button(ALTERNATIVES_BUTTON_TEXT);
 
         searchButton.setOnAction(event -> {
+            requestAlternatives.setDisable(true);
+            if (departureInputBox.isDateTimePersonalizationClosed()) {
+                this.controller.setDepartureDate(LocalDate.now());
+            }
             this.controller.setDepartureTime(departureInputBox.getSelectedTime());
             this.resultsVBox.getChildren().clear();
             if (this.controller.startRouteAnalysis()) {
