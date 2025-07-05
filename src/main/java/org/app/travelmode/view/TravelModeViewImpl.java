@@ -44,7 +44,7 @@ public class TravelModeViewImpl implements TravelModeView {
 
     private final TravelModeController controller;
     private final VBox root;
-    private VBox resultsVBox;
+    private final VBox resultsVBox;
 
     /**
      * Constructs a new travel mode view with the specified controller.
@@ -75,11 +75,15 @@ public class TravelModeViewImpl implements TravelModeView {
         final Function<String, List<PlaceAutocompletePrediction>> fetchPredictions = this.controller::getPlacePredictions;
         final Consumer<LocalDate> onDateSelected = this.controller::setDepartureDate;
 
-        final CityDateTimeInputBoxImpl departureInputBox = new CityDateTimeInputBoxImpl(DEPARTURE_BOX_TITLE,
+        final CityDateTimeInputBoxImpl departureInputBox = CityDateTimeInputBoxImpl.create(DEPARTURE_BOX_TITLE,
                 onDepartureCitySelected, fetchPredictions, onDateSelected, true);
-        final CityInputBoxImpl arrivalInputBox = new CityInputBoxImpl(ARRIVAL_BOX_TITLE,
+        final CityInputBoxImpl arrivalInputBox = CityInputBoxImpl.create(ARRIVAL_BOX_TITLE,
                 onArrivalCitySelected, fetchPredictions, true);
 
+        resultsVBox = new VBox(RESULT_BOX_SPACING);
+        resultsVBox.setAlignment(Pos.CENTER);
+        resultsVBox.setFillWidth(true);
+        resultsVBox.getStyleClass().add("results-section");
 
         final Button searchButton = new Button(SEARCH_BUTTON_TEXT);
         final Button requestAlternatives = new Button(ALTERNATIVES_BUTTON_TEXT);
@@ -112,11 +116,6 @@ public class TravelModeViewImpl implements TravelModeView {
         HBox.setHgrow(centerPane, Priority.ALWAYS);
         topPane.getStyleClass().add("top-pane");
 
-        resultsVBox = new VBox(RESULT_BOX_SPACING);
-        resultsVBox.setAlignment(Pos.CENTER);
-        resultsVBox.setFillWidth(true);
-        resultsVBox.getStyleClass().add("results-section");
-
         final ScrollPane scrollPane = new ScrollPane(resultsVBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -137,7 +136,7 @@ public class TravelModeViewImpl implements TravelModeView {
                               final String arrivalDate, final String arrivalTime, final Image mapImage) {
         Platform.runLater(() -> {
             final Scene mainScene = this.controller.requestAppViewRootNode().getScene();
-            final ResultBox resultBox = new ResultBox(meteoScore, description, duration,
+            final ResultBox resultBox = ResultBox.create(meteoScore, description, duration,
                     arrivalDate, arrivalTime, mapImage, mainScene.getWindow());
             this.resultsVBox.getChildren().add(resultBox);
         });
