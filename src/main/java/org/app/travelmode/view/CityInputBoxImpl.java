@@ -163,22 +163,6 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
      * {@inheritDoc}
      */
     @Override
-    public Label getTitleLabel() {
-        return this.label;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public TextField getCityTextField() {
-        return this.cityTextField;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void disableAllInputs() {
         this.setDisableAllInputs(true);
     }
