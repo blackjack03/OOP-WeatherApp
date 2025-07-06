@@ -77,7 +77,6 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
      *                                  or if some of them are unrealistic.
      */
     private WeatherReport createWeatherReport(final Map<String, Number> weatherInformation) {
-        final WeatherReport weatherReport = new WeatherReportImpl();
         final List<WeatherCondition> weatherConditions = Arrays.asList(
                 this.weatherConditionFactory.createFreezingRisk(weatherInformation.get("freezing_level_height").doubleValue()),
                 this.weatherConditionFactory.createSnowfall(weatherInformation.get("snowfall").doubleValue()),
@@ -85,7 +84,6 @@ public class WeatherInformationServiceImpl implements WeatherInformationService 
                 this.weatherConditionFactory.createVisibility(weatherInformation.get("visibility").doubleValue()),
                 this.weatherConditionFactory.createWindGust(weatherInformation.get("wind_gusts").doubleValue())
         );
-        weatherReport.addConditions(weatherConditions);
-        return weatherReport;
+        return new WeatherReportImpl(weatherConditions);
     }
 }

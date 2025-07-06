@@ -61,6 +61,11 @@ public class TravelModeViewImpl implements TravelModeView {
      *
      * @param controller the controller that handles user interactions and data processing
      */
+    @SuppressFBWarnings(
+            value = "EI_EXPOSE_REP2",
+            justification = "Reference to TravelModeController is intentionally shared so the view can invoke "
+                    + "business logic; compliant with MVC."
+    )
     public TravelModeViewImpl(final TravelModeController controller) {
         this.controller = controller;
         this.root = new VBox(ROOT_SPACING);

@@ -50,7 +50,7 @@ public class DirectionsLeg {
         this.end_location = endLocation;
         this.start_address = startAddress;
         this.start_location = startLocation;
-        this.steps = steps;
+        this.steps = List.copyOf(steps);
         this.distance = distance;
         this.duration = duration;
         this.duration_in_traffic = durationInTraffic;
@@ -98,7 +98,7 @@ public class DirectionsLeg {
      * @return a list of {@link DirectionsStep} objects representing the navigation steps
      */
     public List<DirectionsStep> getSteps() {
-        return List.copyOf(this.steps);
+        return this.steps;
     }
 
     /**

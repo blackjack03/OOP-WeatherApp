@@ -68,11 +68,15 @@ public class TravelModeModelImpl implements TravelModeModel {
     /**
      * {@inheritDoc}
      *
-     * @throws IOException if an error occurs while communicating with the service providing the predictions,
-     *                     or if an error occurs while decoding the response.
+     * @throws IOException           if an error occurs while communicating with the service providing the predictions,
+     *                               or if an error occurs while decoding the response.
+     * @throws IllegalStateException if {@link #start()} has not been called.
      */
     @Override
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) throws IOException {
+        if (placePredictionsApiClient == null) {
+            throw new IllegalStateException("Call start() before requesting place predictions");
+        }
         return this.placePredictionsApiClient.getPlacePredictions(input);
     }
 
@@ -142,20 +146,28 @@ public class TravelModeModelImpl implements TravelModeModel {
     /**
      * {@inheritDoc}
      *
-     * @throws WeatherDataException if there is an error getting weather information for route analysis.
+     * @throws WeatherDataException  if there is an error getting weather information for route analysis.
+     * @throws IllegalStateException if {@link #startDirectionsAnalysis(TravelRequest)} has not been invoked.
      */
     @Override
     public TravelModeResult getTravelModeMainResult() throws WeatherDataException {
+        if (directions == null) {
+            throw new IllegalStateException("Call startDirectionsAnalysis() before requesting results");
+        }
         return this.directions.getMainResult();
     }
 
     /**
      * {@inheritDoc}
      *
-     * @throws WeatherDataException if there is an error getting weather information for route analysis.
+     * @throws WeatherDataException  if there is an error getting weather information for route analysis.
+     * @throws IllegalStateException if {@link #startDirectionsAnalysis(TravelRequest)} has not been invoked.
      */
     @Override
     public Optional<List<TravelModeResult>> getAlternativesResults() throws WeatherDataException {
+        if (directions == null) {
+            throw new IllegalStateException("Call startDirectionsAnalysis() before requesting results");
+        }
         return this.directions.getAlternativeResults();
     }
 

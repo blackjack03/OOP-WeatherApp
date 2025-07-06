@@ -29,7 +29,7 @@ public class DirectionsRoute {
     public DirectionsRoute(final Bounds bounds, final List<DirectionsLeg> legs,
                            final DirectionsPolyline overviewPolyline, final String summary) {
         this.bounds = bounds;
-        this.legs = legs;
+        this.legs = List.copyOf(legs);
         this.overview_polyline = overviewPolyline;
         this.summary = summary;
     }
@@ -49,7 +49,7 @@ public class DirectionsRoute {
      * @return An unmodifiable list containing the route segments
      */
     public List<DirectionsLeg> getLegs() {
-        return List.copyOf(this.legs);
+        return this.legs;
     }
 
     /**

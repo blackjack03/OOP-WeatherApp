@@ -34,7 +34,7 @@ public class DirectionsResponse {
      */
     public DirectionsResponse(final String status, final List<DirectionsRoute> routes, final String errorMessage) {
         this.status = status;
-        this.routes = routes;
+        this.routes = List.copyOf(routes);
         this.error_message = errorMessage;
     }
 
@@ -54,7 +54,7 @@ public class DirectionsResponse {
      * @return list of available routes
      */
     public List<DirectionsRoute> getRoutes() {
-        return List.copyOf(this.routes);
+        return this.routes;
     }
 
     /**
