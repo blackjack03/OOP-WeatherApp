@@ -3,6 +3,7 @@ package org.app.travelmode.model.checkpoint.impl;
 import org.app.travelmode.model.checkpoint.api.Checkpoint;
 import org.app.travelmode.model.checkpoint.api.CheckpointWithMeteo;
 import org.app.travelmode.model.weather.api.WeatherReport;
+import org.app.travelmode.model.weather.impl.WeatherReportImpl;
 
 import java.time.ZonedDateTime;
 
@@ -52,7 +53,7 @@ public class CheckpointWithMeteoImpl extends CheckpointImpl implements Checkpoin
      */
     @Override
     public WeatherReport getWeatherReport() {
-        return this.weatherReport;
+        return new WeatherReportImpl(this.weatherReport);
     }
 
     /**

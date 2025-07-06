@@ -1,5 +1,7 @@
 package org.app.travelmode.model.google.dto.placeautocomplete;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * {@code PlaceAutocompletePrediction} represents a single autocomplete suggestion
  * returned by a place search or geocoding service.
@@ -9,6 +11,10 @@ package org.app.travelmode.model.google.dto.placeautocomplete;
  * </p>
  *
  */
+@SuppressFBWarnings(
+        value = "UWF_UNWRITTEN_FIELD",
+        justification = "Field populated via Gson reflection during JSON deserialization"
+)
 @SuppressWarnings("PMD.FieldNamingConventions")
 public class PlaceAutocompletePrediction {
     // CHECKSTYLE: MemberName OFF
@@ -72,6 +78,10 @@ public class PlaceAutocompletePrediction {
      * (e.g., main: "Milan", secondary: "Italy").
      * </p>
      */
+    @SuppressFBWarnings(
+            value = "UWF_UNWRITTEN_FIELD",
+            justification = "Field populated via Gson reflection during JSON deserialization"
+    )
     @SuppressWarnings("PMD.FieldNamingConventions")
     public static class PlaceAutocompleteStructuredFormat {
         // CHECKSTYLE: MemberName OFF

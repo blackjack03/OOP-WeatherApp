@@ -1,5 +1,6 @@
 package org.app.travelmode.view;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -149,6 +150,11 @@ public class TravelModeViewImpl implements TravelModeView {
     /**
      * {@inheritDoc}
      */
+    @SuppressFBWarnings(
+            value = "EI_EXPOSE_REP",
+            justification = "Exposing the root view is intentional: external modules "
+                    + "need full access for styling and composition."
+    )
     @Override
     public Parent getRootView() {
         return this.root;

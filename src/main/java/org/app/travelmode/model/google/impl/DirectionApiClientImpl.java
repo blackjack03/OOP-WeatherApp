@@ -67,7 +67,7 @@ public class DirectionApiClientImpl extends AbstractGoogleApiClient implements D
             }
 
             if (!"OK".equals(directionsResponse.getStatus())) {
-                throw new DirectionsApiException(String.format("Errore nella ricerca del percorso: %s\n%s",
+                throw new DirectionsApiException(String.format("Errore nella ricerca del percorso: %s%n%s",
                         directionsResponse.getStatus(), directionsResponse.getErrorMessage()));
             }
 

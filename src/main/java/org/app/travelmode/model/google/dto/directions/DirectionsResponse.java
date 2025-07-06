@@ -54,7 +54,7 @@ public class DirectionsResponse {
      * @return list of available routes
      */
     public List<DirectionsRoute> getRoutes() {
-        return this.routes;
+        return List.copyOf(this.routes);
     }
 
     /**
