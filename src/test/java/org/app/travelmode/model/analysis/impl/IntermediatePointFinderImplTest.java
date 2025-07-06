@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * <p>Test data is loaded from static JSON files that simulate real responses
  * from the Google Directions API.</p>
  */
-public class IntermediatePointFinderImplTest {
+class IntermediatePointFinderImplTest {
 
     private static final double DURATION_TOLERANCE_SECONDS = 60.0;
     private static final double DISTANCE_TOLERANCE_METERS = 500.0;
@@ -41,19 +41,19 @@ public class IntermediatePointFinderImplTest {
     private static final int EXPECTED_STEPS_LONG_ROUTE = 3;
 
     private static final double STEP1_DURATION_FULL = 1468.3;
-    private static final double STEP1_DISTANCE_FULL = 28735;
+    private static final double STEP1_DISTANCE_FULL = 28_735;
     private static final double STEP2_DURATION_FULL = 930;
-    private static final double STEP2_DISTANCE_FULL = 28180;
+    private static final double STEP2_DISTANCE_FULL = 28_180;
     private static final double STEP3_DURATION_FULL = 1754;
-    private static final double STEP3_DISTANCE_FULL = 21385;
+    private static final double STEP3_DISTANCE_FULL = 21_385;
 
     private static final double SINGLE_STEP_DURATION = 44;
     private static final double SINGLE_STEP_DISTANCE = 172;
 
     private static final double STEP1_DURATION_LONG = 935.8;
-    private static final double STEP1_DISTANCE_LONG = 28216.1;
+    private static final double STEP1_DISTANCE_LONG = 28_216.1;
     private static final double STEP2_DURATION_LONG = 929.3;
-    private static final double STEP2_DISTANCE_LONG = 28017.7;
+    private static final double STEP2_DISTANCE_LONG = 28_017.7;
     private static final double STEP3_DURATION_LONG = 80.9;
     private static final double STEP3_DISTANCE_LONG = 2439.2;
 
@@ -117,6 +117,7 @@ public class IntermediatePointFinderImplTest {
      * Tests that intermediate points are correctly generated from a full route.
      */
     @Test
+    @SuppressWarnings("PMD.UseUnderscoresInNumericLiterals")
     void testFindIntermediatePointsWithValidJson() throws IOException {
         final LatLng forli = new LatLng(44.222008, 12.0408666);
         final LatLng p1 = new LatLng(44.34260, 11.84725);
@@ -142,6 +143,7 @@ public class IntermediatePointFinderImplTest {
      * Tests that a single step is generated when the route consists of a short path.
      */
     @Test
+    @SuppressWarnings("PMD.UseUnderscoresInNumericLiterals")
     void testFindIntermediatePointsWithOneSteps() throws IOException {
         final LatLng start = new LatLng(44.14727329999999, 12.2366031);
         final LatLng end = new LatLng(44.1459731, 12.2377608);
@@ -161,6 +163,7 @@ public class IntermediatePointFinderImplTest {
      * Tests that a long single step is properly split into multiple intermediate steps.
      */
     @Test
+    @SuppressWarnings("PMD.UseUnderscoresInNumericLiterals")
     void testFindIntermediatePointsWithOneLongSteps() throws IOException {
         final LatLng start = new LatLng(44.2519312, 12.0918587);
         final LatLng p1 = new LatLng(44.36817, 11.77675);

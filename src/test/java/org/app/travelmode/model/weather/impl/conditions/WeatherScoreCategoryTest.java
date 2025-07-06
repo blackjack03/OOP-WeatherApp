@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * </ul>
  *
  */
-public class WeatherScoreCategoryTest {
+class WeatherScoreCategoryTest {
 
     private static final int SCORE_MIN_TERRIBLE = 0;
     private static final int SCORE_MAX_TERRIBLE = 25;

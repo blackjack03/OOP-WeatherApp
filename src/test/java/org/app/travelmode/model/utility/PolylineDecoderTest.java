@@ -29,7 +29,7 @@ class PolylineDecoderTest {
     private static final double LAT_POINT2 = 40.7;
     private static final double LNG_POINT2 = -120.95;
 
-    private static final double COORD_DELTA = 0.00001;
+    private static final double COORD_DELTA = 0.000_01;
 
     /**
      * Tests decoding of a polyline representing a single point.

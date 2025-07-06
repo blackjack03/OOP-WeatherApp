@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *   <li>Correct handling of steps with zero duration</li>
  * </ul>
  */
-public class CheckpointGeneratorImplTest {
+class CheckpointGeneratorImplTest {
 
     private static final double SINGLE_DURATION_SEC = 600.0;  // 10 minutes
     private static final double STEP1_DURATION_SEC = 1800.0;  // 30 minutes
@@ -37,8 +37,8 @@ public class CheckpointGeneratorImplTest {
     private static final double ZERO_DURATION_SEC = 0.0;
 
     private static final double SINGLE_DISTANCE_METRES = 1500.0;
-    private static final double STEP1_DISTANCE_METRES = 25000.0;
-    private static final double STEP2_DISTANCE_METRES = 15000.0;
+    private static final double STEP1_DISTANCE_METRES = 25_000.0;
+    private static final double STEP2_DISTANCE_METRES = 15_000.0;
     private static final double ZERO_STEP_DISTANCE_M = 100.0;
 
     private static final double LAT_ZERO = 0.0;

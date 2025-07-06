@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class GeographicDistanceCalculatorTest {
 
     private static final double DIST_SAME_POINT = 0.0;
-    private static final double DIST_ROME_MILAN = 477019;
-    private static final double DIST_NORTH_SOUTH = 1569000;
+    private static final double DIST_ROME_MILAN = 477_019;
+    private static final double DIST_NORTH_SOUTH = 1_569_000;
     private static final double DIST_NEAR_POINTS = 26.0;
 
     private static final double DELTA_SAME_POINT = 0.001;
@@ -76,6 +76,7 @@ class GeographicDistanceCalculatorTest {
      * where the result is expected to be less than 1 kilometer (~26 meters).
      */
     @Test
+    @SuppressWarnings("PMD.UseUnderscoresInNumericLiterals")
     void testComputeDistanceLessThanOneKilometer() {
         final LatLng point1 = new LatLng(44.1484245, 12.2354429);
         final LatLng point2 = new LatLng(44.1481884, 12.2354903);

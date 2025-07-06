@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * </ul>
  *
  */
-public class RouteAnalyzerImplTest {
+class RouteAnalyzerImplTest {
 
     private static final int EXPECTED_STEP_NUMBER = 7;
 
