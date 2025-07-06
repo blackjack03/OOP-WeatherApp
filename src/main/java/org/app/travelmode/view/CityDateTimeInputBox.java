@@ -1,8 +1,5 @@
 package org.app.travelmode.view;
 
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Spinner;
-
 import java.time.LocalTime;
 
 /**
