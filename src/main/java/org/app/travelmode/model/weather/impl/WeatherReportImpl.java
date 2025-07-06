@@ -32,6 +32,18 @@ public class WeatherReportImpl implements WeatherReport {
     }
 
     /**
+     * Builds a copy of the {@link WeatherReport} provided as input.
+     *
+     * @param source the {@link WeatherReport} to copy.
+     */
+    public WeatherReportImpl(final WeatherReport source) {
+        this.weatherConditions = new ArrayList<>(source.getConditions());
+        this.weatherScore = source.getConditions().isEmpty()
+                ? Optional.empty()
+                : Optional.of(source.getWeatherScore());
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
