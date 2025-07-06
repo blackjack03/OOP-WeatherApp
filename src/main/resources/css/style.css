@@ -3,12 +3,9 @@
     -fx-background-color: linear-gradient(to bottom, #e3f2fd, #bbdefb);
     -fx-padding: 10px, 20px;
 }
-/*
-.control-bar {
-    -fx-padding: 5px, 10px;
-}*/
 
 .app-root-view .mode-selector-button {
+    -fx-font-family: Arial, Helvetica, sans-serif;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
@@ -27,6 +24,7 @@
 }
 
 .main-button {
+    -fx-font-family: Arial, Helvetica, sans-serif;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
@@ -72,6 +70,7 @@
 /********* Stile per CityInputBox *********/
 
 .city-input-box {
+    -fx-font-family: Arial, Helvetica, sans-serif;
     -fx-border-color: #2980b9;
     -fx-border-width: 2px;
     -fx-padding: 15px;
@@ -96,7 +95,6 @@
 }
 
 .label-title {
-    -fx-font-family: "Arial Rounded MT Bold", sans-serif;
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: #2980b9;
@@ -162,7 +160,7 @@
 }
 
 .result-box .label {
-    -fx-font-family: "Arial Rounded MT Bold", sans-serif;
+    -fx-font-family: Arial, Helvetica, sans-serif;
     -fx-font-size: 20px;
     -fx-font-weight: 900;
     -fx-text-fill: #2980b9;
