@@ -158,30 +158,6 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
      * {@inheritDoc}
      */
     @Override
-    public Spinner<Integer> getHourSpinner() {
-        return this.hourSpinner;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Spinner<Integer> getMinuteSpinner() {
-        return this.minuteSpinner;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DatePicker getDatePicker() {
-        return this.datePicker;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public int getSelectedHour() {
         return this.hourSpinner.getValue();
     }

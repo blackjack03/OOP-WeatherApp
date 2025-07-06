@@ -9,35 +9,11 @@ import java.time.LocalTime;
  * {@code CityDateTimeInputBox} extends {@link CityInputBox} and adds support
  * for date and time input components.
  * <p>
- * This interface defines methods for accessing UI elements used to select a date,
- * hour, and minute, as well as for retrieving the corresponding selected time.
- * </p>
  *
  * <p>It is typically implemented by JavaFX components where users need to
  * specify both a location and a specific time.</p>
  */
 public interface CityDateTimeInputBox extends CityInputBox {
-
-    /**
-     * Returns the hour spinner component.
-     *
-     * @return A {@link Spinner} for selecting the hour (0–23).
-     */
-    Spinner<Integer> getHourSpinner();
-
-    /**
-     * Returns the minute spinner component.
-     *
-     * @return A {@link Spinner} for selecting the minute (0–59).
-     */
-    Spinner<Integer> getMinuteSpinner();
-
-    /**
-     * Returns the {@link DatePicker} component used for selecting a date.
-     *
-     * @return The {@link DatePicker} with restricted selectable range.
-     */
-    DatePicker getDatePicker();
 
     /**
      * Gets the selected hour from the hour spinner.
@@ -66,7 +42,7 @@ public interface CityDateTimeInputBox extends CityInputBox {
      * <p>This method determines whether the user has access to the custom date and time selection.
      *
      * @return {@code true} if the date/time section is collapsed (not expanded),
-     *         {@code false} if it is expanded and available for user input
+     * {@code false} if it is expanded and available for user input
      */
     boolean isDateTimePersonalizationClosed();
 }
