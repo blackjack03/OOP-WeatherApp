@@ -80,7 +80,7 @@ class AllWeatherTest {
         assertDoesNotThrow(() -> {
             final Method round = AllWeather.class
                     .getDeclaredMethod("roundToNearestQuarter", String.class);
-            round.setAccessible(true);
+            round.setAccessible(true); // NOPMD
 
             assertAll("arrotondamento 15′",
                 () -> assertEquals("13:30", round.invoke(underTest, "13:34")),
@@ -96,7 +96,7 @@ class AllWeatherTest {
         assertDoesNotThrow(() -> {
             final Method m = AllWeather.class.getDeclaredMethod(
                     "checkMinutesPassed", long.class, int.class);
-            m.setAccessible(true);
+            m.setAccessible(true); // NOPMD
 
             // CHECKSTYLE: MagicNumber OFF
             final long now = System.currentTimeMillis() / 1000L;

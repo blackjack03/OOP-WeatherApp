@@ -55,7 +55,7 @@ class IPLookUpTest {
 
     @Test
     void lookupShouldPopulateFieldsOnFirstSuccessfulAttempt() {
-        final String expectedIP = "8.8.8.8";
+        final String expectedIP = "8.8.8.8"; // NOPMD
         final String expectedCountry = "Italy";
         final String expectedCity = "Rome";
 
@@ -100,9 +100,9 @@ class IPLookUpTest {
             // Imposta manualmente i campi privati
             final Field ip = IPLookUp.class.getDeclaredField("ip");
             final Field coords = IPLookUp.class.getDeclaredField("coords");
-            ip.setAccessible(true);
-            coords.setAccessible(true);
-            ip.set(underTest, "1.2.3.4");
+            ip.setAccessible(true); // NOPMD
+            coords.setAccessible(true); // NOPMD
+            ip.set(underTest, "1.2.3.4"); // NOPMD
 
             // CHECKSTYLE: MagicNumber OFF
             final double lat = 10.0;
@@ -112,7 +112,7 @@ class IPLookUpTest {
 
             // Invoca clear() via reflection
             final Method clearM = IPLookUp.class.getDeclaredMethod("clear");
-            clearM.setAccessible(true);
+            clearM.setAccessible(true); // NOPMD
             clearM.invoke(underTest);
 
             assertAll(
