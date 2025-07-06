@@ -78,11 +78,11 @@ class IntermediatePointFinderImplTest {
      * @throws IOException if an I/O error occurs while reading the json file.
      */
     private DirectionsLeg loadDirectionsLegFromJson(final String filePath) throws IOException {
-        final String json = new String(Files.readAllBytes(Paths.get(filePath)));
+        final String json = Files.readString(Paths.get(filePath));
         final Gson gson = new Gson();
         final DirectionsResponse directionsResponse = gson.fromJson(json, DirectionsResponse.class);
 
-        return directionsResponse.getRoutes().get(0).getLegs().get(0);
+        return directionsResponse.getRoutes().getFirst().getLegs().getFirst();
     }
 
     /**
@@ -155,7 +155,7 @@ class IntermediatePointFinderImplTest {
         assertEquals(1, result.size(),
                 "Dovrebbe essere generato un solo step");
 
-        assertStep(result.get(0), SINGLE_STEP_DURATION, end, start, SINGLE_STEP_DISTANCE,
+        assertStep(result.getFirst(), SINGLE_STEP_DURATION, end, start, SINGLE_STEP_DISTANCE,
                 "Singolo step");
     }
 

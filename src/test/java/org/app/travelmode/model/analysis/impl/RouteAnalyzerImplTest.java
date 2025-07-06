@@ -50,7 +50,7 @@ class RouteAnalyzerImplTest {
      */
     @BeforeEach
     void setUp() throws IOException {
-        final String json = new String(Files.readAllBytes(Paths.get("src/test/resources/fake_directions_route.json")));
+        final String json = Files.readString(Paths.get("src/test/resources/fake_directions_route.json"));
         final Gson gson = new Gson();
         this.directionsRoute = gson.fromJson(json, DirectionsRoute.class);
 
