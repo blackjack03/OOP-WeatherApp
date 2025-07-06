@@ -17,8 +17,8 @@ class LocationSelectorTest {
     private final LocationSelector locationSelector = new LocationSelectorImpl();
 
     @Test
-    public void testGetLocationTrue() {
-        final int cityID = 1840034016;
+    void testGetLocationTrue() {
+        final int cityID = 1_840_034_016;
         final Optional<Map<String, String>> location = locationSelector.getByID(cityID);
         assertTrue(location.isPresent());
         final Map<String, String> city = location.get();
@@ -26,15 +26,15 @@ class LocationSelectorTest {
     }
 
     @Test
-    public void testGetLocationNotPresent() {
+    void testGetLocationNotPresent() {
         final int cityID = 0;
         final Optional<Map<String, String>> location = locationSelector.getByID(cityID);
         assertTrue(location.isEmpty());
     }
 
     @Test
-    public void testGetLocationFalse() {
-        final int cityID = 1840034016;
+    void testGetLocationFalse() {
+        final int cityID = 1_840_034_016;
         final Optional<Map<String, String>> location = locationSelector.getByID(cityID);
         assertTrue(location.isPresent());
         final Map<String, String> city = location.get();
