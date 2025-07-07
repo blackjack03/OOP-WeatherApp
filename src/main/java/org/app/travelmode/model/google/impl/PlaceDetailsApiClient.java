@@ -2,8 +2,8 @@ package org.app.travelmode.model.google.impl;
 
 import org.app.travelmode.model.google.api.GoogleApiRequestBuilder;
 import org.app.travelmode.model.google.api.PlaceDetails;
-import org.app.weathermode.model.AdvancedJsonReader;
-import org.app.weathermode.model.AdvancedJsonReaderImpl;
+import org.app.weathermode.model.json.AdvancedJsonReader;
+import org.app.weathermode.model.json.AdvancedJsonReaderImpl;
 
 import java.io.IOException;
 import java.time.ZoneId;
@@ -16,6 +16,7 @@ import java.time.ZoneOffset;
 public class PlaceDetailsApiClient extends AbstractGoogleApiClient implements PlaceDetails {
 
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/details/json";
+    private static final int SECONDS_PER_MINUTE = 60;
 
     /**
      * Constructs a new PlaceDetailsApiClient with the specified API key.
@@ -47,9 +48,7 @@ public class PlaceDetailsApiClient extends AbstractGoogleApiClient implements Pl
 
         final AdvancedJsonReader jsonReader = new AdvancedJsonReaderImpl(url);
         final int utcOffset = jsonReader.getInt("result.utc_offset");
-        final ZoneId zoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * 60));
 
-        System.out.println(zoneId);
-        return zoneId;
+        return ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(utcOffset * SECONDS_PER_MINUTE));
     }
 }

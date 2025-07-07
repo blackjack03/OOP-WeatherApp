@@ -16,11 +16,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
- * {@code CityInputBoxImpl} is a JavaFX UI component that allows the user to input a city or address,
- * with autocomplete suggestions powered by a list of {@link PlaceAutocompletePrediction}.
+ * Implementation of the {@link CityInputBox} interface using a {@link VBox} layout.
  * <p>
- * This class extends {@link VBox} and implements the {@link CityInputBox} interface, offering a labeled
- * input box with live suggestions that appear in a context menu as the user types.
+ * This component allows users to input a city or address and provides autocomplete suggestions
+ * using a {@link ContextMenu} based on the input text.
+ * </p>
+ *
+ * <p>
+ * To complete the setup, use the static factory method {@link #create(String, BiConsumer, Function, boolean)}
+ * which automatically calls the {@link #initialize(boolean)} method to attach UI elements.
  * </p>
  */
 public class CityInputBoxImpl extends VBox implements CityInputBox {
@@ -35,14 +39,14 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
 
     /**
      * Constructs a new {@code CityInputBoxImpl}.
+     * <p>This constructor sets up the internal components, but it does not attach them to the layout.</p>
      *
      * @param title           The label title shown above the text field.
-     * @param onCitySelected  A {@link BiConsumer} that accepts the selected city's description and place ID.
-     * @param fetcPredictions A function that fetches autocomplete predictions based on user input.
-     * @param resize          If true, the component will resize to its preferred width and height.
+     * @param onCitySelected  A {@link BiConsumer} callback triggered when a city is selected (description and place ID).
+     * @param fetcPredictions A function that provides autocomplete predictions based on user input.
      */
-    public CityInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected,
-                            final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions, final boolean resize) {
+    protected CityInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected,
+                            final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions) {
         super();
 
         this.label = new Label(title);
@@ -79,13 +83,42 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
         });
 
         this.setAlignment(Pos.CENTER_LEFT);
-        this.getChildren().addAll(this.label, this.cityTextField);
         this.setSpacing(10);
         this.getStyleClass().add("city-input-box");
+    }
 
-        if (resize) {
-            resize();
+
+    /**
+     * Completes the setup by adding all input components (label and text field) to the layout.
+     * <p>This method must be called exactly once after construction. It is invoked automatically
+     * by the {@link #create(String, BiConsumer, Function, boolean)} factory method.</p>
+     *
+     * @param resizeAfterInit if true, the component will be resized after initialization.
+     */
+    protected void initialize(final boolean resizeAfterInit) {
+        this.getChildren().addAll(this.label, this.cityTextField);
+        if (resizeAfterInit) {
+            this.resize();
         }
+    }
+
+    /**
+     * Factory method to create and initialize a new {@code CityInputBoxImpl} instance.
+     * <p>This is the preferred way to construct the component, as it ensures that
+     * the layout and resize options are applied correctly.</p>
+     *
+     * @param title           The label text shown above the input field.
+     * @param onCitySelected  Callback invoked when a prediction is selected.
+     * @param fetcPredictions Function to fetch autocomplete predictions based on text input.
+     * @param resize          If true, the component will automatically resize to its content.
+     * @return A fully initialized {@code CityInputBoxImpl} instance.
+     */
+    public static CityInputBoxImpl create(final String title, final BiConsumer<String, String> onCitySelected,
+                                          final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions,
+                                          final boolean resize) {
+        final CityInputBoxImpl cityInputBox = new CityInputBoxImpl(title, onCitySelected, fetcPredictions);
+        cityInputBox.initialize(resize);
+        return cityInputBox;
     }
 
     /**
@@ -124,22 +157,6 @@ public class CityInputBoxImpl extends VBox implements CityInputBox {
      */
     protected double computeRequiredHeight() {
         return this.label.getHeight() + this.cityTextField.getHeight() + getSpacing();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Label getTitleLabel() {
-        return this.label;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public TextField getCityTextField() {
-        return this.cityTextField;
     }
 
     /**

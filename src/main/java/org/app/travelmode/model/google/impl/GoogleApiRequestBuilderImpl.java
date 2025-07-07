@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class GoogleApiRequestBuilderImpl implements GoogleApiRequestBuilder {
 
-    private final StringBuilder urlBuilder;
+    private final StringBuilder urlBuilder; // NOPMD
     private final String apiKey;
     private final String baseUrl;
     private boolean hasParameters;

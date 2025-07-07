@@ -1,5 +1,7 @@
 package org.app.travelmode.model.google.dto.placeautocomplete;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.util.List;
 
 /**
@@ -12,6 +14,10 @@ import java.util.List;
  * <p>This class is typically used as a data model when parsing JSON responses
  * from location-based autocomplete services.</p>
  */
+@SuppressFBWarnings(
+        value = "UWF_UNWRITTEN_FIELD",
+        justification = "Field populated via Gson reflection during JSON deserialization"
+)
 public class PlaceAutocompleteResponse {
 
     private List<PlaceAutocompletePrediction> predictions;
@@ -21,7 +27,7 @@ public class PlaceAutocompleteResponse {
      * Constructs an empty {@code PlaceAutocompleteResponse}.
      */
     public PlaceAutocompleteResponse() {
-
+        // This constructor is intentionally empty. Nothing special is needed here.
     }
 
     /**
@@ -30,7 +36,7 @@ public class PlaceAutocompleteResponse {
      * @return A list of {@link PlaceAutocompletePrediction} objects
      */
     public List<PlaceAutocompletePrediction> getPredictions() {
-        return this.predictions;
+        return List.copyOf(this.predictions);
     }
 
     /**

@@ -43,7 +43,7 @@ public class Visibility extends AbstractWeatherCondition {
      * distance thresholds and intensity scores.
      */
     private enum VisibilityLevel {
-        EXCELLENT_VISIBILITY(10000.0, 0),
+        EXCELLENT_VISIBILITY(10_000.0, 0),
         GOOD_VISIBILITY(7000.0, 20),
         MODERATE_VISIBILITY(4000.0, 40),
         POOR_VISIBILITY(1000.0, 70),
@@ -64,7 +64,7 @@ public class Visibility extends AbstractWeatherCondition {
          * @return the corresponding visibility level, or VERY_BAD_VISIBILITY if below all thresholds
          */
         public static VisibilityLevel fromValue(final double value) {
-            for (final VisibilityLevel visibilityLevel : VisibilityLevel.values()) {
+            for (final VisibilityLevel visibilityLevel : values()) {
                 if (value >= visibilityLevel.intensity) {
                     return visibilityLevel;
                 }

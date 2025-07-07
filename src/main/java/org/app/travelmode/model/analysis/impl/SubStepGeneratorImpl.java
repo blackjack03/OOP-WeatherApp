@@ -31,6 +31,7 @@ public class SubStepGeneratorImpl implements SubStepGenerator {
      * Constructs a new {@link SubStepGeneratorImpl} with default settings.
      */
     public SubStepGeneratorImpl() {
+        // This constructor is intentionally empty. Nothing special is needed here.
     }
 
     /**

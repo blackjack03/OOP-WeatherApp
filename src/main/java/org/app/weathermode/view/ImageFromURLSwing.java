@@ -6,6 +6,9 @@ import java.awt.*;
 // CHECKSTYLE: AvoidStarImport ON
 
 import javax.swing.border.EmptyBorder;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.net.URL;
 import javax.imageio.ImageIO;
 
@@ -57,8 +60,12 @@ public final class ImageFromURLSwing {
      *
      * @param imageUrl    URL dell'immagine.
      * @param title       testo mostrato sopra l'immagine (può essere {@code null}).
-     * @param windowTitle titolo della finestra (se {@code null} diventa "Image Viewer").
+     * @param winTitle titolo della finestra (se {@code null} diventa "Image Viewer").
      */
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION",
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+    )
     public static void viewIMG(final String imageUrl, final String title, final String winTitle) {
         String windowTitle = winTitle;
         if (windowTitle == null) {
@@ -94,6 +101,10 @@ public final class ImageFromURLSwing {
                 }
 
                 @Override
+                @SuppressFBWarnings(
+                    value = "REC_CATCH_EXCEPTION",
+                    justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+                )
                 protected void done() {
                     try {
                         final JLabel img = new JLabel(get());
@@ -106,7 +117,7 @@ public final class ImageFromURLSwing {
                         frame.setResizable(false);
                         frame.setLocationRelativeTo(null);
                         frame.setVisible(true);
-                    } catch (final Exception ex) {
+                    } catch (final Exception ex) { // NOPMD
                         showErrorOnEDT("Errore nel recupero dell'immagine", "Impossibile visualizzare l'immagine");
                     }
                 }

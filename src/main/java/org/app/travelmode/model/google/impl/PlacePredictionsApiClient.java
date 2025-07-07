@@ -35,7 +35,7 @@ public class PlacePredictionsApiClient extends AbstractGoogleApiClient implement
      */
     public PlacePredictionsApiClient(final String apiKey) {
         super(BASE_URL, apiKey);
-        this.requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
+        this.requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, apiKey);
     }
 
     /**

@@ -21,7 +21,7 @@ import org.app.travelmode.model.travel.api.TravelRequest;
 import org.app.travelmode.model.google.dto.placeautocomplete.PlaceAutocompletePrediction;
 import org.app.travelmode.view.TravelModeView;
 import org.app.travelmode.view.TravelModeViewImpl;
-import org.app.weathermode.model.WeatherDataProviderImpl;
+import org.app.weathermode.model.weather.WeatherDataProviderImpl;
 
 /**
  * Implementation of the TravelMode controller that manages the interaction between

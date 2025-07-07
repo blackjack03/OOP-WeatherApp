@@ -17,8 +17,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * {@code CityDateTimeInputBoxImpl} is a UI component that extends {@link CityInputBoxImpl}
- * and adds support for selecting a date and time alongside the city input.
+ * {@code CityDateTimeInputBoxImpl} extends {@link CityInputBoxImpl} to provide additional
+ * UI components for selecting a date and time alongside the city input field.
  * <p>
  * This JavaFX component provides:
  * <ul>
@@ -28,6 +28,10 @@ import java.util.function.Function;
  *   <li>Time selection via hour and minute spinners</li>
  * </ul>
  *
+ * <p>
+ * To ensure proper initialization of the full UI, the instance should be created
+ * using the static factory method {@link #create(String, BiConsumer, Function, Consumer, boolean)}.
+ * The constructor alone does not add the date/time section to the UI; this is completed via {@link #initialize(boolean)}.
  */
 public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDateTimeInputBox {
 
@@ -47,26 +51,25 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
     private final TitledPane dateTimeTitledPane;
 
     /**
-     * Constructs a new {@code CityDateTimeInputBoxImpl}.
+     * Protected constructor. Initializes the city input and date/time controls,
+     * but does not add the date/time UI section to the layout.
+     * Use {@link #create(String, BiConsumer, Function, Consumer, boolean)} for proper instantiation.
      *
      * @param title           The label shown above the input field.
-     * @param onCitySelected  A {@link BiConsumer} callback executed when a city is selected (description and place ID).
+     * @param onCitySelected  A {@link BiConsumer} invoked when a city is selected (description and place ID).
      * @param fetcPredictions A function that takes user input and returns a list of {@link PlaceAutocompletePrediction}.
-     * @param onDateSelected  A {@link Consumer} that receives the selected {@link LocalDate} when changed.
-     * @param resize          If true, enables component resizing based on content.
+     * @param onDateSelected  A {@link Consumer} that receives the selected {@link LocalDate} from the date picker.
      */
-    public CityDateTimeInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected,
-                                    final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions,
-                                    final Consumer<LocalDate> onDateSelected, final boolean resize) {
-        super(title, onCitySelected, fetcPredictions, false);
+    protected CityDateTimeInputBoxImpl(final String title, final BiConsumer<String, String> onCitySelected,
+                                       final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions,
+                                       final Consumer<LocalDate> onDateSelected) {
+        super(title, onCitySelected, fetcPredictions);
 
-        // Spinner per le ore (0-23)
         this.hourSpinner = new Spinner<>();
         hourSpinner.setValueFactory(new SpinnerValueFactory
                 .IntegerSpinnerValueFactory(MIN_HOURS, MAX_HOURS, INITIAL_HOUR));
         hourSpinner.getStyleClass().add("spinner-custom");
 
-        // Spinner per i minuti (0-59) con incremento di 5 minuti
         this.minuteSpinner = new Spinner<>();
         minuteSpinner.setValueFactory(new SpinnerValueFactory
                 .IntegerSpinnerValueFactory(MIN_MINUTES, MAX_MINUTES, INITIAL_MINUTE, MINUTES_TO_INCREMENT));
@@ -102,12 +105,42 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
         dateTimeTitledPane = new TitledPane(TITLED_PANE_PROMPT, dateTimeVBox);
         dateTimeTitledPane.setExpanded(false);
         dateTimeTitledPane.getStyleClass().add("titled-pane-custom");
+    }
 
+    /**
+     * Completes the initialization of the component by adding the date/time UI section
+     * to the main layout and triggering an optional resize.
+     * <p>This method is called once by the factory method {@code create(...)} after construction.</p>
+     *
+     * @param resizeAfterInit whether to apply resizing after layout update
+     */
+    @Override
+    protected void initialize(final boolean resizeAfterInit) {
+        super.initialize(false);
         this.getChildren().add(dateTimeTitledPane);
-
-        if (resize) {
+        if (resizeAfterInit) {
             this.resize();
         }
+    }
+
+    /**
+     * Factory method to create and fully initialize a {@code CityDateTimeInputBoxImpl}.
+     * <p>This is the recommended way to instantiate the component.</p>
+     *
+     * @param title           The label above the input field.
+     * @param onCitySelected  A callback triggered when a city is selected.
+     * @param fetcPredictions A function to fetch autocomplete predictions.
+     * @param onDateSelected  A callback triggered when a date is selected.
+     * @param resize          Whether the component should be resized after initialization.
+     * @return A fully initialized {@code CityDateTimeInputBoxImpl} instance.
+     */
+    public static CityDateTimeInputBoxImpl create(final String title, final BiConsumer<String, String> onCitySelected,
+                                                  final Function<String, List<PlaceAutocompletePrediction>> fetcPredictions,
+                                                  final Consumer<LocalDate> onDateSelected, final boolean resize) {
+        final CityDateTimeInputBoxImpl cityDateTimeInputBox = new CityDateTimeInputBoxImpl(title, onCitySelected,
+                fetcPredictions, onDateSelected);
+        cityDateTimeInputBox.initialize(resize);
+        return cityDateTimeInputBox;
     }
 
     /**
@@ -119,30 +152,6 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
     @Override
     protected double computeRequiredHeight() {
         return super.computeRequiredHeight() + this.dateTimeTitledPane.getHeight();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Spinner<Integer> getHourSpinner() {
-        return this.hourSpinner;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Spinner<Integer> getMinuteSpinner() {
-        return this.minuteSpinner;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DatePicker getDatePicker() {
-        return this.datePicker;
     }
 
     /**
@@ -163,7 +172,7 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
 
     /**
      * {@inheritDoc}
-     * If the date/time section is collapsed, the current system time is returned instead.
+     * <p>If the date/time section is collapsed, the current system time is returned instead.</p>
      */
     @Override
     public LocalTime getSelectedTime() {
@@ -171,6 +180,14 @@ public class CityDateTimeInputBoxImpl extends CityInputBoxImpl implements CityDa
             return LocalTime.of(this.hourSpinner.getValue(), this.minuteSpinner.getValue());
         }
         return LocalTime.now();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDateTimePersonalizationClosed() {
+        return !this.dateTimeTitledPane.isExpanded();
     }
 
     /**

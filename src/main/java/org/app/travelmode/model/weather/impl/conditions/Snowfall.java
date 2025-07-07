@@ -65,7 +65,7 @@ public class Snowfall extends AbstractWeatherCondition {
          * @return the corresponding snowfall level, or NO_SNOWFALL if no threshold is met
          */
         public static SnowfallLevel fromValue(final double value) {
-            for (final SnowfallLevel snowfallLevel : SnowfallLevel.values()) {
+            for (final SnowfallLevel snowfallLevel : values()) {
                 if (value >= snowfallLevel.intensity) {
                     return snowfallLevel;
                 }

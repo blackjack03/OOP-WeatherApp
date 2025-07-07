@@ -30,6 +30,10 @@ import javafx.stage.Window;
  * The layout adapts based on the screen size and window location, ensuring a responsive display.
  * </p>
  *
+ * <p>To create a new instance, use the static factory method
+ * {@link #create(int, String, String, String, String, Image, Window)},
+ * which automatically handles initialization and layout configuration.</p>
+ *
  */
 public class ResultBox extends HBox {
 
@@ -57,18 +61,14 @@ public class ResultBox extends HBox {
     private static final int BAD_SCORE = 26;
 
     private final Label meteoScore;
-    private final Label description1;
-    private final Label description2;
-    private final Label durationLbl1;
-    private final Label durationLbl2;
-    private final Label expectedArrival;
-    private final Label arrivalDate;
-    private final Label arrivalTime;
-    private final Image mapImage;
+    private final BorderPane infoPane;
+    private final StackPane mapContainer;
     private double maxWidth;
 
     /**
      * Constructs a {@code ResultBox} instance containing a summary of a travel result.
+     * This constructor prepares all components but does not finalize the layout.
+     * For correct usage, prefer {@link #create(int, String, String, String, String, Image, Window)}.
      *
      * @param meteoScore  A numerical score from 0 to 100 representing the weather favorability.
      * @param description A textual description of the route.
@@ -78,18 +78,17 @@ public class ResultBox extends HBox {
      * @param mapImage    A static image of the route or map.
      * @param window      The window in which this component is displayed (used for sizing).
      */
-    public ResultBox(final int meteoScore, final String description, final String duration, final String arrivalDate,
-                     final String arrivalTime, final Image mapImage, final Window window) {
+    protected ResultBox(final int meteoScore, final String description, final String duration, final String arrivalDate,
+                        final String arrivalTime, final Image mapImage, final Window window) {
         this.meteoScore = new Label(String.valueOf(meteoScore));
-        this.description1 = new Label(DESCRIPTION_TEXT);
-        this.description2 = new Label(description);
-        this.description2.setWrapText(true);
-        this.durationLbl1 = new Label(DURATION_TEXT);
-        this.durationLbl2 = new Label(duration);
-        this.expectedArrival = new Label(ARRIVAL_TEXT);
-        this.arrivalDate = new Label("il " + arrivalDate);
-        this.arrivalTime = new Label("alle " + arrivalTime);
-        this.mapImage = mapImage;
+        final Label description1 = new Label(DESCRIPTION_TEXT);
+        final Label description2 = new Label(description);
+        description2.setWrapText(true);
+        final Label durationLbl1 = new Label(DURATION_TEXT);
+        final Label durationLbl2 = new Label(duration);
+        final Label expectedArrival = new Label(ARRIVAL_TEXT);
+        final Label arrivalDate1 = new Label("il " + arrivalDate);
+        final Label arrivalTime1 = new Label("alle " + arrivalTime);
 
         updateMaxWidth(window);
 
@@ -98,14 +97,14 @@ public class ResultBox extends HBox {
         this.meteoScore.getStyleClass().remove("label");
         this.meteoScore.getStyleClass().add("meteo-score");
 
-        final VBox descriptionBox = new VBox(5, this.description1, this.description2);
-        final VBox durationBox = new VBox(5, this.durationLbl1, this.durationLbl2);
-        final VBox arrivalBox = new VBox(5, this.expectedArrival, this.arrivalDate, this.arrivalTime);
+        final VBox descriptionBox = new VBox(5, description1, description2);
+        final VBox durationBox = new VBox(5, durationLbl1, durationLbl2);
+        final VBox arrivalBox = new VBox(5, expectedArrival, arrivalDate1, arrivalTime1);
         descriptionBox.setAlignment(Pos.CENTER_LEFT);
         durationBox.setAlignment(Pos.CENTER_LEFT);
         arrivalBox.setAlignment(Pos.CENTER_LEFT);
 
-        final BorderPane infoPane = new BorderPane();
+        this.infoPane = new BorderPane();
 
         final VBox centerInfoVBox = new VBox(35, descriptionBox, durationBox, arrivalBox);
         centerInfoVBox.setAlignment(Pos.CENTER_LEFT);
@@ -139,7 +138,7 @@ public class ResultBox extends HBox {
         border.setArcHeight(BORDER_ARC_HEIGHT);
         border.setFill(Color.LIGHTBLUE);
 
-        final StackPane mapContainer = new StackPane(border, mapImageView);
+        this.mapContainer = new StackPane(border, mapImageView);
 
         this.prefWidthProperty().bind(Bindings.createDoubleBinding(
                 () -> Math.min(this.maxWidth, Math.max(MIN_WIDTH, this.getWidth())),
@@ -154,11 +153,40 @@ public class ResultBox extends HBox {
         });
         this.setSpacing(SPACING);
         this.setAlignment(Pos.CENTER);
-        this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         this.getStyleClass().add("result-box");
         this.addColor(meteoScore);
+    }
+
+    /**
+     * Completes the layout of the component by attaching child nodes,
+     * setting minimum size, and enabling proper horizontal growth behavior.
+     * <p>This method must be called exactly once after construction.
+     * It is automatically invoked by the {@link #create} factory method.</p>
+     */
+    protected void initialize() {
+        this.setMinSize(MIN_WIDTH, MIN_HEIGHT);
         this.getChildren().addAll(infoPane, mapContainer);
-        HBox.setHgrow(infoPane, Priority.ALWAYS);
+        setHgrow(infoPane, Priority.ALWAYS);
+    }
+
+    /**
+     * Factory method to create and fully initialize a {@code ResultBox}.
+     *
+     * @param meteoScore  An integer score (0–100) representing weather conditions.
+     * @param description A textual description of the route.
+     * @param duration    The total estimated duration.
+     * @param arrivalDate The date of arrival (formatted as a string).
+     * @param arrivalTime The time of arrival (formatted as a string).
+     * @param mapImage    A JavaFX {@link Image} displaying the route.
+     * @param window      The JavaFX {@link Window} used to calculate responsive size.
+     * @return A fully configured {@code ResultBox} ready for display.
+     */
+    public static ResultBox create(final int meteoScore, final String description, final String duration,
+                                   final String arrivalDate, final String arrivalTime,
+                                   final Image mapImage, final Window window) {
+        final ResultBox resultBox = new ResultBox(meteoScore, description, duration, arrivalDate, arrivalTime, mapImage, window);
+        resultBox.initialize();
+        return resultBox;
     }
 
     /**

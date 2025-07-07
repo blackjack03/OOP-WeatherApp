@@ -68,11 +68,15 @@ public class TravelModeModelImpl implements TravelModeModel {
     /**
      * {@inheritDoc}
      *
-     * @throws IOException if an error occurs while communicating with the service providing the predictions,
-     *                     or if an error occurs while decoding the response.
+     * @throws IOException           if an error occurs while communicating with the service providing the predictions,
+     *                               or if an error occurs while decoding the response.
+     * @throws IllegalStateException if {@link #start()} has not been called.
      */
     @Override
     public List<PlaceAutocompletePrediction> getPlacePredictions(final String input) throws IOException {
+        if (placePredictionsApiClient == null) {
+            throw new IllegalStateException("Call start() before requesting place predictions");
+        }
         return this.placePredictionsApiClient.getPlacePredictions(input);
     }
 
@@ -81,7 +85,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setDepartureLocation(final String departureLocation) {
-        this.requestBuilder.setDepartureLocation(departureLocation);
+        this.requestBuilder.addDepartureLocation(departureLocation);
     }
 
     /**
@@ -92,8 +96,8 @@ public class TravelModeModelImpl implements TravelModeModel {
     @Override
     public void setDeparturePlaceId(final String departurePlaceId) throws IOException {
         final PlaceDetailsApiClient placeDetailsApiClient = this.apiClientFactory.createPlaceDetailsApiClient();
-        this.requestBuilder.setDeparturePlaceId(departurePlaceId)
-                .setDepartureZoneId(placeDetailsApiClient.getTimezone(departurePlaceId));
+        this.requestBuilder.addDeparturePlaceId(departurePlaceId)
+                .addDepartureZoneId(placeDetailsApiClient.getTimezone(departurePlaceId));
     }
 
     /**
@@ -101,7 +105,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setArrivalLocation(final String arrivalLocation) {
-        this.requestBuilder.setArrivalLocation(arrivalLocation);
+        this.requestBuilder.addArrivalLocation(arrivalLocation);
     }
 
     /**
@@ -109,7 +113,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setArrivalPlaceId(final String arrivalPlaceId) {
-        this.requestBuilder.setArrivalPlaceId(arrivalPlaceId);
+        this.requestBuilder.addArrivalPlaceId(arrivalPlaceId);
     }
 
     /**
@@ -117,7 +121,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setDepartureTime(final LocalTime departureTime) {
-        this.requestBuilder.setDepartureTime(departureTime);
+        this.requestBuilder.addDepartureTime(departureTime);
     }
 
     /**
@@ -125,7 +129,7 @@ public class TravelModeModelImpl implements TravelModeModel {
      */
     @Override
     public void setDepartureDate(final LocalDate departureDate) {
-        this.requestBuilder.setDepartureDate(departureDate);
+        this.requestBuilder.addDepartureDate(departureDate);
     }
 
     /**
@@ -142,20 +146,28 @@ public class TravelModeModelImpl implements TravelModeModel {
     /**
      * {@inheritDoc}
      *
-     * @throws WeatherDataException if there is an error getting weather information for route analysis.
+     * @throws WeatherDataException  if there is an error getting weather information for route analysis.
+     * @throws IllegalStateException if {@link #startDirectionsAnalysis(TravelRequest)} has not been invoked.
      */
     @Override
     public TravelModeResult getTravelModeMainResult() throws WeatherDataException {
+        if (directions == null) {
+            throw new IllegalStateException("Call startDirectionsAnalysis() before requesting results");
+        }
         return this.directions.getMainResult();
     }
 
     /**
      * {@inheritDoc}
      *
-     * @throws WeatherDataException if there is an error getting weather information for route analysis.
+     * @throws WeatherDataException  if there is an error getting weather information for route analysis.
+     * @throws IllegalStateException if {@link #startDirectionsAnalysis(TravelRequest)} has not been invoked.
      */
     @Override
     public Optional<List<TravelModeResult>> getAlternativesResults() throws WeatherDataException {
+        if (directions == null) {
+            throw new IllegalStateException("Call startDirectionsAnalysis() before requesting results");
+        }
         return this.directions.getAlternativeResults();
     }
 

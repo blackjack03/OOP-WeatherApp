@@ -12,6 +12,8 @@ import org.app.travelmode.controller.TravelModeControllerImpl;
 import org.app.weathermode.controller.AppController;
 import org.app.weathermode.controller.Controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Main controller implementation that manages the application's root view and mode switching functionality.
  *
@@ -97,6 +99,10 @@ public class MainControllerImpl implements MainController {
      * {@inheritDoc}
      */
     @Override
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP",
+        justification = "Intentional exposure of Controller interface for external UI interaction"
+    )
     public Controller getAppController() {
         return this.appController;
     }
@@ -105,6 +111,10 @@ public class MainControllerImpl implements MainController {
      * {@inheritDoc}
      */
     @Override
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP",
+        justification = "Intentional exposure of Controller interface for external UI interaction"
+    )
     public Parent getRootView() {
         return this.rootView;
     }

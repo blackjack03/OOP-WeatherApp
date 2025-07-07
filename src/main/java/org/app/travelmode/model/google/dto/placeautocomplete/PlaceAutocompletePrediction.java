@@ -1,5 +1,7 @@
 package org.app.travelmode.model.google.dto.placeautocomplete;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * {@code PlaceAutocompletePrediction} represents a single autocomplete suggestion
  * returned by a place search or geocoding service.
@@ -9,8 +11,14 @@ package org.app.travelmode.model.google.dto.placeautocomplete;
  * </p>
  *
  */
+@SuppressFBWarnings(
+        value = "UWF_UNWRITTEN_FIELD",
+        justification = "Field populated via Gson reflection during JSON deserialization"
+)
+@SuppressWarnings("PMD.FieldNamingConventions")
 public class PlaceAutocompletePrediction {
     // CHECKSTYLE: MemberName OFF
+    // Fields used by Gson: names must match exactly the received JSON
     private String description;
     private PlaceAutocompleteStructuredFormat structured_formatting;
     private String place_id;
@@ -20,6 +28,7 @@ public class PlaceAutocompletePrediction {
      * Constructs an empty {@code PlaceAutocompletePrediction}.
      */
     public PlaceAutocompletePrediction() {
+        // This constructor is intentionally empty. Nothing special is needed here.
     }
 
     /**
@@ -69,8 +78,14 @@ public class PlaceAutocompletePrediction {
      * (e.g., main: "Milan", secondary: "Italy").
      * </p>
      */
+    @SuppressFBWarnings(
+            value = "UWF_UNWRITTEN_FIELD",
+            justification = "Field populated via Gson reflection during JSON deserialization"
+    )
+    @SuppressWarnings("PMD.FieldNamingConventions")
     public static class PlaceAutocompleteStructuredFormat {
         // CHECKSTYLE: MemberName OFF
+        // Fields used by Gson: names must match exactly the received JSON
         private String main_text;
         private String secondary_text;
         // CHECKSTYLE: MemberName OFF
@@ -79,7 +94,7 @@ public class PlaceAutocompletePrediction {
          * Constructs an empty {@code PlaceAutocompleteStructuredFormat}.
          */
         public PlaceAutocompleteStructuredFormat() {
-
+            // This constructor is intentionally empty. Nothing special is needed here.
         }
 
         /**

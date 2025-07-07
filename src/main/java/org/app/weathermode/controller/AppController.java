@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 // CHECKSTYLE: AvoidStarImport OFF
 import java.util.*;
 // CHECKSTYLE: AvoidStarImport ON
+import java.util.logging.Logger;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -23,17 +24,19 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-import org.app.weathermode.model.AllWeather;
+import org.app.weathermode.model.weather.AllWeather;
 import org.app.config.ConfigManager;
-import org.app.weathermode.model.LocationSelector;
-import org.app.weathermode.model.LocationSelectorImpl;
-import org.app.weathermode.model.Pair;
+import org.app.weathermode.model.locationselector.LocationSelector;
+import org.app.weathermode.model.locationselector.LocationSelectorImpl;
+import org.app.weathermode.model.pair.Pair;
 import org.app.weathermode.model.UnitConversion;
 import org.app.config.UserPreferences;
 import org.app.weathermode.view.AbstractApp;
 import org.app.weathermode.view.ApiKeyForm;
 import org.app.weathermode.view.App;
 import org.app.weathermode.view.CustomErrorGUI;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * <p>Controller responsabile dellʼaggiornamento dinamico della GUI in base ai dati
@@ -52,7 +55,13 @@ import org.app.weathermode.view.CustomErrorGUI;
  * la thread‑safety.
  * </p>
  */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP",
+    justification = "Intentional exposure of private fields for external interaction"
+)
 public class AppController implements Controller {
+
+    private static final Logger LOG = Logger.getLogger(ConfigManager.class.getName());
 
     /**
      * Intervallo tra due refresh automatici (minuti).
@@ -60,6 +69,8 @@ public class AppController implements Controller {
     private static final int REFRESH_TIME = 20;
     private static final String API_KEY_ERROR = "Errore nella lettura della chiave API";
     private static final String API_KEY_ERROR_MESSAGE = "La chiave inserita non è valida.\nRitentare l'inserimento.";
+
+    private static final String WEATHER_CODE_KEY = "weather_code";
 
     /**
      * Wrapper per tutte le previsioni/meteo corrente.
@@ -253,12 +264,16 @@ public class AppController implements Controller {
      * eventuali parametri (es. “&amp;timezone=auto”) corretti.
      * </p>
      */
+    @SuppressFBWarnings(
+        value = "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR",
+        justification = "Field selector is initialized in start() before any call to setCity()"
+    )
     private void setCity() {
         final UserPreferences userConfig =
                 ConfigManager.getConfig().getUserPreferences();
         final Optional<Integer> city = userConfig.getDefaultCity();
         if (city.isPresent()) {
-            System.out.println("City: " + city.get());
+            LOG.fine("City: " + city.get());
             if (this.cityID != city.get()) {
                 this.cityChanged = true;
                 this.cityID = city.get();
@@ -269,8 +284,8 @@ public class AppController implements Controller {
                 }
             }
         } else {
-            System.out.println("CITTA' NON PRESENTE");
-            System.out.println(city);
+            LOG.fine("CITTA' NON PRESENTE");
+            LOG.fine(city.toString());
         }
     }
 
@@ -303,7 +318,7 @@ public class AppController implements Controller {
             }
         }
         if (errFlag) {
-            System.out.println("ERRORE RICHIESTA DATI METEO!");
+            LOG.fine("ERRORE RICHIESTA DATI METEO!");
             CustomErrorGUI.showErrorJFX(
                     "Impossibile recuperare i dati meteo. Controlla la tua connessione internet e riprova.",
                     "Errore di rete!"
@@ -321,7 +336,7 @@ public class AppController implements Controller {
                 this.weatherObj.getAllForecast();
 
         if (nowOpt.isEmpty() || dailyOpt.isEmpty() || hourlyOpt.isEmpty()) {
-            System.out.println("EMPTY!");
+            LOG.fine("Refresh Info EMPTY!");
             return;
         }
 
@@ -348,7 +363,7 @@ public class AppController implements Controller {
      */
     private void updateToday(final Map<String, Number> now) {
         lblCity.setText(cityInfo.get("city"));
-        lblCond.setText(codeToDescription(now.get("weather_code").intValue()));
+        lblCond.setText(codeToDescription(now.get(WEATHER_CODE_KEY).intValue()));
 
         final double tempC = now.get("temperature_C").doubleValue();
         final double tempF = now.get("temperature_F").doubleValue();
@@ -358,7 +373,7 @@ public class AppController implements Controller {
         final double feelF = now.get("apparent_temperature_F").doubleValue();
         lblFeels.setText(String.format("Percepita: %.1f °C | %.1f °F", feelC, feelF));
 
-        todayIcon.setImage(loadIcon(now.get("weather_code").intValue()));
+        todayIcon.setImage(loadIcon(now.get(WEATHER_CODE_KEY).intValue()));
 
         /* min‑max di oggi */
         final String todayKey = LocalDate.now().toString();
@@ -384,7 +399,8 @@ public class AppController implements Controller {
      * popolazione, altitudine e massimi UV.
      */
     private void updateOtherDetails() {
-        final StringBuilder details = new StringBuilder();
+        final int startCapacity = 65;
+        final StringBuilder details = new StringBuilder(startCapacity);
         final Optional<Map<String, Map<String, String>>> dailyInfo =
                 this.weatherObj.getDailyInfo();
         if (dailyInfo.isPresent()) {
@@ -394,20 +410,20 @@ public class AppController implements Controller {
             final String sunrise = sunInfo.get("sunrise");
             final String sunset = sunInfo.get("sunset");
             if (sunrise != null && sunset != null) {
-                details.append("Alba: ").append(sunrise);
-                details.append(" | Tramonto: ").append(sunset);
+                details.append("Alba: ").append(sunrise)
+                .append(" | Tramonto: ").append(sunset);
             }
         }
         final Optional<Map<String, Number>> cityInfo = this.weatherObj.getCityInfo();
         if (cityInfo.isPresent()) {
-            details.append("\n");
+            details.append('\n');
             final Number population = cityInfo.get().get("inhabitants");
             if (population != null) {
-                details.append("Popolazione: ").append(population);
-                details.append("\n");
+                details.append("Popolazione: ").append(population)
+                .append('\n');
             }
-            details.append("Metri sul livello del mare: ");
-            details.append(cityInfo.get().get("meters_above_sea"));
+            details.append("Metri sul livello del mare: ")
+            .append(cityInfo.get().get("meters_above_sea"));
         }
         final Optional<Map<String, Map<String, Number>>> dailyGeneral =
                 this.weatherObj.getDailyGeneralForecast();
@@ -444,7 +460,7 @@ public class AppController implements Controller {
         final List<String> next = new ArrayList<>();
         final int maxHours = 4;
         for (final String h : ordered) {
-            final LocalTime t = LocalTime.parse(h + ":00:00",
+            final LocalTime t = LocalTime.parse(h + ":00:00", // NOPMD
                     DateTimeFormatter.ofPattern("HH:mm:ss"));
             if (t.isAfter(nowTime) && next.size() < maxHours) {
                 next.add(h);
@@ -497,14 +513,14 @@ public class AppController implements Controller {
         final HBox row = new HBox(spacing);
         row.setPadding(new Insets(topRightBottomLeft));
 
-        final ImageView ico = new ImageView(loadIcon(info.get("weather_code").intValue()));
+        final ImageView ico = new ImageView(loadIcon(info.get(WEATHER_CODE_KEY).intValue()));
         ico.setPreserveRatio(true);
         final int icoWidth = 45;
         ico.setFitWidth(icoWidth);
 
         final Label lblHour = new Label(hour);
         lblHour.getStyleClass().add("subtitle");
-        final Label lblCond = new Label(codeToDescription(info.get("weather_code").intValue()));
+        final Label lblCond = new Label(codeToDescription(info.get(WEATHER_CODE_KEY).intValue()));
         lblCond.getStyleClass().add("subtitle");
 
         final Region spacer = new Region();
@@ -549,13 +565,13 @@ public class AppController implements Controller {
         final Label lblDay = new Label(txt);
         lblDay.getStyleClass().add("subtitle");
 
-        final ImageView ico = new ImageView(loadIcon(info.get("weather_code").intValue()));
+        final ImageView ico = new ImageView(loadIcon(info.get(WEATHER_CODE_KEY).intValue()));
         ico.setPreserveRatio(true);
         final int icoWidth = 45;
         ico.setFitWidth(icoWidth);
 
         final String range = String.format(
-                "Min: %.0f°C | %.0f°F\nMax: %.0f°C | %.0f°F",
+                "Min: %.0f°C | %.0f°F%nMax: %.0f°C | %.0f°F",
                 info.get("temperature_min_C").doubleValue(), info.get("temperature_min_F").doubleValue(),
                 info.get("temperature_max_C").doubleValue(), info.get("temperature_max_F").doubleValue());
         final Label lblRange = new Label(range);
@@ -577,9 +593,9 @@ public class AppController implements Controller {
     private Image loadIcon(final int code) {
         final String path = "/WMOIcons/%d.png".formatted(code);
         try {
-            return new Image(getClass().getResourceAsStream(path));
-        } catch (final Exception e) {
-            return new Image(getClass().getResourceAsStream("/logo.png"));
+            return new Image(AppController.class.getResourceAsStream(path));
+        } catch (final Exception e) { // NOPMD suppressed because is a general fallback
+            return new Image(AppController.class.getResourceAsStream("/logo.png"));
         }
     }
 

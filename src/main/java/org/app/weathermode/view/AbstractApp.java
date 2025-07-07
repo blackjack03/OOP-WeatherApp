@@ -2,7 +2,7 @@ package org.app.weathermode.view;
 
 import java.util.Map;
 
-import org.app.weathermode.model.LocationSelector;
+import org.app.weathermode.model.locationselector.LocationSelector;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Label;

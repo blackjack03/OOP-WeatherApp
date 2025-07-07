@@ -50,8 +50,8 @@ public class TravelModeResultImpl implements TravelModeResult {
      */
     public TravelModeResultImpl(final List<CheckpointWithMeteo> checkpoints, final String summary,
                                 final String polyline, final Duration duration) {
-        this.checkpoints = checkpoints;
-        this.arrivalTime = checkpoints.get(checkpoints.size() - 1).getArrivalDateTime().toLocalDateTime();
+        this.checkpoints = List.copyOf(checkpoints);
+        this.arrivalTime = checkpoints.getLast().getArrivalDateTime().toLocalDateTime();
         this.summary = summary;
         this.duration = duration;
         this.polyline = polyline;

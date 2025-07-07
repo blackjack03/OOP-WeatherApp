@@ -5,11 +5,12 @@ import java.util.Optional;
 import org.app.weathermode.controller.Controller;
 import org.app.config.AppConfig;
 import org.app.config.ConfigManager;
-import org.app.weathermode.model.IPLookUp;
-import org.app.weathermode.model.LocationSelector;
-import org.app.weathermode.model.LocationSelectorImpl;
-import org.app.weathermode.model.LookUp;
+import org.app.weathermode.model.lookup.IPLookUp;
+import org.app.weathermode.model.locationselector.LocationSelector;
+import org.app.weathermode.model.locationselector.LocationSelectorImpl;
+import org.app.weathermode.model.lookup.LookUp;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
@@ -65,7 +66,7 @@ public class LoadingScreen {
         splashStage = new Stage();
 
         // Static UI elements
-        final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
+        final ImageView imageView = new ImageView(new Image(LoadingScreen.class.getResourceAsStream(imagePath)));
         imageView.setPreserveRatio(true);
         imageView.setFitWidth(imageFitWidth);
 
@@ -87,7 +88,10 @@ public class LoadingScreen {
     /**
      * Mostra un <em>confirmation dialog</em> bloccante per chiedere se usare la
      * posizione IP.
-     * @return <code>true</code> se l’utente seleziona “Yes”.
+     *
+     * @param message il testo da mostrare come contenuto del dialog
+     * @param title   il titolo della finestra di conferma
+     * @return <code>true</code> se l’utente seleziona “Yes”
      */
     private boolean showConfirmIP(final String message, final String title) {
         final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -112,19 +116,20 @@ public class LoadingScreen {
 
         /* ---- Task di background per caricare il CSV delle città ---- */
         final Task<LocationSelectorImpl> loadTask = new Task<>() {
-            @Override protected LocationSelectorImpl call() { return new LocationSelectorImpl(); }
+            @Override protected LocationSelectorImpl call() {
+                return new LocationSelectorImpl();
+            }
         };
 
         /* ---- Successo ---------------------------------------------------- */
         loadTask.setOnSucceeded(evt -> {
-            final LocationSelector LS = loadTask.getValue();
+            final LocationSelector ls = loadTask.getValue();
             splashStage.close();
-            Platform.runLater(() -> handlePostLoad(primaryStage, appController, LS));
+            Platform.runLater(() -> handlePostLoad(primaryStage, appController, ls));
         });
 
-        /* ---- Fallimento -------------------------------------------------- */
+        /* ---- Fallimento ---- */
         loadTask.setOnFailed(evt -> {
-            loadTask.getException().printStackTrace();
             Platform.exit();
         });
 
@@ -132,7 +137,11 @@ public class LoadingScreen {
     }
 
     /* ===================== flusso post-load ==================== */
-    private void handlePostLoad(final Stage primaryStage, final Controller appController, final LocationSelector LS) {
+    @SuppressFBWarnings(
+        value = "REC_CATCH_EXCEPTION",
+        justification = "Necessary to catch generic Exception to aggregate parsing errors from AdvancedJsonReader"
+    )
+    private void handlePostLoad(final Stage primaryStage, final Controller appController, final LocationSelector ls) {
         try {
             final AppConfig appConfig = ConfigManager.getConfig();
             if (appConfig.getUserPreferences().getDefaultCity().isEmpty()) {
@@ -140,22 +149,24 @@ public class LoadingScreen {
                 if (showConfirmIP("Vuoi usare la tua posizione (IP)?", "Usa posizione IP")) {
                     final LookUp lookUp = new IPLookUp();
                     if (lookUp.lookup().isPresent()) {
-                        final Optional<Integer> cityID = LS.searchByLookUp(lookUp);
+                        final Optional<Integer> cityID = ls.searchByLookUp(lookUp);
                         if (cityID.isPresent()) {
                             appConfig.getUserPreferences().setDefaultCity(cityID.get());
                             ConfigManager.saveConfig(CONFIG_PATH);
                             useIP = true;
                         } else {
-                            CustomErrorGUI.showErrorJFX("Impossibile trovare la città corrispondente all'IP!", "Errore di localizzazione");
+                            CustomErrorGUI.showErrorJFX("Impossibile trovare la città corrispondente all'IP!",
+                            "Errore di localizzazione");
                         }
                     } else {
-                        CustomErrorGUI.showErrorJFX("Impossibile determinare la posizione tramite IP!", "Errore di localizzazione");
+                        CustomErrorGUI.showErrorJFX("Impossibile determinare la posizione tramite IP!",
+                        "Errore di localizzazione");
                     }
                 }
                 boolean closeApp = false;
                 if (!useIP) {
                     final LocationSelectorGUI gui = new LocationSelectorGUI();
-                    final Optional<Integer> result = gui.start(LS);
+                    final Optional<Integer> result = gui.start(ls);
                     if (result.isPresent()) {
                         appConfig.getUserPreferences().setDefaultCity(result.get());
                         ConfigManager.saveConfig(CONFIG_PATH);
@@ -168,11 +179,10 @@ public class LoadingScreen {
                     return;
                 }
             }
-            appController.getApp().setLocationSelector(LS);
+            appController.getApp().setLocationSelector(ls);
             appController.start();
             primaryStage.show();
-        } catch (final Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) { // NOPMD
             Platform.exit();
         }
     }

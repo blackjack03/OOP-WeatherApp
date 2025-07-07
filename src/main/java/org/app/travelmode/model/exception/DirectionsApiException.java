@@ -1,5 +1,7 @@
 package org.app.travelmode.model.exception;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when errors occur during interactions with the Google Directions API.
  *
@@ -10,6 +12,9 @@ package org.app.travelmode.model.exception;
  * </ul>
  */
 public class DirectionsApiException extends Exception {
+
+    @Serial
+    private static final long serialVersionUID = -8221141337115352220L;
 
     /**
      * Constructs a new directions API exception with the specified detail message.

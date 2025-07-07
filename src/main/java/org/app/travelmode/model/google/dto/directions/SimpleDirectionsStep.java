@@ -12,11 +12,13 @@ package org.app.travelmode.model.google.dto.directions;
  *     <li>End location coordinates</li>
  * </ul>
  */
+@SuppressWarnings("PMD.FieldNamingConventions")
 public class SimpleDirectionsStep {
 
     private static final int SECONDS_PER_MINUTE = 60;
 
     // CHECKSTYLE: MemberName OFF
+    // Fields used by Gson: names must match exactly the received JSON
     private final TextValueObject duration;
     private final LatLng end_location;
     private final LatLng start_location;

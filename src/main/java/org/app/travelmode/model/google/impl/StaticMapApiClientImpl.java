@@ -33,7 +33,7 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
      */
     public StaticMapApiClientImpl(final String apiKey) {
         super(BASE_URL, apiKey);
-        this.requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, this.getApiKey());
+        this.requestBuilder = new GoogleApiRequestBuilderImpl(BASE_URL, apiKey);
     }
 
     /**
@@ -64,8 +64,6 @@ public class StaticMapApiClientImpl extends AbstractGoogleApiClient implements S
             return new Image(inputStream);
         } catch (final IOException e) {
             throw new MapGenerationException("Errore I/O durante la generazione della mappa.", e);
-        } catch (final Exception e) {
-            throw new MapGenerationException("Errore inatteso durante la generazione della mappa.", e);
         }
     }
 
