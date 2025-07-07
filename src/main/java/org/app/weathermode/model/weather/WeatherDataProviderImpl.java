@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.weather;
 
 import org.app.common.api.weather.WeatherDataProvider;
 

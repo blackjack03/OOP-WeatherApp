@@ -3,8 +3,8 @@ package org.app.weathermode.view;
 import org.app.weathermode.controller.Controller;
 import org.app.config.AppConfig;
 import org.app.config.ConfigManager;
-import org.app.weathermode.model.MoonPhases;
-import org.app.weathermode.model.MoonPhasesImpl;
+import org.app.weathermode.model.moon.MoonPhases;
+import org.app.weathermode.model.moon.MoonPhasesImpl;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;

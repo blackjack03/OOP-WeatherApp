@@ -1,6 +1,9 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.locationselector;
 
 // CHECKSTYLE: AvoidStarImport OFF
+import org.app.weathermode.model.lookup.LookUp;
+import org.app.weathermode.model.pair.Pair;
+
 import java.util.*;
 // CHECKSTYLE: AvoidStarImport ON
 

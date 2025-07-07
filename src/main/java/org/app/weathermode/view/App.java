@@ -13,7 +13,7 @@ import javafx.beans.binding.DoubleExpression;
 import javafx.beans.value.ObservableValue;
 
 import org.app.weathermode.controller.Controller;
-import org.app.weathermode.model.LocationSelector;
+import org.app.weathermode.model.locationselector.LocationSelector;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

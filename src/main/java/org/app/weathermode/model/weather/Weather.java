@@ -1,4 +1,6 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.weather;
+
+import org.app.weathermode.model.pair.Pair;
 
 import java.util.Optional;
 import java.util.Map;

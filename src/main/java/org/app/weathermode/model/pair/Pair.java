@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.pair;
 
 import java.util.Objects;
 

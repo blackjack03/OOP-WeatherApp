@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.app.weathermode.controller.Controller;
 import org.app.config.AppConfig;
 import org.app.config.ConfigManager;
-import org.app.weathermode.model.IPLookUp;
-import org.app.weathermode.model.LocationSelector;
-import org.app.weathermode.model.LocationSelectorImpl;
-import org.app.weathermode.model.LookUp;
+import org.app.weathermode.model.lookup.IPLookUp;
+import org.app.weathermode.model.locationselector.LocationSelector;
+import org.app.weathermode.model.locationselector.LocationSelectorImpl;
+import org.app.weathermode.model.lookup.LookUp;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;

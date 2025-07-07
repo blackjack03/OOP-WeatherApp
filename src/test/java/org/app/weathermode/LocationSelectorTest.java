@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Map;
 import java.util.Optional;
 
-import org.app.weathermode.model.LocationSelector;
-import org.app.weathermode.model.LocationSelectorImpl;
+import org.app.weathermode.model.locationselector.LocationSelector;
+import org.app.weathermode.model.locationselector.LocationSelectorImpl;
 
 class LocationSelectorTest {
 

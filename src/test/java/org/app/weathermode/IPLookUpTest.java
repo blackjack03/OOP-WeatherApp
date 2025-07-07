@@ -8,10 +8,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import org.app.weathermode.model.Pair;
-import org.app.weathermode.model.AdvancedJsonReaderImpl;
-import org.app.weathermode.model.LookUp;
-import org.app.weathermode.model.IPLookUp;
+import org.app.weathermode.model.pair.Pair;
+import org.app.weathermode.model.json.AdvancedJsonReaderImpl;
+import org.app.weathermode.model.lookup.LookUp;
+import org.app.weathermode.model.lookup.IPLookUp;
 
 // CHECKSTYLE: AvoidStarImport OFF
 import static org.junit.jupiter.api.Assertions.*;

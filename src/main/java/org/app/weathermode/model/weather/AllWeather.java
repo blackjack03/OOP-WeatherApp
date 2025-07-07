@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.weather;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,6 +11,11 @@ import com.google.gson.*;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import org.app.weathermode.model.UnitConversion;
+import org.app.weathermode.model.json.AdvancedJsonReader;
+import org.app.weathermode.model.json.AdvancedJsonReaderImpl;
+import org.app.weathermode.model.pair.AbstractPair;
+import org.app.weathermode.model.pair.Pair;
 import org.jsoup.*;
 import org.jsoup.select.*;
 import org.jsoup.nodes.*;

@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.csv;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;

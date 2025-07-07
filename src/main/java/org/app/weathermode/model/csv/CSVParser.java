@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.csv;
 
 import java.io.IOException;
 import java.util.List;

@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.app.weathermode.model.AllWeather;
+import org.app.weathermode.model.weather.AllWeather;
 
 // CHECKSTYLE: AvoidStarImport OFF
 import static org.junit.jupiter.api.Assertions.*;

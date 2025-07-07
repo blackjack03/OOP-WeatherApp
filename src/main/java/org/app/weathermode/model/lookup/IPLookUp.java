@@ -1,8 +1,11 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.lookup;
 
 import java.util.Optional;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.app.weathermode.model.json.AdvancedJsonReader;
+import org.app.weathermode.model.json.AdvancedJsonReaderImpl;
+import org.app.weathermode.model.pair.Pair;
 
 /**
  * <h2>IPLookUp</h2>

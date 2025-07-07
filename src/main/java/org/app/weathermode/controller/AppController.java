@@ -24,11 +24,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-import org.app.weathermode.model.AllWeather;
+import org.app.weathermode.model.weather.AllWeather;
 import org.app.config.ConfigManager;
-import org.app.weathermode.model.LocationSelector;
-import org.app.weathermode.model.LocationSelectorImpl;
-import org.app.weathermode.model.Pair;
+import org.app.weathermode.model.locationselector.LocationSelector;
+import org.app.weathermode.model.locationselector.LocationSelectorImpl;
+import org.app.weathermode.model.pair.Pair;
 import org.app.weathermode.model.UnitConversion;
 import org.app.config.UserPreferences;
 import org.app.weathermode.view.AbstractApp;

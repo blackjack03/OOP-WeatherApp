@@ -11,8 +11,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 
-import org.app.weathermode.model.LocationSelector;
-import org.app.weathermode.model.Pair;
+import org.app.weathermode.model.locationselector.LocationSelector;
+import org.app.weathermode.model.pair.Pair;
 
 import java.util.List;
 import java.util.Optional;

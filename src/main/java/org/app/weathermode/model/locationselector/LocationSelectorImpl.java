@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.locationselector;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -9,6 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.app.weathermode.model.csv.CSVStdParser;
+import org.app.weathermode.model.lookup.LookUp;
+import org.app.weathermode.model.pair.Pair;
 
 // CHECKSTYLE: AvoidStarImport ON
 

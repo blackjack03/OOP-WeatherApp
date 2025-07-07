@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.moon;
 
 // CHECKSTYLE: AvoidStarImport OFF
 import org.jsoup.*;

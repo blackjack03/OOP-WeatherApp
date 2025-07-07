@@ -1,4 +1,4 @@
-package org.app.weathermode.model;
+package org.app.weathermode.model.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
